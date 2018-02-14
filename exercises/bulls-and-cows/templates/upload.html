@@ -1,0 +1,12 @@
+<html>
+<head>
+    <title>Upload Text File</title>
+</head>
+<body>
+<form method="post" enctype="multipart/form-data">
+    {{ form.txt_file }}
+    {{ form.hidden_tag() }}
+    <input type="submit" value="Submit">
+</form>
+</body>
+</html>
