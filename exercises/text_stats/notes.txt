@@ -1,0 +1,5 @@
+The Python micro-framework Flask was chosen since the level of functionality required in the application was minimal. The relatively small setup allows an inital working version to be delivered quickly, allowing for feedback to be received at an early stage and necessary changes made.
+
+Only basic Python data analysis and visualisation libraries were used to produce statistics and graphs, in order to avoid an excessive number of dependencies being used. Such cases may increase the likelihood of installation issues or may require excessive time being spent consulting documentation for the different libraries if the code was re-visited in future.
+
+When building such applications, user-friendliness is essential and so they should be self-informative and intuitive and have documentation to consult if needed. They should also be robust in the face of unexpected events. Web applications can face various security issues. With user input such as forms and uploading files, as a principle “never trust user input”. This is since form data can be forged and filenames may be dangerous. In Flask the secure_filename() function should be used for file uploads.
