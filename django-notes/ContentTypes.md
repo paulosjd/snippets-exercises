@@ -1,5 +1,0 @@
-Django includes a contenttypes application that can track all of the models installed in your Django-powered project, providing a high-level, generic interface for working with your models.
-
-At the heart of the contenttypes application is the `ContentType` model, which lives at django.contrib.contenttypes.models.ContentType. Instances of `ContentType` represent and store information about the models installed in your project, and new instances of ContentType are automatically created whenever new models are installed.
-Instances of `ContentType` have methods for returning the model classes they represent and for querying objects from those models.
-Relations between your models and `ContentType` can also be used to enable “generic” relationships between an instance of one of your models and instances of any model you have installed.
