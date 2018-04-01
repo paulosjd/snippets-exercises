@@ -294,6 +294,10 @@ Field lookups are how you specify the meat of an SQL `WHERE` clause. They’re s
     Blog.objects.get(name__iexact='beatles blog')    #Case-insensitive 
     Entry.objects.get(headline__contains='Lennon')
     Entry.objects.get(headline__icontains='Lennon')    #Case-insensitive 
+    Entry.objects.filter(id__in=[1, 3, 4])    # iterable can be a QuerySet
+    Entry.objects.filter(id__gt=4)
+    
+gte, lt, lte, startswith, regex, date, month, day etc.
 
 
 
