@@ -67,11 +67,89 @@ The get_for_model() method is especially useful when you know you need to work w
     >>> ContentType.objects.get_for_model(User)
     <ContentType: user>
     
- Generic relations
- ---------------
- 
- 
+**Generic relations**
+
+A normal ForeignKey can only “point to” one other model whereas GenericForeignKey is more flexible:
+
+`class` GenericForeignKey
+
+1) Give your model a ForeignKey to ContentType
+2) Give your model a field that can store primary key values
+3) Give your model a GenericForeignKey, and pass it the names of the two fields above you can omit this if you use the default field names GenericForeignKey will look for.
+
+
+    from django.contrib.contenttypes.fields import GenericForeignKey
+    from django.contrib.contenttypes.models import ContentType
+
+    class TaggedItem(models.Model):
+        tag = models.SlugField()
+        content_type = models.ForeignKey(ContentType)
+        object_id = models.PositiveIntegerField()
+        content_object = GenericForeignKey()
+
+        def __str__(self):
+            return self.tag
+
+ This will enable an API similar to the one used for a normal ForeignKey; each TaggedItem will have a content_object
+ field that returns the object it’s related to, and you can also assign to that field or use it when creating a TaggedItem:
+
+    >>> from django.contrib.auth.models import User
+    >>> guido = User.objects.get(username='Guido')
+    >>> t = TaggedItem(content_object=guido, tag='bdfl')
+    >>> t.save()
+    >>> t.content_object
+    <User: Guido>
+
+However, because a GenericForeignKey isn’t a normal field object, this will not work:
+
+    >>> TaggedItem.objects.filter(content_object=guido)
+
+Set reverse generic relations to allow querying and filtering from the related object:
+
+`class` GenericRelation
+
+If you know which models you’ll be using most often, you can also add a “reverse” generic relationship to enable an additional API. For example:
+
+    from django.contrib.contenttypes.fields import GenericRelation
+
+    class Bookmark(models.Model):
+        url = models.URLField()
+        tags = GenericRelation(TaggedItem)
+
+Bookmark instances will each have a tags attribute, which can be used to retrieve their associated TaggedItems:
+
+    >>> b = Bookmark(url='https://www.djangoproject.com/')
+    >>> b.save()
+    >>> t1 = TaggedItem(content_object=b, tag='django')
+    >>> t1.save()
+    >>> t2 = TaggedItem(content_object=b, tag='python')
+    >>> t2.save()
+    >>> b.tags.all()
+    <QuerySet [<TaggedItem: django>, <TaggedItem: python>]>
+
+Defining GenericRelation with related_query_name set allows querying from the related object:
+
+    tags = GenericRelation(TaggedItem, related_query_name='bookmarks')
+
+This enables filtering, ordering, and other query operations on Bookmark from TaggedItem:
+
+    >>> # Get all tags belonging to bookmarks containing `django` in the url
+    >>> TaggedItem.objects.filter(bookmarks__url__contains='django')
+    <QuerySet [<TaggedItem: django>, <TaggedItem: python>]>
+
+Note that you can do the same types of lookups manually without defining the reverse relationship:
+
+    >>> b = Bookmark.objects.get(url='https://www.djangoproject.com/')
+    >>> bookmark_type = ContentType.objects.get_for_model(b)
+    >>> TaggedItem.objects.filter(content_type__pk=bookmark_type.id, object_id=b.id)
+    <QuerySet [<TaggedItem: django>, <TaggedItem: python>]>
+
+
+
+
     
-    
-    
-    
+
+
+
+
+
