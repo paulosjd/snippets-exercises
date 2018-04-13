@@ -40,7 +40,7 @@ The default implementation will inspect the HTTP method and attempt to delegate 
 
 **TemplateView**
 
-class django.views.generic.base.TemplateView
+`class` django.views.generic.base.TemplateView
 
 Renders a given template, with the context containing parameters captured in the URL.
 Ancestors (MRO)
@@ -64,4 +64,74 @@ Populated (through ContextMixin) with the keyword arguments captured from the UR
 Ancestors (MRO): This view inherits methods and attributes from the following view:
 django.views.generic.base.View 
 
-Note also that you can only inherit from one generic view - that is, only one parent class may inherit from View and the rest (if any) should be mixins. 
+Note also that you can only inherit from one generic view - that is, only one parent class may inherit from View and the rest (if any) should be mixins.
+  
+ **Generic display views**
+
+`class` django.views.generic.DetailView
+
+While this view is executing, self.object will contain the object that the view is operating upon, so by default it will be accessible in the template as e.g. {{ object.some_attribute }}.
+This view inherits methods and attributes from views and mixins including TemplateResponseMixin, BaseDetailView, SingleObjectMixin.
+
+    Method Flowchart:
+        dispatch()
+        http_method_not_allowed()
+        get_template_names()
+        get_slug_field()
+        get_queryset()
+        get_object()
+        get_context_object_name()
+        get_context_data()
+        get()
+        render_to_response()
+
+`class` django.views.generic.ListView
+
+While this view is executing, self.object_list will contain the list of objects that the view is operating upon.
+Parents include TemplateResponseMixin, BaseListView, MultipleObjectMixin.
+
+    Method Flowchart:
+        dispatch()
+        http_method_not_allowed()
+        get_template_names()
+        get_queryset()
+        get_context_object_name()
+        get_context_data()
+        get()
+        render_to_response()
+
+**Generic editing views**
+
+`class` django.views.generic.FormView
+
+A view that displays a form. On error, displays the form with validation errors; on success, redirects to a new URL.
+Parents include TemplateResponseMixin, BaseFormView, FormMixin. Example:
+
+    class ContactView(FormView):
+    
+        template_name = 'contact.html'
+        form_class = ContactForm
+        success_url = '/thanks/'
+    
+        def form_valid(self, form):
+            # This method is called when valid form data has been POSTed and should return an HttpResponse.
+            form.send_email()
+            return super(ContactView, self).form_valid(form)
+
+CreateView, UpdateView, DeleteView are display forms (such as a ModelForm) for CRUD operations.
+
+`@method_decorator` from django.utils.decoratorst transforms a function decorator into a method decorator so that it can be used on an instance method. For example:
+
+    from django.contrib.auth.decorators import login_required
+    from django.utils.decorators import method_decorator
+
+    class ProtectedView(TemplateView):
+        template_name = 'secret.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+To decorate every instance of a class-based view, you need to decorate the class definition itself. To do this you apply the decorator to the `dispatch()` method of the class.
+
+Or, you can decorate the class instead and pass the name of the method to be decorated as a kwarg. If you have a set of common decorators used in several places, you can define a list or tuple of decorators and use this instead of invoking `method_decorator()` multiple times.
