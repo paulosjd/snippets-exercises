@@ -141,8 +141,8 @@ field should be the name of a DateField of your model. kind should be either "ye
 
 This can be useful in situations where you might want to pass in either a model manager or a QuerySet and do further filtering on the result. 
 When a QuerySet is evaluated, it typically caches its results.   
-    
-     select_related(*fields) Returns a QuerySet that will “follow” FK relationships, selecting additional related-object data
+ 
+    select_related() "follows" FK relationships, selecting additional related-object data via an SQL JOIN query.
        
 This is a performance booster which results in a single more complex query but means later use of foreign-key relationships won’t require database queries.
     
@@ -160,13 +160,13 @@ select_related('foo', 'bar') is equivalent to
 
 select_related('foo').select_related('bar')
 
-    prefetch_related(*lookups) Returns a QuerySet that will automatically retrieve related objects for each specified lookups.
+    prefetch_related() does a separate lookup for each relationship, and does the "joining" in Python.
     
 This has a similar purpose to `select_related`, but the strategy is quite different
 
 `select_related` works by creating an SQL join and including the fields of the related object in the SELECT statement. For this reason, select_related gets the related objects in the same database query. However, to avoid the much larger result set that would result from joining across a ‘many’ relationship, select_related is limited to FK and one-to-one relationships.
 
-`prefetch_related`, on the other hand, does a separate lookup for each relationship, and does the ‘joining’ in Python. This allows it to prefetch many-to-many and many-to-one objects, which cannot be done using `select_related`, in addition to the foreign key and one-to-one relationships that are supported by `select_related`. 
+`prefetch_related`, on the other hand, does a separate lookup for each side of the relationship, and does the ‘joining’ in Python. This allows it to prefetch many-to-many and many-to-one objects, which cannot be done using `select_related`, in addition to the foreign key and one-to-one relationships that are supported by `select_related`. 
 
 It also supports prefetching of GenericRelation and GenericForeignKey, however, it must be restricted to a homogeneous set of results. E.g. prefetching objects referenced by a GenericForeignKey is only supported if the query is restricted to one ContentType. Consider the following:
 
@@ -198,6 +198,12 @@ Remember that, as always with QuerySets, any subsequent chained methods which im
     >>> [list(pizza.toppings.filter(spicy=True)) for pizza in pizzas]
     
 …then the fact that pizza.toppings.all() has been prefetched will not help you. The prefetch_related('toppings') implied pizza.toppings.all(), but pizza.toppings.filter() is a new and different query. The prefetched cache can’t help here; in fact it hurts performance, since you have done a database query that you haven’t used. So use this feature with caution!
+
+You use select_related when the object that you're going to be selecting is a single object, so OneToOneField or a ForeignKey. You use prefetch_related when you're going to get a "set" of things, so ManyToManyFields as you stated or reverse ForeignKeys.
+The difference is that select_related does an SQL join and therefore gets the results back as part of the table from the SQL server. prefetch_related on the other hand executes another query and therefore reduces the redundant columns in the original object. You may use prefetch_related for anything that you can use select_related for.
+
+The tradeoffs are that prefetch_related has to create and send a list of IDs to select back to the server, this can take a while. I'm not sure if there's a nice way of doing this in a transaction, but my understanding is that Django always just sends a list and says `SELECT` ... `WHERE` pk `IN` (...,...,...) basically. In this case if the prefetched data is sparse (let's say U.S. State objects linked to people's addresses) this can be very good, however if it's closer to one-to-one, this can waste a lot of communications.
+On the Python side however prefetch_related has the extra benefit that a single object is used to represent each object in the database. With select_related duplicate objects will be created in Python for each "parent" object. Since objects in Python have a decent bit of memory overhead this can also be a consideration. If in doubt, try both and see which performs better.
 
 **Methods that do not return QuerySets**
 
@@ -285,6 +291,14 @@ This cascade behavior is customizable via the on_delete argument to the ForeignK
 The `delete()` method does a bulk delete and does not call any `delete()` methods on your models. It does, however, emit the pre_delete and post_delete signals for all deleted objects (including cascaded deletions).
 
     as_manager() Class method that returns an instance of Manager with a copy of the QuerySet’s methods.
+
+`iterator()` evaluates the QuerySet (by performing the query) and returns an iterator. This is useful if you only need to use the QuerySet *once*. QuerySets
+ are usually cached (to reduce further db calls), but with `iterator()` there is no caching. For a QuerySet which returns a large number of objects that you only need to access once, this can result in better performance and a significant reduction in memory.
+
+    traffic = Traffic.objects.all()
+    for t in traffic.iterator():
+        ...
+        ...
 
 **Field lookups**
 

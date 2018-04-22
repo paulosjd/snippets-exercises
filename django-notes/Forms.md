@@ -152,7 +152,11 @@ Or if the field isn’t declared directly on the form (such as model form fields
             self.fields['name'].widget.attrs.update({'class': 'special'})
             self.fields['comment'].widget.attrs.update(size='40')
 
+**Inheritance**
 
+It is possible to inherit from both Form and ModelForm, but you must ensure ModeflFOrm
+appears first in the MRO. This is because the classes rely on different metaclasses and a
+class can only have one metaclass.
 
 
 

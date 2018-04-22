@@ -8,7 +8,11 @@ Each field takes a certain set of field-specific arguments, e.g. `CharField` req
 
 `blank` if `True`, the field is allowed to be blank. Default s `false`
 
-Note that this is different than null. null is purely database-related, whereas `blank` is validation-related
+Note that this is different than null. null is purely database-related, whereas `blank` is validation-related:
+
+Null: db-related. Defines if a given database column will accept null values or not.
+
+Blank: validation-related. It will be used during form validation, when calling form.is_valid().
 
 `choices` An iterable (e.g., a list or tuple) of 2-tuples to use as choices for this field. If this is given, the default form widget will be a select box instead of the standard text field and will limit choices to the choices given. E.g.:
 
@@ -27,7 +31,13 @@ The first element in each tuple is the value that will be stored in the database
     first_name = models.CharField("person's first name", max_length=30) 
 
 The relationship fields require the first argument to be a model class, so use the verbose_name keyword argument.
- 
+
+**`ManyToManyField`**
+
+`ManyToManyField` should only be put on one of the models. Generally, ManyToManyField instances should go in the object that’s going to be edited on a form. In the below example, toppings is in Pizza because it’s more natural to think about a pizza having toppings than vice versa. The way it’s set up above, the Pizza form would let users select the toppings.
+ 
+Related objects can be added, removed, or created with the field’s RelatedManager.
+
     from django.db import models
      
     class Topping(models.Model):
@@ -37,17 +47,12 @@ The relationship fields require the first argument to be a model class, so use t
     class Pizza(models.Model):
         # ...
         toppings = models.ManyToManyField(Topping)
- 
-`ManyToManyField` should only be put on one of the models. Generally, ManyToManyField instances should go in the object that’s going to be edited on a form. In the above example, toppings is in Pizza because it’s more natural to think about a pizza having toppings than vice versa. The way it’s set up above, the Pizza form would let users select the toppings.
- 
-Related objects can be added, removed, or created with the field’s RelatedManager.
 
 **Extra fields on many-to-many relationships**
 
 Consider the case of an application tracking the musical groups which musicians belong to. There is a many-to-many relationship between a person and the groups of which they are a member, so you could use a ManyToManyField to represent this relationship. However, there is a lot of detail about the membership that you might want to collect, such as the date at which the person joined the group.
  
 For these situations, Django allows you to specify the model that will be used to govern the many-to-many relationship. You can then put extra fields on the intermediate model. The intermediate model is associated with the ManyToManyField using the through argument to point to the model that will act as an intermediary. 
- 
 
         from django.db import models
          
@@ -70,9 +75,7 @@ For these situations, Django allows you to specify the model that will be used t
             date_joined = models.DateField()
             invite_reason = models.CharField(max_length=64)
  
-
 When you set up the intermediary model, you explicitly specify foreign keys to the models that are involved in the many-to-many relationship. This explicit declaration defines how the two models are related.
-
 
 ManyToManyField.through
 
