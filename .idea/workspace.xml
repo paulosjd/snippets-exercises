@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="4d364c83-bf30-4cab-a5b5-73eb0835c5f7" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/django-notes/ModelManager.md" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/concepts_A-L-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/concepts_A-L-checkpoint.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/concepts_M-Z-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/concepts_M-Z-checkpoint.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/concepts_A-L.ipynb" afterPath="$PROJECT_DIR$/concepts_A-L.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/concepts_M-Z.ipynb" afterPath="$PROJECT_DIR$/concepts_M-Z.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/django-notes/Forms.md" afterPath="$PROJECT_DIR$/django-notes/Forms.md" />
-    </list>
+    <list default="true" id="4d364c83-bf30-4cab-a5b5-73eb0835c5f7" name="Default" comment="" />
     <ignored path="snippets-exercises.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -375,7 +368,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-16" y="-16" width="3232" height="1732" extended-state="6" />
+    <frame x="-16" y="-16" width="3232" height="1732" extended-state="7" />
     <editor active="false" />
     <layout>
       <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.14761905" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
