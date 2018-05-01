@@ -2,12 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4d364c83-bf30-4cab-a5b5-73eb0835c5f7" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/django-notes/Model_fields and Relationships.md" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/django-notes/Models_misc.md" afterPath="$PROJECT_DIR$/django-notes/Signals.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/concepts_M-Z-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/concepts_M-Z-checkpoint.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/metaprogramming-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/metaprogramming-checkpoint.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/python-data-model-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/python-data-model-checkpoint.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/concepts_M-Z.ipynb" afterPath="$PROJECT_DIR$/concepts_M-Z.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/django-notes/Form_and_Field_validation.md" afterPath="$PROJECT_DIR$/django-notes/Form_and_Field_validation.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/django-notes/Model_fields_Relationships.md" afterPath="$PROJECT_DIR$/django-notes/Model_fields_Relationships.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/metaprogramming.ipynb" afterPath="$PROJECT_DIR$/metaprogramming.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/python-data-model.ipynb" afterPath="$PROJECT_DIR$/python-data-model.ipynb" />
     </list>
@@ -59,26 +59,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Models_misc.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/django-notes/Models_misc.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="0">
-                <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor>
-                <js_state />
-              </second_editor>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="models_Field_class.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/django-notes/models_Field_class.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="952">
+              <first_editor relative-caret-position="3300">
                 <caret line="100" column="67" selection-start-line="100" selection-start-column="67" selection-end-line="100" selection-end-column="67" />
                 <folding />
               </first_editor>
@@ -89,12 +74,42 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Form_and_Field_validation.md" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Form_and_Field_validation.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/django-notes/Form_and_Field_validation.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="66">
-                <caret line="2" column="45" selection-start-line="2" selection-start-column="45" selection-end-line="2" selection-end-column="45" />
+              <first_editor relative-caret-position="-337">
+                <caret line="9" column="102" selection-start-line="5" selection-start-column="99" selection-end-line="9" selection-end-column="102" />
+                <folding />
+              </first_editor>
+              <second_editor>
+                <js_state />
+              </second_editor>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="sql_queries.md" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/databases-notes/sql_queries.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="330">
+                <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
+                <folding />
+              </first_editor>
+              <second_editor>
+                <js_state />
+              </second_editor>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Signals.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/django-notes/Signals.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+            <state split_layout="SPLIT">
+              <first_editor relative-caret-position="3696">
+                <caret line="115" column="0" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
                 <folding />
               </first_editor>
               <second_editor>
@@ -123,6 +138,9 @@
         <option value="$PROJECT_DIR$/django-notes/Field_class.md" />
         <option value="$PROJECT_DIR$/django-notes/models_Field_class.md" />
         <option value="$PROJECT_DIR$/django-notes/Form_and_Field_validation.md" />
+        <option value="$PROJECT_DIR$/databases-notes/sql_queries.md" />
+        <option value="$PROJECT_DIR$/django-notes/Signals.md" />
+        <option value="$PROJECT_DIR$/django-notes/Model_fields_Relationships.md" />
       </list>
     </option>
   </component>
@@ -186,6 +204,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="tests-exercises" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="snippets-exercises" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="snippets-exercises" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="images" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -426,7 +458,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-16" y="-16" width="3232" height="1732" extended-state="7" />
+    <frame x="-16" y="-16" width="3232" height="1732" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2231746" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -606,6 +638,19 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/django-notes/Model_fields and Relationships.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="495">
+            <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/databases-notes/transactions_atomicity.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
@@ -632,50 +677,19 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/django-notes/Model_fields and Relationships.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="495">
-            <caret line="15" column="0" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
-            <folding />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
+    <entry file="file://$PROJECT_DIR$/concepts_M-Z.ipynb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="8" column="30" selection-start-line="8" selection-start-column="5" selection-end-line="8" selection-end-column="30" />
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/django-notes/Models_misc.md">
+    <entry file="file://$PROJECT_DIR$/databases-notes/sql_queries.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="0">
-            <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-            <folding />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/django-notes/Model_fields_Relationships.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="0">
-            <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-            <folding />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/django-notes/models_Field_class.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="952">
-            <caret line="100" column="67" selection-start-line="100" selection-start-column="67" selection-end-line="100" selection-end-column="67" />
+          <first_editor relative-caret-position="330">
+            <caret line="10" column="0" selection-start-line="10" selection-start-column="0" selection-end-line="10" selection-end-column="0" />
             <folding />
           </first_editor>
           <second_editor>
@@ -687,8 +701,47 @@
     <entry file="file://$PROJECT_DIR$/django-notes/Form_and_Field_validation.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="66">
-            <caret line="2" column="45" selection-start-line="2" selection-start-column="45" selection-end-line="2" selection-end-column="45" />
+          <first_editor relative-caret-position="-337">
+            <caret line="9" column="102" selection-start-line="5" selection-start-column="99" selection-end-line="9" selection-end-column="102" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/django-notes/models_Field_class.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="3300">
+            <caret line="100" column="67" selection-start-line="100" selection-start-column="67" selection-end-line="100" selection-end-column="67" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/django-notes/Model_fields_Relationships.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="1777">
+            <caret line="152" column="0" selection-start-line="152" selection-start-column="0" selection-end-line="152" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/django-notes/Signals.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="3696">
+            <caret line="115" column="0" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
             <folding />
           </first_editor>
           <second_editor>

@@ -1,15 +1,58 @@
-Model methods
-Define custom methods on a model to add custom “row-level” functionality to your objects. Whereas Manager methods are intended to do “table-wide” things, model methods should act on a particular model instance.
-This is a valuable technique for keeping business logic in one place – the model.
+A save on a model instance triggers the following steps:
 
- 
-Proxy Models
- 
-Sometimes, however, you only want to change the Python behavior of a model – perhaps to change the default manager, or add a new method.
-This is what proxy model inheritance is for: creating a proxy for the original model. You tell Django that it’s a proxy model by setting the proxy attribute of the Meta class to True. The proxy model class still operates on the same database table as its parent.
- 
+    Emit a pre-save signal.
+    ...
+    Insert the data into the database.
+    Emit a post-save signal.
 
-**Signals**
+The connection between the senders (e.g. a model emitting a `post_save` signal) and the receivers (a function or method within e.g. a signals.py file) is done through “signal dispatchers”, which are instances of `Signal`, via the `connect` method.
+
+    from django.contrib.auth.models import User
+    from django.db.models.signals import post_save
+
+    def save_profile(sender, instance, **kwargs):
+        instance.profile.save()
+
+    post_save.connect(save_profile, sender=User)
+
+Here, `save_profile` is the *receiver* function, `User` is the *sender* and `post_save` is the *signal*. The `save_profile` function should be run every time a User model is saved.
+
+The `post_save` built-in signal lives in the `django.db.models.signals` module. This particular signal fires right after a model finish executing its `save` method.
+
+Another way to register a signal, is by using the `@receiver` decorator:
+
+    from django.dispatch import receiver
+
+    @receiver(post_save, sender=User)
+    def save_profile(sender, instance, **kwargs):
+        instance.profile.save()
+
+Here the `save_profile` function is registered to receive the `post_save` signal from the User model.
+
+`pre-save` my be used as follows, instead of setting up a slug value from the title in the `save()` method override e.g.:
+
+    class TodoList(models.Model):
+    title = models.CharField(maxlength=100)
+    slug = models.SlugField(maxlength=100)
+    def save(self):
+        self.slug = title
+        super(TodoList, self).save()
+
+Could use `pre-save` signal instead (n.b. in this case it would be simpler to leave it in the save method).
+
+    from django.template.defaultfilters import slugify
+
+    @receiver(pre_save)
+    def my_callback(sender, instance, *args, **kwargs):
+        instance.slug = slugify(instance.title)
+
+Note: if you don't include the sender argument in the decorator, like `@receiver(pre_save, sender=MyModel)`, the callback will be called for all models.
+
+A common use case of the post_save signal is UserProfile object creation, when a User object is created in the system.
+You can register a post_save signal which creates a UserProfile object that corresponds to every User in the system.
+Signals are a way to keep things modular, and explicit. (Explicitly notify ModelA if i save or change something in ModelB )
+
+**Django docs - Signals**
 
 Django includes a “signal dispatcher” which helps allow decoupled applications get notified when actions occur elsewhere in the framework. Signals allow certain senders to notify a set of receivers that some action has taken place.
 Django provides a set of built-in signals that let user code get notified by Django itself of certain actions. These include:
