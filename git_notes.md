@@ -55,7 +55,34 @@ Now your project has diverged. Both of those changes are isolated in separate br
 
 ![](./images/advance-master.png)
 
-**Basic Branching and Merging**
+`git reset`, `git checkout`, `git revert`
+-----------------------------------------
+
+![](./images/git_reset.png)
+
+It helps to think about each command in terms of their effect on the three state management mechanisms of a Git repository: the working directory,
+the staged snapshot, and the commit history.
+
+A checkout is an operation that moves the HEAD ref pointer to a specified commit. To demonstrate this consider the following example:
+
+a12 <-- b34 <-- c56 <-- d78 (HEAD, Master)
+
+This example demonstrates a sequence of commits on the master branch. The `HEAD` ref and master branch ref currently point to commit with example hash d78.
+
+Normally you would provide a branch name to `git checkout`. However, you can also provide the SHA1 hash of a specific commit instead:
+
+`git checkout b34` will move the `HEAD` ref pointer to this commit.
+
+could also achieve this by:
+
+    git checkout HEAD~2
+
+This exact state - when a specific commit is checked out instead of a branch - is what's called a "detached HEAD".
+Any changes do not belong to the branch. This may be useful for simply inspecting old commits but can be dangerous if you add commits.
+
+
+Branching and Merging
+------------------
 
 Suppose you are doing some work on a feature development branch, then  receive a call that another issue is critical and you need a hotfix. You’ll do the following:
 
@@ -66,12 +93,3 @@ Suppose you are doing some work on a feature development branch, then  receive a
 3) After it’s tested, merge the hotfix branch, and push to production.
 
 4) Switch back to your original story and continue working.
-
-
-`git reset`, `git checkout`, `git revert`
------------------------------------------
-
-It helps to think about each command in terms of their effect on the three state management mechanisms of a Git repository: the working directory,
-the staged snapshot, and the commit history.
-
-
