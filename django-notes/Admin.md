@@ -345,10 +345,48 @@ Here’s a sample flatpages/default.html template:
     </body>
     </html>
 
+The Django admin documentation generator
+----------------------------------------
+Django’s admindocs app pulls documentation from the docstrings of models, views, template tags, and template filters for any app in INSTALLED_APPS and makes that documentation available from the Django admin.
 
+Setup: https://docs.djangoproject.com/en/2.0/ref/contrib/admin/admindocs/
 
+Documentation helpers¶
 
+The following special markup can be used in your docstrings to easily create hyperlinks to other components:
 
+    Django Component 	reStructuredText roles
+    Models 	:model:`app_label.ModelName`
+    Views 	:view:`app_label.view_name`
+    Template tags 	:tag:`tagname`
+    Template filters 	:filter:`filtername`
+    Templates 	:template:`path/to/template.html`
 
+**Example - View reference**
 
+Each URL in your site has a separate entry in the admindocs page, and clicking on a given URL will show you the corresponding view. Helpful things you can document in your view function docstrings include:
+
+A short description of what the view does.
+
+The context, or a list of variables available in the view’s template.
+
+The name of the template or templates that are used for that view.
+
+    from myapp.models import MyModel
+
+    def my_view(request, slug):
+        """
+        Display an individual :model:`myapp.MyModel`.
+
+        **Context**
+
+        ``mymodel``
+            An instance of :model:`myapp.MyModel`.
+
+        **Template:**
+
+        :template:`myapp/my_template.html`
+        """
+        context = {'mymodel': MyModel.objects.get(slug=slug)}
+        return render(request, 'myapp/my_template.html', context)
 
