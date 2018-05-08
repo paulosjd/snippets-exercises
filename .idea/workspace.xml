@@ -2,13 +2,12 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4d364c83-bf30-4cab-a5b5-73eb0835c5f7" name="Default" comment="">
+      <change type="MOVED" beforePath="$PROJECT_DIR$/git_notes.md" afterPath="$PROJECT_DIR$/git-notes/merge_rebase.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/concepts_M-Z-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/concepts_M-Z-checkpoint.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/concepts_A-L.ipynb" afterPath="$PROJECT_DIR$/concepts_A-L.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/concepts_M-Z.ipynb" afterPath="$PROJECT_DIR$/concepts_M-Z.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/django-notes/Admin.md" afterPath="$PROJECT_DIR$/django-notes/Admin.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/concepts_A-L-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/concepts_A-L-checkpoint.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/docstrings-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/docstrings-checkpoint.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/django-notes/Model_fields_Relationships.md" afterPath="$PROJECT_DIR$/django-notes/Model_fields_Relationships.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/git_notes.md" afterPath="$PROJECT_DIR$/git_notes.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/docstrings.ipynb" afterPath="$PROJECT_DIR$/docstrings.ipynb" />
     </list>
     <ignored path="snippets-exercises.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -43,12 +42,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Views.md" pinned="false" current-in-tab="true">
+      <file leaf-file-name="Views.md" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/django-notes/Views.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="886">
-                <caret line="227" column="0" selection-start-line="227" selection-start-column="0" selection-end-line="227" selection-end-column="0" />
+              <first_editor relative-caret-position="1051">
+                <caret line="232" column="0" selection-start-line="232" selection-start-column="0" selection-end-line="232" selection-end-column="0" />
                 <folding />
               </first_editor>
               <second_editor>
@@ -58,42 +57,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Migrations.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/django-notes/Migrations.md">
+      <file leaf-file-name="internals.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/git-notes/internals.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="952">
-                <caret line="141" column="0" selection-start-line="141" selection-start-column="0" selection-end-line="141" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor>
-                <js_state />
-              </second_editor>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="git_notes.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/git_notes.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="853">
-                <caret line="340" column="0" selection-start-line="340" selection-start-column="0" selection-end-line="340" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor>
-                <js_state />
-              </second_editor>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Model_fields_Relationships.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/django-notes/Model_fields_Relationships.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="1018">
-                <caret line="159" column="195" selection-start-line="159" selection-start-column="195" selection-end-line="159" selection-end-column="195" />
+              <first_editor relative-caret-position="490">
+                <caret line="60" column="28" selection-start-line="60" selection-start-column="28" selection-end-line="60" selection-end-column="28" />
                 <folding />
               </first_editor>
               <second_editor>
@@ -124,11 +93,14 @@
         <option value="$PROJECT_DIR$/django-notes/Form_and_Field_validation.md" />
         <option value="$PROJECT_DIR$/databases-notes/sql_queries.md" />
         <option value="$PROJECT_DIR$/django-notes/Signals.md" />
-        <option value="$PROJECT_DIR$/django-notes/Views.md" />
-        <option value="$PROJECT_DIR$/git_notes.md" />
         <option value="$PROJECT_DIR$/django-notes/Migrations.md" />
-        <option value="$PROJECT_DIR$/django-notes/Model_fields_Relationships.md" />
         <option value="$PROJECT_DIR$/django-notes/Admin.md" />
+        <option value="$PROJECT_DIR$/django-notes/Views.md" />
+        <option value="$PROJECT_DIR$/git-notes/basics_branches.md" />
+        <option value="$PROJECT_DIR$/git_notes.md" />
+        <option value="$PROJECT_DIR$/django-notes/Model_fields_Relationships.md" />
+        <option value="$PROJECT_DIR$/git-notes/refs.md" />
+        <option value="$PROJECT_DIR$/git-notes/internals.md" />
       </list>
     </option>
   </component>
@@ -191,7 +163,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="images" />
+              <option name="myItemId" value="git-notes" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -216,10 +188,11 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../General/app_backups/airapp3/views/charts.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../frags" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Paul\Desktop\old snippets\snippets-exercises\git-notes" />
       <recent name="C:\Users\Paul\Desktop\old snippets\snippets-exercises\tests-exercises" />
       <recent name="C:\Users\Paul\Desktop\old snippets\snippets-exercises\databases-notes" />
       <recent name="C:\Users\Paul\Desktop\old snippets\snippets-exercises" />
@@ -728,50 +701,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/django-notes/Migrations.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="952">
-            <caret line="141" column="0" selection-start-line="141" selection-start-column="0" selection-end-line="141" selection-end-column="0" />
-            <folding />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/../../General/app_backups/airapp3/views/charts.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/git_notes.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="853">
-            <caret line="340" column="0" selection-start-line="340" selection-start-column="0" selection-end-line="340" selection-end-column="0" />
-            <folding />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/django-notes/Model_fields_Relationships.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="1018">
-            <caret line="159" column="195" selection-start-line="159" selection-start-column="195" selection-end-line="159" selection-end-column="195" />
-            <folding />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
         </state>
       </provider>
     </entry>
@@ -788,11 +722,76 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/django-notes/Migrations.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="952">
+            <caret line="141" column="0" selection-start-line="141" selection-start-column="0" selection-end-line="141" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/git-notes/basics_branches.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="33">
+            <caret line="115" column="0" selection-start-line="115" selection-start-column="0" selection-end-line="115" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/django-notes/Model_fields_Relationships.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="820">
+            <caret line="153" column="33" selection-start-line="153" selection-start-column="33" selection-end-line="153" selection-end-column="33" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/django-notes/Views.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="886">
-            <caret line="227" column="0" selection-start-line="227" selection-start-column="0" selection-end-line="227" selection-end-column="0" />
+          <first_editor relative-caret-position="1051">
+            <caret line="232" column="0" selection-start-line="232" selection-start-column="0" selection-end-line="232" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/git-notes/merge_rebase.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="528">
+            <caret line="85" column="0" selection-start-line="85" selection-start-column="0" selection-end-line="85" selection-end-column="34" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/git-notes/internals.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="490">
+            <caret line="60" column="28" selection-start-line="60" selection-start-column="28" selection-end-line="60" selection-end-column="28" />
             <folding />
           </first_editor>
           <second_editor>

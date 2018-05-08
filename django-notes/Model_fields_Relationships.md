@@ -147,7 +147,7 @@ The model _meta API is at the core of the Django ORM. It enables other parts of 
      <django.db.models.fields.CharField: username>,
      ...
 
-**Misc**
+**Misc Model notes**
 
 Model methods
 
@@ -158,5 +158,4 @@ Proxy Models
 
 A proxy model is just another class that provides a different interface for the same underlying database model.
 It allows you to change the Python behavior of a model – perhaps to change the default manager, add or override a method, or create a different admin interface for certain objects within a table.
-
 A proxy model is a subclass of a database-table defining model.  
