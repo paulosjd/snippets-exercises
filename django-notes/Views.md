@@ -230,3 +230,38 @@ Pagination
 ----------
 Django provides a few classes that help you manage paginated data – that is, data that’s split across several pages, with “Previous/Next” links.
 
+The Paginator class has this constructor:
+
+`class Paginator(object_list, per_page, orphans=0, allow_empty_first_page=True)`
+
+object_list: A list, tuple, QuerySet, or other sliceable object with a `count()` or `__len__()` method. For consistent pagination, QuerySets should be ordered, e.g. with an `order_by()` clause or with a default ordering on the model.
+
+    from django.core.paginator import Paginator
+    paginator = Paginator(queryset, 20)
+
+Here we are telling Django to paginate our QuerySet in pages of 20 each.
+
+    # count the number of elements in the paginator
+    >>> paginator.count
+    104
+    >>> paginator.num_pages
+    6
+    >>> paginator.page_range
+    range(1, 7)
+    # returns a Page instance
+    >>> paginator.page(2)
+    <Page 2 of 6>
+    >>> page.has_other_pages()
+    True
+
+    class TopicListView(ListView):
+        model = Topic
+        paginate_by = 20
+
+        def get_queryset(self):
+            self.board = get_object_or_404(Board, pk=self.kwargs.get('pk'))
+            queryset = self.board.topics.order_by('-last_updated').annotate(replies=Count('posts') - 1)
+            return queryset
+
+HTML templates need editing accordingly.
+
