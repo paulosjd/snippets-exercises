@@ -2,11 +2,33 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4d364c83-bf30-4cab-a5b5-73eb0835c5f7" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/git-notes/remote_branches.md" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/.idea/exercises.iml" afterPath="$PROJECT_DIR$/python-exercises/.idea/exercises.iml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/.idea/misc.xml" afterPath="$PROJECT_DIR$/python-exercises/.idea/misc.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/.idea/modules.xml" afterPath="$PROJECT_DIR$/python-exercises/.idea/modules.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/.idea/workspace.xml" afterPath="$PROJECT_DIR$/python-exercises/.idea/workspace.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/blackjack.py" afterPath="$PROJECT_DIR$/python-exercises/blackjack.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/bulls_cows.py" afterPath="$PROJECT_DIR$/python-exercises/bulls_cows.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/monthly_subtotals/assignment.pdf" afterPath="$PROJECT_DIR$/python-exercises/monthly_subtotals/assignment.pdf" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/monthly_subtotals/monthly_subtotals.py" afterPath="$PROJECT_DIR$/python-exercises/monthly_subtotals/monthly_subtotals.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/monthly_subtotals/sum_subtotals.py" afterPath="$PROJECT_DIR$/python-exercises/monthly_subtotals/sum_subtotals.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/monthly_subtotals/test.py" afterPath="$PROJECT_DIR$/python-exercises/monthly_subtotals/test.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/pokemon.py" afterPath="$PROJECT_DIR$/python-exercises/pokemon.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/short-exercises.ipynb" afterPath="$PROJECT_DIR$/python-exercises/short-exercises.ipynb" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/.idea/misc.xml" afterPath="$PROJECT_DIR$/python-exercises/text_stats/.idea/misc.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/.idea/modules.xml" afterPath="$PROJECT_DIR$/python-exercises/text_stats/.idea/modules.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/.idea/text_stats.iml" afterPath="$PROJECT_DIR$/python-exercises/text_stats/.idea/text_stats.iml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/.idea/workspace.xml" afterPath="$PROJECT_DIR$/python-exercises/text_stats/.idea/workspace.xml" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/app.py" afterPath="$PROJECT_DIR$/python-exercises/text_stats/app.py" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/notes.txt" afterPath="$PROJECT_DIR$/python-exercises/text_stats/notes.txt" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/random_text.txt" afterPath="$PROJECT_DIR$/python-exercises/text_stats/random_text.txt" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/readme.txt" afterPath="$PROJECT_DIR$/python-exercises/text_stats/readme.txt" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/requirements.txt" afterPath="$PROJECT_DIR$/python-exercises/text_stats/requirements.txt" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/static/letters.png" afterPath="$PROJECT_DIR$/python-exercises/text_stats/static/letters.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/static/words.png" afterPath="$PROJECT_DIR$/python-exercises/text_stats/static/words.png" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/templates/analysis.html" afterPath="$PROJECT_DIR$/python-exercises/text_stats/templates/analysis.html" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/templates/upload.html" afterPath="$PROJECT_DIR$/python-exercises/text_stats/templates/upload.html" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/tests-exercises/text_stats/uploads/random_text.txt" afterPath="$PROJECT_DIR$/python-exercises/text_stats/uploads/random_text.txt" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/scrap-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/scrap-checkpoint.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/django-notes/Views.md" afterPath="$PROJECT_DIR$/django-notes/Views.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/scrap.ipynb" afterPath="$PROJECT_DIR$/scrap.ipynb" />
     </list>
     <ignored path="snippets-exercises.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -25,53 +47,7 @@
     <favorites_list name="snippets-exercises" />
   </component>
   <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="transactions_atomicity.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/databases-notes/transactions_atomicity.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="1089">
-                <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor>
-                <js_state />
-              </second_editor>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Views.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/django-notes/Views.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="688">
-                <caret line="229" column="10" selection-start-line="229" selection-start-column="10" selection-end-line="229" selection-end-column="10" />
-                <folding />
-              </first_editor>
-              <second_editor>
-                <js_state />
-              </second_editor>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="remote_branches.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/git-notes/remote_branches.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="490">
-                <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor>
-                <js_state />
-              </second_editor>
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="600" />
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -163,6 +139,20 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
+              <option name="myItemId" value="python-exercises" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="snippets-exercises" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="snippets-exercises" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
               <option name="myItemId" value="git-notes" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
@@ -188,7 +178,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../frags" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -392,9 +382,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-16" y="-16" width="3232" height="1732" extended-state="6" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2231746" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2231746" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -568,19 +558,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/django-notes/Model_fields and Relationships.md" />
-    <entry file="file://$PROJECT_DIR$/databases-notes/transactions_atomicity.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="1089">
-            <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
-            <folding />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/concepts_M-Z.ipynb">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="264">
@@ -743,19 +720,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/git-notes/internals.md" />
-    <entry file="file://$PROJECT_DIR$/django-notes/Views.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="688">
-            <caret line="229" column="10" selection-start-line="229" selection-start-column="10" selection-end-line="229" selection-end-column="10" />
-            <folding />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/git-notes/plumbing_porcelain.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
@@ -772,13 +736,55 @@
     <entry file="file://$PROJECT_DIR$/git-notes/remote_branches.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="490">
-            <caret line="47" column="0" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+          <first_editor relative-caret-position="985">
+            <caret line="62" column="34" selection-start-line="62" selection-start-column="34" selection-end-line="62" selection-end-column="34" />
             <folding />
           </first_editor>
           <second_editor>
             <js_state />
           </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/django-notes/Views.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="688">
+            <caret line="229" column="10" selection-start-line="229" selection-start-column="10" selection-end-line="229" selection-end-column="10" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/databases-notes/transactions_atomicity.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="1089">
+            <caret line="33" column="0" selection-start-line="33" selection-start-column="0" selection-end-line="33" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/concepts_A-L.ipynb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/python-exercises/short-exercises.ipynb">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
