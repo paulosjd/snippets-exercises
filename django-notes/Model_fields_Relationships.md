@@ -24,6 +24,25 @@ Blank: validation-related. It will be used during form validation, when calling 
 
 The first element in each tuple is the value that will be stored in the database. The second element is displayed by the field’s form widget.
 
+For every field that has choices set, the object will have a `get_FOO_display()` method, where `FOO` is the name of the field. This method returns the “human-readable” value of the field.
+
+    class Person(models.Model):
+        SHIRT_SIZES = (
+            ('M', 'Medium'),
+            ('L', 'Large'),)
+        ...
+        shirt_size = models.CharField(max_length=2, choices=SHIRT_SIZES)
+
+    >>> p = Person(name="Fred Flintstone", shirt_size="L")
+    >>> p.save()
+    >>> p.shirt_size
+    'L'
+    >>> p.get_shirt_size_display()
+    'Large'
+
+    # templages/person_detail.html
+    {{ person.get_shirt_size_display }}
+
 `help_text` is for extra “help” text to be displayed with the form widget. It’s useful for documentation even if your field isn’t used on a form.
 
 `verbose name` each field type, except for `ForeignKey`, `ManyToManyField` and `OneToOneField`, takes an optional first positional argument – a `verbose name`. If the verbose name isn’t given, Django will automatically create it
