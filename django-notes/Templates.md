@@ -132,6 +132,14 @@ Once you have a compiled `Template` object, you can render a context with it. Yo
     >>> template.render(context)
     "My name is Dolores."
 
+**Playing with Context objects**
+
+Most of the time, you’ll instantiate Context objects by passing in a fully-populated dictionary to `Context()`. But you can add and delete items from a Context object once it’s been instantiated, too, using standard dictionary syntax.
+
+A Context object is a stack. That is, you can `push()` and `pop()` it.
+Using a Context as a stack comes in handy in some custom template tags.
+
+`Context.flatten()` Using flatten() method you can get whole Context stack as one dictionary including builtin variables.
 
 
 
