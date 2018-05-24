@@ -2,6 +2,17 @@ CBV's have several advantages when compared to FBV’s:
 Organization of code related to specific HTTP methods (GET, POST, etc.) can be addressed by separate methods instead of conditional branching. 
 Object oriented techniques such as mixins (multiple inheritance) can be used to factor code into reusable components. 
 
+The first step to replace view functions with the new view classes:
+
+    class MyClassBasedView(View):
+        def get(self, request):
+            # behave exactly like old style views
+            # except this is called only on get request
+            return http.HttpResponse("Get")
+
+        def post(self, request):
+            return http.HttpResponse("Post")
+
 **Base views**
 
 Many of Django’s built-in class-based views inherit from other class-based views or various mixins. Because this inheritance chain is very important 
@@ -107,6 +118,22 @@ However, by using queryset to define a filtered list of objects you can be more 
         queryset = Book.objects.order_by('-publication_date')
         context_object_name = 'book_list'
 
+CRUD Views
+----------
+The most basic CreateView: At the most basic level, provide CreateView's ModelFormMixin with the model or custom ModelForm class as documented here.
+Your CreateView class would look something like the following
+
+    class AuthorCreateView(CreateView):
+        form_class = AuthorForm
+        template_name = 'author_new.html'
+        success_url = 'success'
+
+With those 3 core attributes set, call it in your URLs.
+
+    ('^authors/create/$', Author.AuthorCreateView.as_view()),
+
+Render the page and you'll see your ModelForm passed to the template as form, handling the form validation step (passing in request.POST / re-render if invalid), as well as calling form.save() and redirecting to the success_url.
+
 **Generic editing views**
 
 `class` django.views.generic.FormView
@@ -150,7 +177,8 @@ https://ccbv.co.uk/projects/Django/1.4/django.views.generic.edit/FormView/
             return self.form_valid(form)
         else:
             return self.form_invalid(form)
-Example:
+
+**Start overriding the class methods**
 
     class ContactView(FormView):
     
@@ -163,9 +191,33 @@ Example:
             form.send_email()
             return super(ContactView, self).form_valid(form)
 
-**CreateView, UpdateView, DeleteView**
+To customize behavior, start overriding the methods documented for the mixins.
+Remember that you simply need to return an HttpResponse from one of these methods just like any regular view function.
+Example overriding form_invalid documented in ModelFormMixin:
 
-Used to display forms (such as a ModelForm) for CRUD operations.
+    class AuthorCreateView(CreateView):
+        form_class = AuthorForm
+        template_name = 'author_new.html'
+        success_url = 'success'
+
+    def form_invalid(self, form):
+        return http.HttpResponse("form is invalid.. this is just an HttpResponse object")
+
+This per-method overriding starts becoming extremely useful as your forms grow more advanced and ultimately lets you build huge forms with a handful of lines of code, overriding only what is necessary.
+
+Say you want to pass your form custom parameters such as the request object (very common if you need access to the user in the form): you merely need to override get_form_kwargs.
+
+    class MyFormView(FormView):
+        def get_form_kwargs(self):
+            # pass "user" keyword argument with the current user to your form
+            kwargs = super(MyFormView, self).get_form_kwargs()
+            kwargs['user'] = self.request.user
+
+
+
+
+Misc
+-----
 
 **method_decorator**
 
@@ -226,8 +278,8 @@ Or, you can decorate the class instead and pass the name of the method to be dec
 
 Admin actions - Bulk editing
 
-Pagination
-----------
+**Pagination**
+
 Django provides a few classes that help you manage paginated data – that is, data that’s split across several pages, with “Previous/Next” links.
 
 The Paginator class has this constructor:

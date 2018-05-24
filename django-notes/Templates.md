@@ -141,6 +141,7 @@ Using a Context as a stack comes in handy in some custom template tags.
 
 `Context.flatten()` Using flatten() method you can get whole Context stack as one dictionary including builtin variables.
 
+**Using RequestContext**
 
 
 Unlike {{ MEDIA_URL }} ? Variables from settings.py aren't added automaticly to templates context.
