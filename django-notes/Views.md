@@ -213,8 +213,63 @@ Say you want to pass your form custom parameters such as the request object (ver
             kwargs = super(MyFormView, self).get_form_kwargs()
             kwargs['user'] = self.request.user
 
+**Models and request.user**
 
+To track the user that created an object using a `CreateView`, you can use a custom `ModelForm` to do this. First, add the foreign key relation to the model:
 
+    class Author(models.Model):
+        name = models.CharField(max_length=200)
+        created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+        # ...
+
+In the view, ensure that you don’t include created_by in the list of fields to edit, and override form_valid() to add the user:
+
+    class AuthorCreate(CreateView):
+        model = Author
+        fields = ['name']
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        return super().form_valid(form)
+
+Note that you’ll need to decorate this view using `login_required()`, or alternatively handle unauthorized users in the `form_valid()`.
+
+**AJAX example**
+
+A simple example showing how you might go about implementing a form that works for AJAX requests as well as ‘normal’ form POSTs:
+
+    from django.http import JsonResponse
+    from django.views.generic.edit import CreateView
+    from myapp.models import Author
+
+    class AjaxableResponseMixin:
+        """
+        Mixin to add AJAX support to a form.
+        Must be used with an object-based FormView (e.g. CreateView)
+        """
+        def form_invalid(self, form):
+            response = super().form_invalid(form)
+            if self.request.is_ajax():
+                return JsonResponse(form.errors, status=400)
+            else:
+                return response
+
+        def form_valid(self, form):
+            # We make sure to call the parent's form_valid() method because
+            # it might do some processing (in the case of CreateView, it will
+            # call form.save() for example).
+            response = super().form_valid(form)
+            if self.request.is_ajax():
+                data = {
+                    'pk': self.object.pk,
+                }
+                return JsonResponse(data)
+            else:
+                return response
+
+    class AuthorCreate(AjaxableResponseMixin, CreateView):
+        model = Author
+        fields = ['name']
 
 Misc
 -----

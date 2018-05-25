@@ -108,17 +108,40 @@ If you have multiple Form classes that share fields, you can use subclassing to 
     class PersonForm(forms.Form):
         first_name = forms.CharField()
         last_name = forms.CharField()
+
     class InstrumentForm(forms.Form):
         instrument = forms.CharField()
+
     class BeatleForm(InstrumentForm, PersonForm):
         haircut_type = forms.CharField()
 
+Another example:
+
+    class BaseEmailForm(forms.Form):
+        email = forms.EmailField("Email")
+        email2 = forms.EmailField("Email 2")
+
+        def clean(self, *args, **kwargs):
+            email = self.cleaned_data['email']
+            email2 = self.cleaned_data['email2']
+            if email != email2:
+                raise forms.ValidationError("Emails don't match")
+            return self.cleaned_data
+
+    class ContactForm(BaseEmailForm):
+        message = forms.CharField()
+
+        def __init__(self, *args, **kwargs):
+            super(ContactForm, self).__init__(*args, **kwargs):
+            self.fields['email2'].label = "Confirm your email"
+            self.fields['email2'].help_text = "We want to be sure!"
+
+
 **Inheritance**
 
-It is possible to inherit from both Form and ModelForm, but you must ensure ModeflFOrm
+It is possible to inherit from both Form and ModelForm, but you must ensure ModelForm
 appears first in the MRO. This is because the classes rely on different metaclasses and a
 class can only have one metaclass.
-
 
 
 
