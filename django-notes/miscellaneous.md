@@ -56,7 +56,10 @@ If you’re registering model signals, you can refer to the sender by its string
 
 The application registry provides a public API. e.g. `apps.is_installed(model_name`, `apps.get_model(app_label, model_name, require_ready=True)`
 
+**Middleware**
 
+Lightweight “plug-ins” for Django that alter the input and output. Django comes with built-in middleware components, classes defined in settings, and are called during both request and response cycle. During the request cycle, the Middleware classes are executed top-down, meaning it will first execute SecurityMiddleware, then SessionMiddleware . For each of the Middlewares it will execute the `process_request()` and `process_view()` methods.
+After Django has process the views the response cycle begins and the middleware is executed in reverse order which is when methods such as `process_exception()`, and `process_response()` methods are executed.
 
 
 

@@ -154,3 +154,29 @@ def cardspring(request):
     return { 'CARDSPRING_APP_ID': settings.CARDSPRING_APP_ID }
 
 Then add your.location.context_processors.cardspring to TEMPLATE_CONTEXT_PROCESSORS in your Django settings file, where your.location is the location of your context_processors.py file.
+
+Front-end Shizzle
+-----------------
+![](../images/dom.png)
+
+The HTML DOM is a standard object model and programming interface for HTML. It defines:
+
+The HTML elements as objects
+
+The properties of all HTML elements
+
+The methods to access all HTML elements
+
+The events for all HTML elements
+
+In other words: The HTML DOM is a standard for how to get, change, add, or delete HTML elements.
+With the object model, JavaScript gets all the power it needs to create dynamic HTML:
+JavaScript can change all the HTML elements in the page
+JavaScript can change all the HTML attributes in the page
+JavaScript can change all the CSS styles in the page
+JavaScript can remove existing HTML elements and attributes
+JavaScript can add new HTML elements and attributes
+JavaScript can react to all existing HTML events in the page
+JavaScript can create new HTML events in the page
+
+![](../images/js-onclick.png)
