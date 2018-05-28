@@ -144,4 +144,15 @@ appears first in the MRO. This is because the classes rely on different metaclas
 class can only have one metaclass.
 
 
+**Hidden Fields**
+
+    # forms.py
+    class SomeForm(forms.Form):
+        hidden = forms.CharField(required=False, max_length=50, widget=forms.HiddenInput())
+
+    template.html
+    {% for hidden in form.hidden_fields %}
+        {{ hidden }}
+    {% endfor %}
+
 
