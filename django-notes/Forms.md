@@ -115,6 +115,17 @@ If you have multiple Form classes that share fields, you can use subclassing to 
     class BeatleForm(InstrumentForm, PersonForm):
         haircut_type = forms.CharField()
 
+**Overriding `__init__` in ModelForms**
+
+In instantiated Django forms, fields are kept in a dict-like object. Which means, instead of writing forms in a
+way that duplicates the model, a better way is to explicitly modify only what we want to modify:
+
+    def __init__(self, *args, **kwargs):
+        super(MyModelForm, self).__init__(*args, **kwargs)
+        self.fields['some_field'].required = True
+        self.fields['some_other_field'].required = True
+        self.fields['some_other_field'].widget.attrs['size'] = 40
+
 Another example:
 
     class BaseEmailForm(forms.Form):
@@ -155,4 +166,129 @@ class can only have one metaclass.
         {{ hidden }}
     {% endfor %}
 
+
+Stackoverflow  Q's on `form.save()`
+-----------------------------------
+
+**Q: How to override `form.save()`?**
+
+My model has quite a few boolean fields. I've broken these up into 3 sets which I'm rendering as a `MultipleChoiceField` w/ a modified `CheckboxSelectMultiple`.
+
+Now I need to save this data back to the DB. i.e., I need to split the data returned by a single widget into multiple boolean columns. I think this is appropriate for the `save()` method, no?
+
+Question is, how do I do I do it? Something like this?
+
+    def save(self, commit=True):
+        # code here
+        return super(MyForm, self).save(commit)
+
+If so... how do I set the values? `self.fields['my_field'].value = 'my_flag' in self.cleaned_data['multi_choice']` Or something? Where's all the data stored?
+
+**Answer**
+
+The place you want your data to be stored is your new model instance:
+
+    def save(self, commit=True):
+        instance = super(MyForm, self).save(commit=False)
+        instance.flag1 = 'flag1' in self.cleaned_data['multi_choice'] # etc
+        if commit:
+            instance.save()
+        return instance
+
+
+**Q: Overriding the save method in Django ModelForm**
+
+I'm having trouble overriding a ModelForm save method. This is the error I'm receiving:
+
+    Exception Type:     TypeError
+    Exception Value:    save() got an unexpected keyword argument 'commit'
+
+My intentions are to have a form submit many values for 3 fields, to then create an object for each combination of those fields, and to save each of those objects. Helpful nudge in the right direction would be ace.
+
+    #File models.py
+
+    class CallResultType(models.Model):
+        id = models.AutoField(db_column='icontact_result_code_type_id', primary_key=True)
+        callResult = models.ForeignKey('CallResult', db_column='icontact_result_code_id')
+        campaign = models.ForeignKey('Campaign', db_column='icampaign_id')
+        callType = models.ForeignKey('CallType', db_column='icall_type_id')
+        agent = models.BooleanField(db_column='bagent', default=True)
+        teamLeader = models.BooleanField(db_column='bTeamLeader', default=True)
+        active = models.BooleanField(db_column='bactive', default=True)
+
+    #File forms.py
+
+    from django.forms import ModelForm, ModelMultipleChoiceField
+    from callresults.models import *
+
+    class CallResultTypeForm(ModelForm):
+        callResult = ModelMultipleChoiceField(queryset=CallResult.objects.all())
+        campaign = ModelMultipleChoiceField(queryset=Campaign.objects.all())
+        callType = ModelMultipleChoiceField(queryset=CallType.objects.all())
+
+        def save(self, force_insert=False, force_update=False):
+            for cr in self.callResult:
+                for c in self.campain:
+                    for ct in self.callType:
+                        m = CallResultType(self) # this line is probably wrong
+                        m.callResult = cr
+                        m.campaign = c
+                        m.calltype = ct
+                        m.save()
+
+        class Meta:
+            model = CallResultType
+
+    #File admin.py
+
+    class CallResultTypeAdmin(admin.ModelAdmin):
+        form = CallResultTypeForm
+
+**Answer**
+
+In your save you have to have the argument commit. If anything overrides your form, or wants to modify what it's saving, it will do `save(commit=False)`, modify the output, and then save it itself.
+
+Also, your ModelForm should return the model it's saving. Usually a ModelForm's save will look something like:
+
+    def save(self, commit=True):
+        m = super(CallResultTypeForm, self).save(commit=False)
+        # do custom stuff
+        if commit:
+            m.save()
+        return m
+
+Finally, a lot of this ModelForm won't work just because of the way you are accessing things. Instead of `self.callResult`, you need to use self.fields['callResult'].
+Aside: Why not just use ManyToManyFields in the Model so you don't have to do this? Seems like you're storing redundant data and making more work for yourself (and me :P).
+
+    from django.db.models import AutoField
+    def copy_model_instance(obj):
+        """
+        Create a copy of a model instance.
+        M2M relationships are currently not handled, i.e. they are not copied. (Fortunately, you don't have any in this case)
+        See also Django #4027. From http://blog.elsdoerfer.name/2008/09/09/making-a-copy-of-a-model-instance/
+        """
+        initial = dict([(f.name, getattr(obj, f.name)) for f in obj._meta.fields if not isinstance(f, AutoField) and not f in obj._meta.parents.values()])
+        return obj.__class__(**initial)
+
+    class CallResultTypeForm(ModelForm):
+        callResult = ModelMultipleChoiceField(queryset=CallResult.objects.all())
+        campaign = ModelMultipleChoiceField(queryset=Campaign.objects.all())
+        callType = ModelMultipleChoiceField(queryset=CallType.objects.all())
+
+        def save(self, commit=True, *args, **kwargs):
+            m = super(CallResultTypeForm, self).save(commit=False, *args, **kwargs)
+            results = []
+            for cr in self.callResult:
+                for c in self.campain:
+                    for ct in self.callType:
+                        m_new = copy_model_instance(m)
+                        m_new.callResult = cr
+                        m_new.campaign = c
+                        m_new.calltype = ct
+                        if commit:
+                            m_new.save()
+                        results.append(m_new)
+             return results
+
+This allows for inheritance of CallResultTypeForm, just in case that's ever necessary.
 

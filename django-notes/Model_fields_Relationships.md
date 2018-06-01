@@ -1,4 +1,4 @@
-A model is the single, definitive source of information about your data. It contains the essential fields and behaviors of the data you’re storing. By subclassing models.Model, you get an automatically-generated database-access API.
+﻿A model is the single, definitive source of information about your data. It contains the essential fields and behaviors of the data you’re storing. By subclassing models.Model, you get an automatically-generated database-access API.
 
 **Field options**
 
@@ -165,16 +165,3 @@ The model _meta API is at the core of the Django ORM. It enables other parts of 
      <django.db.models.fields.BooleanField: is_superuser>,
      <django.db.models.fields.CharField: username>,
      ...
-
-**Misc Model notes**
-
-Model methods
-
-Define custom methods on a model to add custom “row-level” functionality to your objects. Whereas Manager methods are intended to do “table-wide” things, model methods should act on a particular model instance.
-This is a valuable technique for keeping business logic in one place – the model.
-
-Proxy Models
-
-A proxy model is just another class that provides a different interface for the same underlying database model.
-It allows you to change the Python behavior of a model – perhaps to change the default manager, add or override a method, or create a different admin interface for certain objects within a table.
-A proxy model is a subclass of a database-table defining model.  

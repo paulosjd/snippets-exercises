@@ -1,0 +1,5 @@
+#!/bin/bash
+# A simple demonstration of using backticks
+
+lines=$(cat $1 | wc -l)
+echo The number of lines in the file $1 is $lines

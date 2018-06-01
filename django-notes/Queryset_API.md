@@ -313,8 +313,4 @@ Field lookups are how you specify the meat of an SQL `WHERE` clause. They’re s
     
 gte, lt, lte, startswith, regex, date, month, day etc.
 
-
-
-
-    
-    
+For complex lookups, see `Q objects` (notes in db_transactions.md)
