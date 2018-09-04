@@ -9,6 +9,20 @@ E.g., the INTEGER data type only stores whole numbers—no decimals.
 Other data types include string, number, booleans. In your SQL queries you can use e.g. if numeric data is stored as string you could use CAST or CONVERT to change the data type to a numeric one that will allow you to perform the sum.
 CAST(column_name AS integer), column_name::integer
 
+**Joins**
+
+![](../images/sql-joins.png)
+
+Inner join:
+
+![](../images/inner-join.png)
+
+
+Left join:
+
+![](../images/left-join.png)
+
+
 **General query optimization**
 
 SQL code, and its potential to execute with acceptable speed, is completely dependant on the underlying structure of a database model.
