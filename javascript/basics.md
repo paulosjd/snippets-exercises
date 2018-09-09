@@ -245,5 +245,21 @@ to convert them back to a JSON object on the client and/or the server side use `
     </body>
     </html>
 
+Arrow Functions
+---------------
+An arrow function expression has a shorter syntax than a function expression and does not have its own this, arguments, super, or new.target.
+Arrow functions do not have their own arguments object. Thus, in this example, arguments is simply a reference to the arguments of the enclosing scope:
+
+    var arguments = [1, 2, 3];
+    var arr = () => arguments[0];
+
+    arr(); // 1
+
+    function foo(n) {
+      var f = () => arguments[0] + n; // foo's implicit arguments binding. arguments[0] is n
+      return f();
+    }
+
+    foo(3); // 6
 
 
