@@ -1,6 +1,6 @@
 An extension module for Python, mostly written in C. This makes sure that the precompiled mathematical and numerical functions and functionalities of Numpy guarantee great execution speed.
 
-Furthermore, NumPy enriches the programming language Python with powerful data structures, implementing multi-dimensional arrays and matrices. These data structures guarantee efficient calculations with matrices and arrays. The implementation is even aiming at huge matrices and arrays, better know under the heading of "big data". Besides that the module supplies a large library of high-level mathematical functions to operate on these matrices and arrays.
+NumPy enriches Python with powerful data structures, implementing multi-dimensional arrays and matrices. These data structures guarantee efficient calculations with matrices and arrays. The implementation is even aiming at huge matrices and arrays, better know under the heading of "big data". Besides that the module supplies a large library of high-level mathematical functions to operate on these matrices and arrays.
 
 The main benefits of using numpy arrays should be smaller memory consumption and better runtime behaviour.
 
@@ -8,10 +8,11 @@ The main benefits of using numpy arrays should be smaller memory consumption and
     >>> my_array * 5  #scalar multiplication
     array([ 5, 10, 15, 20, 25])
 
-
 **The N-dimensional array (ndarray)**
 
-multidimensional container of items of the same type and size. number of dimensions and items in an array is defined by its shape. The type of items in the array is specified by a separate data-type object (dtype)
+Multidimensional container of items of the same type and size. number of dimensions and items in an array is defined by its shape. The type of items in the array is specified by a separate data-type object (dtype)
+
+![](../images/multi-dim-arrays.png)
 
 `np.arange()` and `np.linspace()` create a NumPy array of evenly-spaced values. The third value that you pass to this function is the step value.
 
@@ -49,13 +50,16 @@ You’ll have to fix this by manipulating your array (see below)
 
 **Slicing arrays**
 
+![](../images/nparray-slicing2.png)
+
     >>> Z = np.array([[0,0,0,0,0,0],
                       [0,0,0,1,0,0],
                       [0,1,0,1,0,0],
                       [0,0,1,1,0,0],
                       [0,0,0,0,0,0],
                       [0,0,0,0,0,0]])
-
+    >>> Z[:,3]
+    array([0, 1, 1, 1, 0, 0])
     >>> A = Z[1:5,1:5]
     >>> A[0,0] = 9
     >>> print(A)
@@ -68,6 +72,8 @@ You’ll have to fix this by manipulating your array (see below)
     A[2,3] = 5
     # Overwrite a column:
     A[:,2] = 5
+
+![](../images/nparray-slicing.png)
 
 **Manipulating arrays**
 
@@ -122,9 +128,71 @@ In order to be good candidates for arithmetic operations, the dimensions of your
     >>> np.concatenate((a, b), axis=None)
     array([1, 2, 3, 4, 5, 6])
 
+**Array Operations**
+
+    >>> a = np.array([1, 2, 3, 4])
+    >>> a + np.array([2, 3, 4, 5])
+    array([3, 5, 7, 9])
+    >>> y = np.sin(a)
+
+**Inplace Array Operations**
+
+    >>> ary = np.arange(10, 22).reshape((3,4))
+    >>> ary[:, 2] += 5
+    >>> ary
+    array([[10, 11, 17, 13],
+           [14, 15, 21, 17],
+           [18, 19, 25, 21]])
+    >>> ary[:, 2] *= 5
+
+**Broadcasting**
+
+    >>>  np.arange(10, 22).reshape((3,4)) + np.arange(10, 22).reshape((3,4))
+    array([[20, 22, 24, 26],
+           [28, 30, 32, 34],
+           [36, 38, 40, 42]])
+
+Unless arrays that you're operating on are the exact same shape (as they are above), it's not possible to do elementwise operations. In cases like this, NumPy performs broadcasting to try to match up elements.
+
+    >>> a = np.arange(0, 9).reshape(3, 3)
+    >>> b = np.array([1, 2, 3]).reshape(3, 1)
+    >>> a * b
+    array([[ 0,  1,  2],
+           [ 6,  8, 10],
+           [18, 21, 24]])
+    >>> a * np.array([1, 2, 3])
+    array([[ 0,  2,  6],
+           [ 3,  8, 15],
+           [ 6, 14, 24]])
+
+If the two arrays don't have a matching trailing dimension, a `ValueError` will be raised
+
+**Array Comparisons and Subsetting**
+
+    >>> a = np.arange(0,10)
+    >>> a > 5
+    array([False, False, False, False, False, False,  True,  True,  True,  True], dtype=bool)
+
+    >>> a = np.zeros((6,6))
+    >>> a[1::3,:] = 4
+    >>> a[::3,:] = 6
+    >>> a
+    array([[ 6.,  6.,  6.,  6.,  6.,  6.],
+           [ 4.,  4.,  4.,  4.,  4.,  4.],
+           [ 0.,  0.,  0.,  0.,  0.,  0.],
+           [ 6.,  6.,  6.,  6.,  6.,  6.],
+           [ 4.,  4.,  4.,  4.,  4.,  4.],
+           [ 0.,  0.,  0.,  0.,  0.,  0.]])
+    >>> bool_ary = (a[:,4] >= 4) & (a[:,5] < 6)
+    >>> bool_ary
+    array([ True, False, False,  True, False, False], dtype=bool)
+    a[bool_ary, 2:]
+    array([[ 6.,  6.,  6.,  6.],
+           [ 6.,  6.,  6.,  6.]])
+
 **Matrices**
 
-Numpy matrices are strictly 2-dimensional, while arrays (ndarrays) are N-dimensional. Matrix objects are a subclass of ndarray, so they inherit all the attributes and methods of ndarrays.
+n.b. This class may be removed in future versions; just use normal ndarrays. Numpy matrices are strictly 2-dimensional, while arrays (ndarrays) are N-dimensional. Matrix objects are a subclass of ndarray, so they inherit all the attributes and methods of ndarrays.
 The main advantage of numpy matrices is that they provide a convenient notation for matrix multiplication: if a and b are matrices, then a*b is their matrix product.
 
     >>> a=np.mat('4 3; 2 1')
@@ -132,65 +200,3 @@ The main advantage of numpy matrices is that they provide a convenient notation 
     >>> a * b
     matrix([[13, 20],
             [ 5,  8]])
-
-Exercises
----------
-
-Create a vector with values ranging from 10 to 99
-
-    >>> np.arange(10, 100)
-
-Create a 3x3 matrix with even values from 0 to 16
-
-    >>> a = np.arange(0, 17, 2)
-    >>> np.reshape(a, (3, 3))
-
-    >>> np.arange(0, 17, 2).reshape(3, 3)
-
-Create a 10x10 array with random values and find the minimum value
-
-    >>> np.random.random((10, 10)).min()
-
-Create a 2d array with 1 on the border and 0 inside
-
-    >>> ary = np.ones((10, 10))
-    >>> ary[1:-1, 1:-1] = 0
-
-Declare a 10x10x10 array with random values
-
-    >>> ary = np.random.random((10, 10, 10))
-
-Create a 3x3x3 array of random values and multiply with 3d array of same dimensions containing values incrementing by 1
-
-    >>> a = np.arange(0,27)
-    >>> b = np.reshape(a, (3,3,3))
-    >>> np.random.random((3,3,3)) * b
-
-**Script to calculate the nearest location to current geographical coordinates from csv file of locations, location code, latitudes, longitudes**
-
-    import csv
-    import sys
-
-    import numpy as np
-
-     def haversine_np(lon1, lat1, lon2=0.2716, lat2=50.8342):
-        lon1, lat1, lon2, lat2 = map(np.radians, [lon1, lat1, lon2, lat2])
-        dlon = lon2 - lon1
-        dlat = lat2 - lat1
-        a = np.sin(dlat/2.0)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlon/2.0)**2
-        c = 2 * np.arcsin(np.sqrt(a))
-        return 6367 * c
-
-    vfunc = np.vectorize(haversine_np)
-
-    with open('airports.csv') as csvfile:
-        csv_data = list(csv.reader(csvfile))
-
-    airports = [a[:2] for a in csv_data[1:]]
-    latitudes = np.array([a[2] for a in csv_data[1:]], dtype=np.float64)
-    longitudes = np.array([a[3] for a in csv_data[1:]], dtype=np.float64)
-
-    distances = vfunc(longitudes, latitudes)
-    min_index = distances.argmin()
-
-    print(airports[min_index])

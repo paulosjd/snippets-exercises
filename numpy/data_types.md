@@ -1,16 +1,14 @@
 NumPy stores values using its own data types, which are distinct from Python types like float and str. This is because the core of NumPy is written in a programming language called C, which stores data differently than the Python data types.
 These mostly map to Python data types, like float, and str. Data types additionally end with a suffix that indicates how many bits of memory they take up. So `int32` is a 32 bit integer data type, and `float64` is a 64 bit float data type.
 
-**np.generic**
+**`class numpy.generic`**
 
     In[234]: ', '.join([str(a) for a in np.ScalarType])
     Out[233]: "<class 'int'>, <class 'float'>, <class 'complex'>, <class 'int'>, <class 'bool'>, <class 'bytes'>, <class 'str'>, <class 'memoryview'>, <class 'numpy.complex128'>, <class 'numpy.timedelta64'>, <class 'numpy.int32'>, <class 'numpy.uint8'>, <class 'numpy.float64'>, <class 'numpy.void'>, <class 'numpy.int64'>, <class 'numpy.uint32'>, <class 'numpy.object_'>, <class 'numpy.int8'>, <class 'numpy.int32'>, <class 'numpy.uint64'>, <class 'numpy.int16'>, <class 'numpy.uint32'>, <class 'numpy.str_'>, <class 'numpy.datetime64'>, <class 'numpy.float32'>, <class 'numpy.bool_'>, <class 'numpy.float64'>, <class 'numpy.complex128'>, <class 'numpy.float16'>, <class 'numpy.bytes_'>, <class 'numpy.uint16'>, <class 'numpy.complex64'>"
 
-Python defines only one type of a particular data class (there is only one integer type, one floating-point type, etc.). For scientific computing, however, more control is often needed.
+Python defines only one type of a particular data class (there is only one integer type, one floating-point type, etc.). For scientific computing, conventional Python numbers like float and integer are too primitive therefore more complex data types are neccessary.
 
 In NumPy, there are 24 new fundamental Python types to describe different types of scalars. These type descriptors are mostly based on the types available in the C language that CPython is written in, with several additional types compatible with Python types.
-Array scalars have the same attributes and methods as ndarrays.
-
 Array scalars live in a hierarchy of data types. They can be detected using the hierarchy: For example, `isinstance(val, np.generic)` will return `True` if val is an array scalar object. Alternatively, what kind of array scalar is present can be determined using other members of the data type hierarchy. Thus, for example `isinstance(val, np.complexfloating)` will return `True` if val is a complex valued type
 
 **`class numpy.dtype`**
@@ -46,4 +44,21 @@ If the data type is a sub-array, what is its shape and data type.`
     >>> dt = np.dtype('c16')  # 128-bit complex floating-point number
     >>> dt = np.dtype('a25')  # 25-length zero-terminated bytes
     >>> dt = np.dtype('U25')  # 25-character string
+
+**Converting Data Types**
+
+    >>> ary = np.arange(10, 22).reshape((3,4))
+    >>> ary.dtype
+    dtype('int32')
+    >>> ary.astype('float64')
+    array([[ 10.,  11.,  12.,  13.],
+           [ 14.,  15.,  16.,  17.],
+           [ 18.,  19.,  20.,  21.]])
+
+**Type Coercion**
+
+Assigning a float into an int32 array truncates the decimal part:
+
+    >>> np.array([1.4, 2.4, 2.1, 4.5], dtype=np.int32)
+    array([1, 2, 2, 4])
 
