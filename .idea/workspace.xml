@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="4d364c83-bf30-4cab-a5b5-73eb0835c5f7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/numpy/array_operations.md" afterPath="$PROJECT_DIR$/numpy/array_operations.md" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/numpy/ndarrays.md" afterPath="$PROJECT_DIR$/numpy/ndarrays.md" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/images/array_operations.png" afterPath="" />
     </list>
     <ignored path="snippets-exercises.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -381,7 +379,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-16" y="-16" width="3232" height="1732" extended-state="7" />
+    <frame x="-16" y="-16" width="3232" height="1732" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16412698" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
