@@ -112,7 +112,20 @@ In order to be good candidates for arithmetic operations, the dimensions of your
     >>> np.ravel(y)
     array([ 1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12])
 
-`np.concatenate()` to join a sequence of arrays along an existing axis:
+`np.vstack((a,b))` and `np.hstack((a,b))` to concatenate:
+
+    >>> a = np.ones((2,2))
+    >>> b = np.zeros((2,2))
+    >>> np.vstack((a,b))
+    array([[ 1.,  1.],
+           [ 1.,  1.],
+           [ 0.,  0.],
+           [ 0.,  0.]])
+    >>> np.hstack((a,b))
+    array([[ 1.,  1.,  0.,  0.],
+           [ 1.,  1.,  0.,  0.]])
+
+`np.concatenate()` is a general purpose version of `hstack` and `vstack`. Specify the axis keyword argument, concatenating along the first axis is similar to `vstack`, second axis is similar to `hstack`:
 
     >>> a = np.array([[1, 2], [3, 4]])
     >>> b = np.array([[5, 6]])
@@ -127,23 +140,6 @@ In order to be good candidates for arithmetic operations, the dimensions of your
            [11, 12, 13, 14]])
     >>> np.concatenate((a, b), axis=None)
     array([1, 2, 3, 4, 5, 6])
-
-**Array Operations**
-
-    >>> a = np.array([1, 2, 3, 4])
-    >>> a + np.array([2, 3, 4, 5])
-    array([3, 5, 7, 9])
-    >>> y = np.sin(a)
-
-**Inplace Array Operations**
-
-    >>> ary = np.arange(10, 22).reshape((3,4))
-    >>> ary[:, 2] += 5
-    >>> ary
-    array([[10, 11, 17, 13],
-           [14, 15, 21, 17],
-           [18, 19, 25, 21]])
-    >>> ary[:, 2] *= 5
 
 **Broadcasting**
 

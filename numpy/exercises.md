@@ -32,6 +32,15 @@ Create a 3x3x3 array of random values and multiply with 3d array of same dimensi
     >>> b = np.reshape(a, (3,3,3))
     >>> np.random.random((3,3,3)) * b
 
+
+Create a 3 x 4 array filled with all zeros, and a 6 x 4 array filled with all 1s.
+Concatenate both arrays vertically into a 9 x 4 array, with the ones array on top and print out first_column.
+
+    >>> a = np.zeros((3,4))
+    >>> b = np.ones((6,4))
+    >>> np.vstack((b,a))[:,0]
+    array([ 1.,  1.,  1.,  1.,  1.,  1.,  0.,  0.,  0.])
+
 **Script to calculate the nearest location to current geographical coordinates from csv file of locations, location code, latitudes, longitudes**
 
     import csv
