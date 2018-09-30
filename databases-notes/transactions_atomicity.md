@@ -1,4 +1,4 @@
-Transactions are a fundamental concept of all database systems. The essential point of a transaction is that it bundles multiple steps into a single, all-or-nothing operation. The intermediate states between the steps are not visible to other concurrent transactions, and if some failure occurs that prevents the transaction from completing, then none of the steps affect the database at all.
+Transactions are a fundamental concept of all database systems. Atomicity is the defining property of database transactions. The essential point of a transaction is that it bundles multiple steps into a single, all-or-nothing operation. The intermediate states between the steps are not visible to other concurrent transactions, and if some failure occurs that prevents the transaction from completing, then none of the steps affect the database at all.
 
 Consider a simplified example of a bank database where we want to transfer money from one persons account to anothers, the SQL commands for this might look like:
 

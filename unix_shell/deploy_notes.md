@@ -17,12 +17,12 @@ Both Nginx and Gunicorn handle the request. Basically, Nginx will receive the re
 This results in two first tiers of the classic "three tier architecture". The webserver e.g. Nginx will handle many requests for images and static resources. Requests that need to be dynamically generated will then be passed on to the application server e.g Gunicorn. As an aside, the third of the three tiers is the database)
 
 
-
-
 Misc. Deployment Notes
 ======================
 
 To find all socket files on your system run:
 sudo find / -type s
 
+
+unrelated/general term - An idempotent task is a task that, if stopped midway, doesn't change the state of the system in any way. The task either makes full changes to the system or none at all.
 

@@ -66,10 +66,11 @@ Correlated Subquery is a sub-query that uses values from the outer query. In thi
 Simple subquery doesn't use values from the outer query and is being calculated only once:
 
     SELECT id, first_name
-    FROM student_details
-    WHERE id IN (SELECT student_id
-    FROM student_subjects
-    WHERE subject= 'Science');
+      FROM student_details
+      WHERE id IN (
+        SELECT student_id
+        FROM student_subjects
+        WHERE subject= 'Science');
 
 Correlated subquery:
 
