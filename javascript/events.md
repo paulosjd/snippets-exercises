@@ -47,3 +47,68 @@ Often, anonymous functions will be used instead of a function reference on an ev
     button.addEventListener('click', () => {
         p.textContent = "Will I change?";
     });
+
+AJAX
+----
+he jQuery `ajax()` method returns a Promise object. Using Promises with Ajax allows us to bind multiple callback functions to our request, write flexible code where our ajax handling logic is in a different place than our actual request, and wait for multiple requests to complete before starting an action.
+
+Here is an example of separating the handling logic from the actual request:
+
+    function getName(personid) {
+       var dynamicData = {};
+       dynamicData["id"] = personID;
+       // Returns the jQuery ajax method
+       return $.ajax({
+           url: "getName.php",
+           type: "get",
+           data: dynamicData
+       });
+    }
+
+    getName("2342342").done(function(data) {
+        // Updates the UI based the ajax result
+        $(".person-name").text(data.name);
+    });
+
+Since our function returns the jQuery `ajax()` method (which returns a Promise by default), we are able to call the `done()` method and pass a callback function (which will execute once the request has completed).
+
+If we had wanted to wait for two separate ajax requests to our endpoint, we could have done something like this:
+
+     function getName(personid) {
+        var dynamicData = {};
+        dynamicData["id"] = personID;
+        // Returns the jQuery ajax method
+        return $.ajax({
+            url: "getName.php",
+            type: "get",
+            data: dynamicData
+        });
+    }
+
+    var person1 = getName("2342342"),
+        person2 = getName("3712968"),
+        people = [person1, person2];
+
+    $.when.apply(this, people).then(function() {
+        // Both the ajax requests have completed
+    });
+
+We are using the JavaScript apply() method in the previous example to demonstrate how we can pass an array to the $.when method. If you do not want to use an array, then you can very easily pass each promise object (stored in a variable) as regular parameters.
+
+IIFEs
+-----
+
+IIFEs are an ideal solution for locally scoping global variables/properties and protecting your JavaScript codebase from outside interference (e.g. third-party libraries). If you are writing jQuery code that will be run in many different environments (e.g. jQuery plugins), then it is important to use an IIFE to locally scope jQuery.
+Here is how you would do it:
+
+     // IIFE - Immediately Invoked Function Expression
+    (function($, window, document) {
+        // The $ is now locally scoped
+
+      // The rest of your code goes here!
+
+    }(window.jQuery, window, document));
+    // The global jQuery object is passed as a parameter
+
+
+
