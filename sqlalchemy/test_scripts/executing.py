@@ -44,4 +44,5 @@ conn.execute(addresses.insert(), [
    {'user_id': 2, 'email_address': 'wendy@aol.com'},
 ])
 
-stmt = stmt.columns(users.c.id, users.c.name)
+
+

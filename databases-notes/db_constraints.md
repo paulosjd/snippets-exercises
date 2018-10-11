@@ -61,3 +61,18 @@ Defines how referential integrity is enforced between two tables. It relates two
 ![](../images/fk_constraints.png)
 
 ![](../images/fk_constraints2.png)
+
+**ENUM in MySQL**
+
+A data type in MySQL, but not in any other major brand of SQL database.
+
+For example:
+
+    CREATE TABLE Foo ( color ENUM('red', 'green', 'blue', 'yellow') );
+
+This column allows you to store one of the values in the enum list, but no other value.
+
+In other databases besides MySQL, it's more typical to use a CHECK constraint to accomplish the same thing. A CHECK constraint is standard SQL.
+
+    CREATE TABLE Foo ( color VARCHAR(6) CHECK (color IN ('red', 'green', 'blue', 'yellow')) );
+

@@ -77,6 +77,37 @@ we need to export the variable.
     
 In this example, ``export var1`` makes var1 available to the child process. Note that exporting variables is a one-way process.
 
+Stackoverflow question
+
+    echo $HADOOP_HOME
+    /home/me/dist/hadoop
+
+But the env variable is not accessible when executing bash scripts. Suppose I create /tmp/sample.sh with below content:
+    #! /bin/bash
+    echo $HADOOP_HOME
+When I run above script, echoes an empty line:
+
+    /tmp/sample.sh
+
+Answer -  That's because the HADOOP_HOME variable isn't exported:
+
+    $ cat foo.sh
+    #!/bin/bash
+    echo "HADOOP_HOME: $HADOOP_HOME"
+
+    $ HADOOP_HOME=/home/me/dist/hadoop
+    $ echo $HADOOP_HOME
+    /home/me/dist/hadoop
+
+    $ foo.sh
+    HADOOP_HOME:
+
+    $ export HADOOP_HOME
+    $ foo.sh
+    HADOOP_HOME: /home/me/dist/hadoop
+
+When you run a shell script, that script will run in its own bash instance (that's what the #!/bin/bash does) that is a child shell of the current one. Variables are not passed to child shells by default, only if they are exported. Think of each bash session as independent (they largely are). You usually don't want variables defined in one to pollute the environment of another. For those cases where that is necessary, use export.
+
 Variables and Expansions
 --------
 

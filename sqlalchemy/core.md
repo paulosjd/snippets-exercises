@@ -1,570 +1,209 @@
-**Engine Configuration**
+Column and Data Types
+---------------------
 
-SQLAlchemy does not contain its own db drivers, but relies on the DBAPI specification to interact with databases.
+SQLAlchemy provides abstractions for most common database data types, and a mechanism for specifying your own custom data types.
 
-![](../images/sqlalchemy_engine.png)
+The methods and attributes of type objects are rarely used directly; they are supplied to Table definitions
 
-sqlalchemy_engine
-
-    dialect+driver://username:password@host:port/database
-
-    e = create_engine("mysql://scott:tiger@localhost/test")
-
-The MySQL dialect uses mysql-python as the default DBAPI. There are many MySQL DBAPIs available, e.g.:
-
-    engine = create_engine('mysql+mysqlconnector://scott:tiger@localhost/foo')
-
-The PostgreSQL dialect uses psycopg2 as the default DBAPI
-
-    from sqlalchemy import create_engine
-    # default
-    engine = create_engine('postgresql://scott:tiger@localhost/mydatabase')
-    # psycopg2
-    engine = create_engine('postgresql+psycopg2://scott:tiger@localhost/mydatabase')
-
-You could also connect to your database using the psycopg2 driver exclusively:
-
-    import psycopg2
-    conn_string = "host='localhost' dbname='my_database' user='postgres' password='secret'"
-    conn = psycopg2.connect(conn_string)
-
-However, using the psycopg2 driver to connect does not take advantage of SQLAlchemy, which allows you to think in terms of Python objects rather than database semantics, and that there is an obvious place to perform validation and checking of incoming data.
-
-**Raw SQL using DBAPI connection**
-
-    from sqlalchemy import text
-
-    sql = text('select name from penguins')
-    result = db.engine.execute(sql)
-    names = []
-    for row in result:
-        names.append(row[0])
-    print(names)
-
-
-    from sqlalchemy.sql import text
-
-    connection = engine.connect()
-
-    # recommended
-    cmd = 'select * from Employees where EmployeeGroup == :group'
-    employeeGroup = 'Staff'
-    employees = connection.execute(text(cmd), group = employeeGroup)
-
-**Describing Databases with MetaData
-------------------------------------
-
-`MetaData` is a container object that keeps together many different features of a database (or multiple databases) being described.
-
-To represent a table, use the `Table` class. Its two primary arguments are the table name, then the `MetaData` object which it will be associated with. The remaining positional arguments are mostly `Column` objects describing each column:
-
-    from sqlalchemy import Table, MetaData
-
-    metadata = MetaData()
-
-    user = Table('user', metadata,
-        Column('user_id', Integer, primary_key=True),
-        Column('user_name', String(16), nullable=False),
-        Column('email_address', String(60)),
-        Column('password', String(20), nullable=False)
-    )
-
-The MetaData object contains all of the schema constructs we’ve associated with it. For example:
-
-    >>> for t in metadata.sorted_tables:
-    ...    print(t.name)
-    user
-    user_preference
-    invoice
-    invoice_item
-
-Once a Table has been defined, it has a full set of accessors which allow inspection of its properties. Given the following Table definition:
-
-    employees = Table('employees', metadata,
-        Column('employee_id', Integer, primary_key=True),
-        Column('employee_name', String(60), nullable=False),
-        Column('employee_dept', Integer, ForeignKey("departments.department_id"))
-    )
-
-    >>> employees.c.employee_dept.type
-    INTEGER
-    >>> employees.c.employee_name.nullable
-    False
-    >>> employees.c.employee_name.key = 'foobar'
-    # key defaults to it's name but can be any user-defined string
-    >>> employees.c.employee_name.key
-    foobar
-    >>> employees.c.employee_dept.foreign_keys
-    {ForeignKey('departments.department_id')}
-    >>> list(employees.c.employee_dept.foreign_keys)
-    [ForeignKey('departments.department_id')]
-    # get the table related by a foreign key
-    >>> list(employees.c.employee_dept.foreign_keys)[0].column.table
-    departments
-
-**Creating and Dropping DB Tables and Migrations**
-
-The usual way to issue `CREATE` is to use `create_all()` on the `MetaData` object. This method will issue queries that first check for the existence of each individual table, and if not found will issue the `CREATE` statements:
-
-    engine = create_engine('sqlite:///:memory:')
-
-    metadata.create_all(engine)
-
-`create_all()` creates foreign key constraints between tables usually inline with the table definition itself, and for this reason it also generates the tables in order of their dependency.
-`drop_all()` does the exact opposite; the same in the reverse order.
-
-Creating and dropping individual tables can be done via the `create()` and `drop()` methods of `Table`.
-
-    employees = Table('employees', meta,
-        ...
-    )
-    employees.create(engine)
-
-    employees.drop(engine)
-
-To enable the “check first for the table existing” logic, add the `checkfirst=True` argument to `create()` or `drop()`:
-
-    employees.create(engine, checkfirst=True)
-    employees.drop(engine, checkfirst=False)
-
-While it’s easy enough to emit `ALTER` statements and similar by hand, such as by passing a string to `Connection.execute()` or by using the DDL construct, database schemas in relation to application code are commonly maintained using schema migration tools - Alembic or SQLAlchemy-Migrate.
-
-SQL Expression Language
------------------------
-A system of representing relational database structures and expressions using Python constructs.
-While the constructs attempt to represent equivalent concepts between backends with consistent structures, they do not conceal useful concepts that are unique to particular subsets of backends. The Expression Language therefore presents a method of writing backend-neutral SQL expressions, but does not attempt to enforce that expressions are backend-neutral.
-
-The Expression Language is in contrast to the Object Relational Mapper, which is a distinct API that builds on top of the Expression Language.
-Whereas the ORM presents a high level and abstracted pattern of usage, the Expression Language presents a system of representing the primitive constructs of the relational database directly without opinion.
-
-One approaches the structure and content of data from the perspective of a user-defined domain model which is transparently persisted and refreshed from its underlying storage model. The other approaches it from the perspective of literal schema and SQL expression representations which are explicitly composed into messages consumed individually by the database.
-
-**Connecting**
-
-For this tutorial we will use an in-memory-only SQLite database. This is an easy way to test things without needing to have an actual database defined anywhere. To connect we use `create_engine()`:
-
-    >>> from sqlalchemy import create_engine
-    >>> engine = create_engine('sqlite:///:memory:', echo=True)
-
-The `echo` flag is a shortcut to setting up SQLAlchemy logging, setting to `True` allows us to see the SQL produced.
-
-The return value of `create_engine()` is an instance of Engine, and it represents the core interface to the database, adapted through a dialect that handles the details of the database and DBAPI in use. In this case the SQLite dialect will interpret instructions to the Python built-in sqlite3 module.
-Lazy Connecting - the `Engine`, when first returned by `create_engine()`, has not actually tried to connect to the database yet. The first time a method like `Engine.execute()` or `Engine.connect()` is called, the `Engine` establishes a real DBAPI connection to the database, which is then used to emit the SQL.
-
-**Define and Create Tables**
-
-See above sections relating to `MetaData` and `MetaData.create_all()`
-
-    >>> from sqlalchemy import Table, Column, Integer, String, MetaData, ForeignKey
-    >>> metadata = MetaData()
     >>> users = Table('users', metadata,
-    ...     Column('id', Integer, primary_key=True),
-    ...     Column('name', String),
-    ...     Column('fullname', String),
-    ... )
+    ...               Column('id', Integer, primary_key=True)
+    ...               Column('login', String(32))
+    ...              )
 
-    >>> addresses = Table('addresses', metadata,
-    ...   Column('id', Integer, primary_key=True),
-    ...   Column('user_id', None, ForeignKey('users.id')),
-    ...   Column('email_address', String, nullable=False)
-    ...  )
+SQLAlchemy will use the `Integer` and `String(32)` type information when issuing a CREATE TABLE statement and will use it again when reading back rows SELECTed from the database.
 
-**Insert Expressions and Executings**
+Types include:
 
-    >>> ins = users.insert()
-    >>> str(ins)
-    'INSERT INTO users (id, name, fullname) VALUES (:id, :name, :fullname)'
+`class sqlalchemy.types.BigInteger` is type for bigger `int` integers.
+Typically generates a `BIGINT` in DDL, and otherwise acts like a normal `Integer` on the Python side.
 
-The engine object we created is a repository for database connections capable of issuing SQL to the database. To acquire a connection, we use the `connect()` method:
+`class sqlalchemy.types.Boolean` typically uses `BOOLEAN` or `SMALLINT` on the DDL side.
+For all backends, only the Python values `None`, `True`, `False`, `1` or `0` are accepted as parameter values.
 
-    >>> conn = engine.connect()
+`class sqlalchemy.types.Enum` provides a set of possible string values which the column is constrained towards.
 
-The Connection object represents an actively checked out DBAPI connection resource. Lets feed it our Insert object:
+Help on class Enum in module sqlalchemy.sql.sqltypes:
 
-    >>> ins = users.insert().values(name='jack', fullname='Jack Jones')
-    >>> result = conn.execute(ins)
-    INSERT INTO users (name, fullname) VALUES (?, ?)
-    ('jack', 'Jack Jones')
-    COMMIT
+    class Enum(String, SchemaType)
+     |  Generic Enum Type.
+     |
+     |  The :class:`.Enum` type provides a set of possible string values
+     |  which the column is constrained towards.
+     |
+     |  The :class:`.Enum` type will make use of the backend's native "ENUM"
+     |  type if one is available; otherwise, it uses a VARCHAR datatype and
+     |  produces a CHECK constraint.
 
-As the SQLAlchemy Connection object references a DBAPI connection, the result, known as a `ResultProxy object`, is analogous to the DBAPI cursor object.
+    import enum
+    class MyEnum(enum.Enum):
+        one = 1
+        two = 2
+        three = 3
 
-    >>> result.inserted_primary_key
-    [1]
+    t = Table(
+        'data', MetaData(),
+        Column('value', Enum(MyEnum))
+    )
 
-Create a generic insert statement and then use it the 'normal way':
+    connection.execute(t.insert(), {"value": MyEnum.two})
+    assert connection.scalar(t.select()) is MyEnum.two
 
-    >>> ins = users.insert()
-    >>> conn.execute(ins, id=2, name='wendy', fullname='Wendy Williams')
+Above, the string names of each element, e.g. “one”, “two”, “three”, are persisted to the database; the values of the Python Enum, here indicated as integers, are **not** used; the value of each enum can therefore be any kind of Python object whether or not it is persistable.
 
-To issue many inserts using DBAPI’s `executemany()` method, we can send in a list of dictionaries. Note each dictionary must have the same set of keys.
+    class ColorSet(enum.Enum):
+        one = 'red'
+        two = 'green'
 
-    >>> conn.execute(addresses.insert(), [
-    ...    {'user_id': 1, 'email_address' : 'jack@yahoo.com'},
-    ...    {'user_id': 2, 'email_address' : 'www@www.org'},
-    ...    {'user_id': 2, 'email_address' : 'wendy@aol.com'},
-    ... ])
-    INSERT INTO addresses (user_id, email_address) VALUES (?, ?)
-    ((1, 'jack@yahoo.com'), (1, 'jack@msn.com'), (2, 'www@www.org'), (2, 'wendy@aol.com'))
-    COMMIT
-    <sqlalchemy.engine.result.ResultProxy object at 0x...>
+    class Department(Base):
+        ...
+        color = Column(Enum(ColorSet))
 
-**PEP 249 DB-API**
+    it_department = Department(name='IT', color=ColorSet.two)
 
-"...call the cursor's `fetchone()` method to retrieve a single matching row, or call `fetchall()` to ..."
-Notice that these methods are available on `ResultProxy` objects
+    dept_color = session.query(Department.color).filter(Department.id == 1).scalar()
+    print(dept_color.value)
+    # 'green'
+    dept_color2 = session.query(Department.color).filter(Department.id == 1).one()
+    print(dept_color2.color.value)
+    # 'green'
 
-**Selecting**
+`class sqlalchemy.types.Numeric`
 
-    >>> from sqlalchemy.sql import select
-    >>> s = select([users])
-    >>> result = conn.execute(s)
+     __init__(precision=None, asdecimal=False, decimal_return_scale=None, **kwargs)
 
-    >>> for row in result:
-    ...     print(row)
-    (1, u'jack', u'Jack Jones')
-    (2, u'wendy', u'Wendy Williams')
+A type for fixed precision numbers, such as `NUMERIC` or `DECIMAL`.
+This type returns Python `decimal.Decimal` objects by default. Precision – the numeric precision for use in `DDL CREATE TABLE`.
 
-    >>> result = conn.execute(s)
-    >>> row = result.fetchone()
-    # print("name:", row[1], "; fullname:", row[2])
-    >>> print("name:", row['name'], "; fullname:", row['fullname'])
-    name: jack ; fullname: Jack Jones
+`class sqlalchemy.types.Interval`
 
-To specify columns which are placed in the COLUMNS clause of the select, we reference individual `Column` objects from our `Table`. These are available as named attributes off the `c` attribute of the `Table` object.
-It can be useful to use the `Column` objects directly as keys:
+A type for `datetime.timedelta()` objects. In PostgreSQL, the native `INTERVAL` type is used; for others, the value is stored as a date which is relative to the “epoch” (Jan. 1, 1970).
 
-    >>> for row in conn.execute(s):
-    ...     print("name:", row[users.c.name], "; fullname:", row[users.c.fullname])
-    name: jack ; fullname: Jack Jones
-    name: wendy ; fullname: Wendy Williams
+`class sqlalchemy.types.LargeBinary`
 
-Result sets which have pending rows remaining should be explicitly closed before discarding:
+Corresponds to a large and/or unlengthed binary type for the target platform, such as BLOB on MySQL and BYTEA for PostgreSQL. It also handles the necessary conversions for the DBAPI.
 
-    >>> result.close()
+`class sqlalchemy.types.Time` - a type for datetime.time() objects.
 
-Put two tables into `select()` statement, with help of a `WHERE` clause using `Select.where()`:
+SQL Value Processing: Augmenting Existing Types
+-------------------------------------------------
+The `TypeDecorator` allows the creation of custom types which add bind-parameter and result-processing behavior to an existing type object. It is used when additional in-Python marshaling of data to and from the database is required.
 
-    >>> s = select([users, addresses]).where(users.c.id == addresses.c.user_id)
-    sql
-    >>> for row in conn.execute(s):
-    ...     print(row)
-    (1, u'jack', u'Jack Jones', 1, 1, u'jack@yahoo.com')
-    (1, u'jack', u'Jack Jones', 2, 1, u'jack@msn.com')
-    (2, u'wendy', u'Wendy Williams', 3, 2, u'www@www.org')
-    (2, u'wendy', u'Wendy Williams', 4, 2, u'wendy@aol.com')
+The class-level “impl” attribute is required, and can reference any `TypeEngine` class. With `TypeDecorator`, we are usually changing an incoming Python type to something new - `TypeDecorator` by default will “coerce” the non-typed side to be the same type as itself. Such as below, we define an “epoch” type that stores a date value as an integer:
 
-Note that with just simple Python equality operator the argument would just be `True`, not a clause. If you call `str()` on it you see it produces SQL:
+    class MyEpochType(types.TypeDecorator):
+        impl = types.Integer
 
-    >>> users.c.id == addresses.c.user_id
-    <sqlalchemy.sql.elements.BinaryExpression object at 0x...>
-    >>> str(users.c.id == addresses.c.user_id)
-    'users.id = addresses.user_id'
+        epoch = datetime.date(1970, 1, 1)
 
-**Operators**
+        def process_bind_param(self, value, dialect):
+            return (value - self.epoch).days
 
-Here we get a bind parameter (a placeholder like `?` or `:name`):
+        def process_result_value(self, value, dialect):
+            return self.epoch + timedelta(days=value)
 
-    >>> print(users.c.id == 7)
-    users.id = :id_1
-
-    >>> (users.c.id == 7).compile().params
-    {u'id_1': 7}
-
-Most Python operators produce a SQL expression here:
-
-    >>> print(users.c.id != 7)
-    users.id != :id_1
-
-    >>> # None converts to IS NULL
-    >>> print(users.c.name == None)
-    users.name IS NULL
-
-Adding two interger columns gives an addition expresssion:
-
-    >>> print(users.c.id + addresses.c.id)
-    users.id + addresses.id
-
-Adding two string columns gives concatenation:
-
-    >>> print(users.c.name + users.c.fullname)
-    users.name || users.fullname
-
-Where `||` is the concatenation operator on most databases.
-
-SQL that’s generated for an Engine that’s connected to a MySQL database; the `||` operator now compiles as MySQL’s `concat()` function
+`class Comparator` includes the following, many of which are inherited from `ColumnOperator`
 
-**Conjunctions**
+**`__eq__(other)`** implement the `==` operator. produces the clause `a = b`. If the target is `None`, produces `a IS NULL`.
 
-Conjunctions are those little words like AND and OR that put things together. We’ll also hit upon NOT and LIKE:
+**`__ne__(other)`** implements `!=` operator, gives clause `a != b`. If the target is `None`, produces `a IS NOT NULL`.
 
-`and_()`, `or_()`, `not_()`, `between()` correspond to the SQL operators.  `label()` is used in a column expression to produce labels using the `AS` keyword
+**`__le__(other)`, `__lt__(other)`** In a column context, produces the clause `a <= b` and `a < b`
 
-We can build up a `select()` construct through successive method calls (method-chaining):
+**`between(cleft, cright, symmetric=False)`** gives `between()` clause against parent object from the lower and upper range.
 
-    >>> s = select([(users.c.fullname +
-    ...               ", " + addresses.c.email_address).
-    ...                label('title')]).\
-    ...        where(
-    ...           and_(
-    ...               users.c.id == addresses.c.user_id,
-    ...               users.c.name.between('m', 'z'),
-    ...               or_(
-    ...                  addresses.c.email_address.like('%@aol.com'),
-    ...                  addresses.c.email_address.like('%@msn.com')
-    ...               )
-    ...           )
-    ...        )
-
-A shortcut to using `and_()` is to chain together multiple `where()` clauses. The above can also be written as:
+**`concat(other)`** produces the clause `a || b`, or uses the `concat()` operator on MySQL.
 
-    >>> s = select([(users.c.fullname +
-    ...               ", " + addresses.c.email_address).
-    ...                label('title')]).\
-    ...        where(users.c.id == addresses.c.user_id).\
-    ...        where(users.c.name.between('m', 'z')).\
-    ...        where(
-    ...               or_(
-    ...                  addresses.c.email_address.like('%@aol.com'),
-    ...                  addresses.c.email_address.like('%@msn.com')
-    ...               )
-    ...        )
-    >>> conn.execute(s).fetchall()
-    SELECT users.fullname || ? || addresses.email_address AS title
-    FROM users, addresses
-    WHERE users.id = addresses.user_id AND users.name BETWEEN ? AND ? AND
-    (addresses.email_address LIKE ? OR addresses.email_address LIKE ?)
-    (', ', 'm', 'z', '%@aol.com', '%@msn.com')
-    [(u'Wendy Williams, wendy@aol.com',)]
+**`contains(other, **kwargs)`, `endswith(other, **kwargs)`, `startswith(other, **kwargs)`**
 
-**Text in SQL Expression Language**
+    column LIKE '%' || <other> || '%'
+    column LIKE '%' || <other>
+    column LIKE <other> || '%'
 
-Going from what one understands to be a textual SQL expression into a Python construct which groups components together in a programmatic style can be hard.
+    stmt = select([sometable]).\
+        where(sometable.c.column.startswith("foobar"))
 
-The `text()` construct is used to compose a textual statement that is passed to the database mostly unchanged. Below, we create a `text()` object and execute it:
+**`ilike(other, escape=None)`, `like(other, escape=None)`**
 
-    >>> from sqlalchemy.sql import text
-    >>> s = text(
-    ...     "SELECT users.fullname || ', ' || addresses.email_address AS title "
-    ...         "FROM users, addresses "
-    ...         "WHERE users.id = addresses.user_id "
-    ...         "AND users.name BETWEEN :x AND :y "
-    ...         "AND (addresses.email_address LIKE :e1 "
-    ...             "OR addresses.email_address LIKE :e2)")
-    sql
-    >>> conn.execute(s, x='m', y='z', e1='%@aol.com', e2='%@msn.com').fetchall()
-    [(u'Wendy Williams, wendy@aol.com',)]
+optional escape character, renders the ESCAPE keyword, e.g.:
 
-`text()` fragments within bigger statements
+    somecolumn.ilike("foo/%bar", escape="/")
 
-The `select()` object accepts `text()` objects as an argument for most of its builder functions. In so, the `select()` construct provides the “geometry” of the statement, and the `text()` construct provides the textual content within this form. We can build a statement without the need to refer to any pre-established `Table` metadata:
+**`in_(other)`**
 
-    >>> s = select([
-    ...        text("users.fullname || ', ' || addresses.email_address AS title")
-    ...     ]).\
-    ...         where(
-    ...             and_(
-    ...                 text("users.id = addresses.user_id"),
-    ...                 text("users.name BETWEEN 'm' AND 'z'"),
-    ...                 text(
-    ...                     "(addresses.email_address LIKE :x "
-    ...                     "OR addresses.email_address LIKE :y)")
-    ...             )
-    ...         ).select_from(text('users, addresses'))
-    sql
-    >>> conn.execute(s, x='%@aol.com', y='%@msn.com').fetchall()
-    [(u'Wendy Williams, wendy@aol.com',)]
+produces the clause `column IN <other>`. The given parameter other may be:
 
-Specifying Bound Parameter Behaviors:
+A list of literal values, e.g.:
 
-    stmt = text("SELECT * FROM users WHERE users.name BETWEEN :x AND :y")
-    stmt = stmt.bindparams(x="m", y="z")
+    stmt.where(column.in_([1, 2, 3]))
 
-    >>> from sqlalchemy.sql import bindparam
-    >>> s = users.select(users.c.name == bindparam('username'))
-    >>> conn.execute(s, username='wendy').fetchall()
-    [(2, u'wendy', u'Wendy Williams')]
+In this calling form, the list of items is converted to a set of bound parameters the same length as the list given:
 
-    >>> s = users.select(users.c.name.like(bindparam('username', type_=String) + text("'%'")))
-    >>> conn.execute(s, username='wendy').fetchall()
-    [(2, u'wendy', u'Wendy Williams')]
+    WHERE COL IN (?, ?, ?)
 
-**`TextClause.columns()`**
+a `select()` construct, which is usually a correlated scalar select:
 
-Specify the return types, based on name:
+    stmt.where(
+        column.in_(
+            select([othertable.c.y]).
+            where(table.c.x == othertable.c.x)
+        )
+    )
 
-    stmt = stmt.columns(id=Integer, name=String)
+In this calling form, `ColumnOperators.in_()` renders as given:
 
-Or it can be passed full column expressions positionally:
+    WHERE COL IN (SELECT othertable.y
+    FROM othertable WHERE othertable.x = table.x)
 
-    stmt = text("SELECT id, name FROM users")
-    stmt = stmt.columns(users.c.id, users.c.name)
+A bound parameter, e.g. `bindparam()`, may be used if it includes the `bindparam.expanding` flag:
 
-    >>> stmt = text("SELECT users.id, addresses.id, users.id, "
-    ...     "users.name, addresses.email_address AS email "
-    ...     "FROM users JOIN addresses ON users.id=addresses.user_id "
-    ...     "WHERE users.id = 1").columns(
-    ...        users.c.id,
-    ...        addresses.c.id,
-    ...        addresses.c.user_id,
-    ...        users.c.name,
-    ...        addresses.c.email_address
-    ...     )
-    sql
-    >>> result = conn.execute(stmt)
+    stmt.where(column.in_(bindparam('value', expanding=True)))
 
-The `TextClause.columns()` method is typically very applicable to textual statements to be used in an ORM context.
+In this calling form, the expression renders a special non-SQL placeholder expression that looks like:
 
-**Using More Specific Text with table(), literal_column(), and column()**
+    WHERE COL IN ([EXPANDING_value])
 
-By using `column()`, `literal_column()`, and `table()` for some of the key elements of our statement. Using these constructs, we can get some more expression capabilities than if we used `text()` directly, as they provide to the Core more information about how the strings they store are to be used, but still without the need to get into full `Table` based metadata.
+This placeholder expression is intercepted at statement execution time to be converted into the variable number of bound parameter form illustrated earlier. If the statement were executed as:
 
-    s = select([
-       literal_column("users.fullname", String) +
-       ', ' +
-       literal_column("addresses.email_address").label("title")]
-    ).select_from(table('users')).select_from(table('addresses'))
+    connection.execute(stmt, {"value": [1, 2, 3]})
 
-Notice that by using `literal_column()`, we did not need to refer to users or addresses metadata
+The database would be passed a bound parameter for each value:
 
-**Ordering or Grouping by a Label**
+    WHERE COL IN (?, ?, ?)
 
-when our statement has some labeled column element that we want to refer to in a place such as the “ORDER BY” or “GROUP BY” clause; other candidates include fields within an “OVER” or “DISTINCT” clause. If we have such a label in our `select()` construct, we can refer to it directly by passing the string straight into `select.order_by()` or `select.group_by()`, among others.
+**`nullsfirst()`, `nullslast()`** provides clause of same name
 
-    >>> from sqlalchemy import func
-    >>> stmt = select([
-    ...         addresses.c.user_id,
-    ...         func.count(addresses.c.id).label('num_addresses')]).\
-    ...         order_by("num_addresses")
-    >>> conn.execute(stmt).fetchall()
-    [(2, 4)]
+**`bind_processor(dialect)`**
 
-**Using Aliases**
+Provides a bound value processing function for the given Dialect.
+This is the method that fulfills the `TypeEngine` contract for bound value conversion.
 
-The alias in SQL corresponds to a “renamed” version of a table or SELECT statement, which occurs anytime you say “SELECT .. FROM sometable AS someothername”. The AS creates a new name for the table. Aliases are a key construct as they allow any table or subquery to be referenced by a unique name. In the case of a table, this allows the same table to be named in the FROM clause multiple times. In the case of a SELECT statement, it provides a parent name for the columns represented by the statement, allowing them to be referenced relative to this name.
+**`compile(dialect=None)`** is inherited from `TypeEngine` and when called with no arguments, uses a “default” dialect to produce a string result.
 
-In SQLAlchemy, any `Table`, `select()` construct, or other selectable can be turned into an alias using the `FromClause.alias()` method, which produces a `Alias` construct.
+**`process_bind_param(value, dialect)`**
 
-E.g., How can we locate jack based on the combination of two addresses we know he has? To accomplish this, we’d use a join to the addresses table, once for each address. We create two Alias constructs against addresses, and then use them both within a `select()` construct:
+Subclasses override this method to return the value that should be passed along to the underlying `TypeEngine` object, and from there to the DBAPI `execute()` method.
 
-    >>> a1 = addresses.alias()
-    >>> a2 = addresses.alias()
-    >>> s = select([users]).\
-    ...        where(and_(
-    ...            users.c.id == a1.c.user_id,
-    ...            users.c.id == a2.c.user_id,
-    ...            a1.c.email_address == 'jack@msn.com',
-    ...            a2.c.email_address == 'jack@yahoo.com'
-    ...        ))
-    >>> conn.execute(s).fetchall()
-    [(1, u'jack', u'Jack Jones')]
+The operation could be anything desired to perform custom behavior, such as transforming or serializing data. This could also be used as a hook for validating logic.
 
-**Using Joins**
+This operation should be designed with the reverse operation in mind, the `process_result_value` method.
 
-We’ve already been doing joins in our examples, by just placing two tables in either the columns clause or the where clause of the `select()` construct. E.g.:
+Example:  some database connectors like those of SQL Server choke if a `Decimal` is passed with too many decimal places. Here’s a recipe that rounds them down:
 
-    s = select([users, addresses]).where(users.c.id == addresses.c.user_id)
-    result = conn.execute(s)
+    from sqlalchemy.types import TypeDecorator, Numeric
+    from decimal import Decimal
 
-    # gives same output as the above
-    s2 = select([users, addresses]).select_from(users.join(addresses))
-    result2 = conn.execute(s2)
+    class SafeNumeric(TypeDecorator):
+        """Adds quantization to Numeric."""
 
-If we want to make a real “JOIN” or “OUTERJOIN” construct, we use the `join()` and `outerjoin()` methods, most commonly accessed from the left table in the join:
+        impl = Numeric
 
-    >>> print(users.join(addresses))
-    users JOIN addresses ON users.id = addresses.user_id
+        def __init__(self, *arg, **kw):
+            TypeDecorator.__init__(self, *arg, **kw)
+            self.quantize_int = - self.impl.scale
+            self.quantize = Decimal(10) ** self.quantize_int
 
-Notice how SQLAlchemy figured out how to JOIN the two tables. The ON condition of the join was automatically generated based on the `ForeignKey` object
-
-To join on a certain expression, e.g.  join on all users who use the same name in their email address as their username:
-
-    >>> print(users.join(addresses,
-    ...                 addresses.c.email_address.like(users.c.name + '%')
-    ...             )
-    ...  )
-    users JOIN addresses ON addresses.email_address LIKE users.name || :name_1
-
-With a `select()` construct, SQLAlchemy looks around at the tables we’ve mentioned and then places them in the FROM clause of the statement. When we use JOINs however, we know what FROM clause we want, so here we make use of the `select_from()` method:
-
-    >>> s = select([users.c.fullname]).select_from(
-    ...    users.join(addresses,
-    ...             addresses.c.email_address.like(users.c.name + '%'))
-    ...    )
-    >>> conn.execute(s).fetchall()
-    [(u'Jack Jones',), (u'Jack Jones',), (u'Wendy Williams',)]
-
-**SQL Functions**
-
-    >>> from sqlalchemy.sql import func
-    >>> print(func.concat('x', 'y'))
-    concat(:concat_1, :concat_2)
-
-Creates an SQL function based on chosen word. Functions are most typically used in the columns clause of a select statement, and can also be labeled as well as given a type. Labeling a function is recommended so that the result can be targeted in a result row based on a string name, and assigning it a type is required when you need result-set processing to occur, such as for Unicode conversion and date conversions. Below, we use the result function scalar() to just read the first column of the first row and then close the result; the label, even though present, is not important in this case:
-
-    >>> conn.execute(
-    ...     select([
-    ...            func.max(addresses.c.email_address, type_=String).
-    ...                label('maxemail')
-    ...           ])
-    ...     ).scalar()
-    u'www@www.org'
-
-    # using min() gives 'jack@msn.com'
-
-**Correlated subqueries**
-
-SQLAlchemy automatically correlates embedded FROM objects to that of an enclosing query.
-Auto-correlation will usually do what’s expected, however it can also be controlled. For example, if we wanted a statement to correlate only to the addresses table but not the users table, even if both were present in the enclosing SELECT, we could do so using the `correlate()` method to specify those FROM clauses that may be correlated.
-
-To entirely disable a statement from correlating, we can pass `None` as the argument:
-
-    >>> stmt = select([users.c.id]).\
-    ...             where(users.c.name == 'wendy').\
-    ...             correlate(None)
-    >>> enclosing_stmt = select([users.c.name]).\
-    ...     where(users.c.id == stmt)
-    >>> conn.execute(enclosing_stmt).fetchall()
-    SELECT users.name
-     FROM users
-     WHERE users.id = (SELECT users.id
-      FROM users
-      WHERE users.name = ?)
-    ('wendy',)
-    [(u'wendy',)]
-
-**Ordering, Grouping, Limiting, Offset…ing…**
-
-Chain on e.g. `.order_by(users.c.name.desc())`
-
-Grouping refers to the GROUP BY clause, and is usually used in conjunction with aggregate functions to establish groups of rows to be aggregated:
-
-    stmt = select([users.c.name, func.count(addresses.c.id)]). \
-            select_from(users.join(addresses)). \
-            group_by(users.c.name)
-
-HAVING can be used to filter results on an aggregate value, after GROUP BY has been applied:
-
->>> stmt = select([users.c.name, func.count(addresses.c.id)]).\
-...             select_from(users.join(addresses)).\
-...             group_by(users.c.name).\
-...             having(func.length(users.c.name) > 4)
->>> conn.execute(stmt).fetchall()
-
-A common system of dealing with duplicates in composed SELECT statements is the DISTINCT modifier:
-
-    >>> stmt = select([users.c.name]).\
-    ...             where(addresses.c.email_address.
-    ...                    contains(users.c.name)).\
-    ...             distinct()
-    >>> conn.execute(stmt).fetchall()
-    SELECT DISTINCT users.name
-    FROM users, addresses
-    WHERE (addresses.email_address LIKE '%' || users.name || '%')
-    ()
-    [(u'jack',), (u'wendy',)]
-
-
-
-
-
+        def process_bind_param(self, value, dialect):
+            if isinstance(value, Decimal) and \
+                value.as_tuple()[2] < self.quantize_int:
+                value = value.quantize(self.quantize)
+            return value

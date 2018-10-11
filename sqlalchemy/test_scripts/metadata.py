@@ -31,3 +31,5 @@ print(dir(employees.columns.employee_id))
 employees.c.employee_name.key = 'foobar'
 print(employees.c.employee_name.key)
 print(list(employees.c.employee_dept.foreign_keys)[0].column.table)
+
+

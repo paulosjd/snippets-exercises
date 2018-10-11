@@ -1,285 +1,4 @@
 
-Using the Session
------------------
-The `orm.mapper()` function and declarative extensions are the primary configurational interface for the ORM. Once mappings are configured, the primary usage interface for persistence operations is the `Session`.
-
-Session establishes all conversations with the database and represents a “holding zone” for all the objects which you’ve loaded or associated with it during its lifespan. It provides the entrypoint to acquire a Query object, which sends queries to the database using the Session object’s current database connection, populating result rows into objects that are then stored in the Session, inside a structure called the Identity Map - a data structure that maintains unique copies of each object, where “unique” means “only one object with a particular primary key”.
-All changes to objects maintained by a Session are tracked - before the database is queried again or before the current transaction is committed, it flushes all pending changes to the database. This is known as the Unit of Work pattern.
-When using a Session, it’s important to note that the objects which are associated with it are proxy objects to the transaction being held by the Session - there are a variety of events that will cause objects to re-access the database in order to keep synchronized.
-
-**Unit of work**
-
-Maintains a list of objects affected by a business transaction and coordinates the writing out of changes and the resolution of concurrency problems.
-Solves issues: keep track of what you've changed, to write back into the database. Similarly, objects created/deleted. Keeping track of the objects you've read so you can avoid inconsistent reads
-You can change the database with each change to your object model, but this can lead to lots of very small database calls, which ends up being very slow and requires you to have a transaction open for the whole interaction, which can be impractical.
-A Unit of Work keeps track of everything you do during a business transaction that can affect the database. When you're done, it figures out everything that needs to be done to alter the database as a result of your work.
-
-**Flushing**
-
-To sync the state of your application data with the state of the data in the database.
-
-What the difference is between `flush()` and `commit()` in SQLAlchemy?
-
-A `Session` object is basically an ongoing transaction of changes to a database (update, insert, delete).
-The session object registers transaction operations with `session.add()`, but doesn't yet communicate them to the database until session.flush() is called.
-
-`session.flush()` communicates a series of operations to the database. The database maintains them as pending operations in a transaction. The changes aren't persisted permanently to disk, or visible to other transactions until the database receives a `COMMIT` for the current transaction.
-
-When you use a `Session` object to query the database, the query will return results both from the database and from the flushed parts of the uncommitted transaction it holds. By default, Session objects autoflush their operations, but this can be disabled:
-
-    s = Session()
-
-    s.add(Foo('A')) # The Foo('A') object has been added to the session.
-                    # It has not been committed to the database yet,
-                    #   but is returned as part of a query.
-    print 1, s.query(Foo).all()
-    s.commit()
-
-    s2 = Session()
-    s2.autoflush = False
-
-    s2.add(Foo('B'))
-    print 2, s2.query(Foo).all() # The Foo('B') object is *not* returned
-                                 #   as part of this query because it hasn't
-                                 #   been flushed yet.
-    s2.flush()                   # Now, Foo('B') is in the same state as
-                                 #   Foo('A') was above.
-    print 3, s2.query(Foo).all()
-    s2.rollback()                # Foo('B') has not been committed, and rolling
-                                 #   back the session's transaction removes it
-                                 #   from the session.
-    print 4, s2.query(Foo).all()
-
-    #---
-    Output:
-    1 [<Foo('A')>]
-    2 [<Foo('A')>]
-    3 [<Foo('A')>, <Foo('B')>]
-    4 [<Foo('A')>]
-
-Specifically, the flush occurs before any individual `Query` is issued, as well as within the `commit()` call before the transaction is committed.
-
-**Commit and Rollback**
-
-Another behavior of `commit()` is that by default it expires the state of all instances present after the commit is complete. This is so that when the instances are next accessed, either through attribute access or by them being present in a Query result set, they receive the most recent state.
-
-When a `flush()` fails, typically for reasons like primary key, foreign key, or “not nullable” constraint violations, a `rollback()` is issued automatically
-
-**Getting a sessions**
-
-    from sqlalchemy import create_engine
-    from sqlalchemy.orm import sessionmaker
-
-    # an Engine, which the Session will use for connection
-    some_engine = create_engine('postgresql://scott:tiger@localhost/')
-
-    # create a configured "Session" class.
-    # This factory, when called, will create a new Session object using the supplied configurational arguments
-    Session = sessionmaker(bind=some_engine)
-
-    # create a Session
-    session = Session()
-
-    # work with sess
-    myobject = MyObject('foo', 'bar')
-    session.add(myobject)
-    session.commit()
-
-When you write your application, place the sessionmaker factory at the global level. This factory can then be used by the rest of the application as the source of new Session instances, keeping the configuration for how Session objects are constructed in one place.
-
-*When do I make a sessionmaker?* Just one time, somewhere in your application’s global scope. It should be looked upon as part of your application’s configuration. If your application has three .py files in a package, you could, for example, place the `sessionmaker` line in your `__init__.py` file; from that point on your other modules say “from mypackage import Session”. That way, everyone else just uses `Session()`, and the configuration of that session is controlled by that central point.
-
-*When do I construct a Session, when do I commit it, and when do I close it?*
-
-As a general rule, keep the lifecycle of the session separate and external from functions and objects that access and/or manipulate database data. This will greatly help with achieving a predictable and consistent transactional scope.
-Make sure you have a clear notion of where transactions begin and end, and keep transactions **short**, meaning, they end at the series of a sequence of operations, instead of being held open indefinitely.
-
-*Is the session thread-safe*
-
-The bigger point is that you should not want to use the session with multiple concurrent threads. The session is a local “workspace” that you use for a specific set of tasks; don’t share that session with other thread.
-Not sharing the Session implies a more significant pattern; it means not just the `Session` object itself, but also **all objects that are associated with that Session**, must be kept within the scope of a single concurrent thread.
-
-**Basics of Using a Session**
-
-    # query from a class
-    session.query(User).filter_by(name='ed').all()
-
-    # query with multiple classes, returns tuples
-    session.query(User, Address).join('addresses').filter_by(name='ed').all()
-
-    # query using orm-enabled descriptors
-    session.query(User.name, User.fullname).all()
-
-    ser1 = User(name='user1')
-    session.add(user1)
-    session.commit()     # write changes to the database
-
-To add a list of items to the session at once, use add_all():
-
-    session.add_all([item1, item2, item3])
-
-    session.delete(obj1)
-    # commit (or flush)
-    session.commit()
-
-Deleting Objects Referenced from Collections and Scalar Relationships:
-
-The ORM in general never modifies the contents of a collection or scalar relationship during the flush process. This means, if your class has a relationship() that refers to a collection of objects, or a reference to a single object such as many-to-one, the contents of this attribute will not be modified when the flush process occurs.
-
-This behavior is not to be confused with the flush process’ impact on column- bound attributes that refer to foreign key and primary key columns; these attributes are modified liberally within the flush, since these are the attributes that the flush process intends to manage.
-
-ven though rows related to the deleted object might be themselves modified as well, **no changes occur to relationship-bound collections or object references on the objects** involved in the operation within the scope of the flush itself. This means if the object was a member of a related collection, it will still be present on the Python side until that collection is expired. Similarly, if the object were referenced via many-to-one or one-to-one from another object, that reference will remain present on that object until the object is expired as well:
-
-    >>> address = user.addresses[1]
-    >>> session.delete(address)
-    >>> session.flush()
-    >>> address in user.addresses
-    True
-
-    >>> session.commit()
-    >>> address in user.addresses
-    False
-
-Basic Relationship Patterns
----------------------------
-
-`backref` parameter allows you to declare both relationships with single declaration: it means to automatically install backward relationship in related class. I personally prefer using backref for self-referring relationships only, as I like self-documented code (avoid having to look through other classes, probably defined in other modules) - see `back_populates`
-
-`back_populates` takes a string name and has the same meaning as `backref`, except the complementing property is not created automatically, and instead must be configured explicitly on the other mapper.
-
-**One To Many**
-
-FK on the child table referencing the parent. `relationship()` is then specified on the parent, as referencing a collection of items represented by the child
-
-    from sqlalchemy import create_engine
-    from sqlalchemy import Column, Integer, ForeignKey
-    from sqlalchemy.orm import relationship, sessionmaker
-    from sqlalchemy.ext.declarative import declarative_base
-
-    engine = create_engine('sqlite:///:memory:', echo=True)
-    Base = declarative_base(bind=engine)
-
-    class Parent(Base):
-        __tablename__ = 'parent'
-        id = Column(Integer, primary_key=True)
-        # children = relationship("Child")
-        children = relationship("Child", back_populates="parent")
-
-    class Child(Base):
-        __tablename__ = 'child'
-        id = Column(Integer, primary_key=True)
-        parent_id = Column(Integer, ForeignKey('parent.id'))
-        # parent = relationship("Parent")
-        parent = relationship("Parent", back_populates="children")
-
-    parent = Parent(id=1)
-    child = Child(id=5)
-    child.parent = parent
-    print([a.id for a in parent.children])
-    #[5] n.b. if use relationship without back_populates you get []
-
-**Many To One**
-
-Many to one places a foreign key in the parent table referencing the child. `relationship()` is declared on the parent, where a new scalar-holding attribute will be created
-
-Bidirectional behavior is achieved by adding a second `relationship(` and applying the `relationship.back_populates` parameter in both directions:
-Alternatively, the backref parameter may be applied to a single `relationship()`, such as Parent.child:
-
-    from sqlalchemy.ext.declarative import declarative_base
-
-    Base = declarative_base()
-
-    class Parent(Base):
-        __tablename__ = 'parent'
-        id = Column(Integer, primary_key=True)
-        child_id = Column(Integer, ForeignKey('child.id'))
-        child = relationship("Child", backref="parents")
-
-    class Child(Base):
-        __tablename__ = 'child'
-        id = Column(Integer, primary_key=True)
-
-**One to One**
-
-A bidirectional relationship with a scalar attribute on both sides. To achieve this, the `uselist` flag indicates the placement of a scalar attribute instead of a collection on the “many” side of the relationship:
-
-**Many to Many**
-
-Adds an association table between two classes. The association table is indicated by the secondary argument to `relationship()`
-Usually, the Table uses the MetaData object associated with the declarative base class, so that the ForeignKey directives can locate the remote tables with which to link:
-
-For a bidirectional relationship, both sides of the relationship contain a collection. Specify using relationship.back_populates, and for each `relationship()` specify the common association table:
-
-    association_table = Table('association', Base.metadata,
-        Column('left_id', Integer, ForeignKey('left.id')),
-        Column('right_id', Integer, ForeignKey('right.id'))
-    )
-
-    class Parent(Base):
-        __tablename__ = 'left'
-        id = Column(Integer, primary_key=True)
-        children = relationship(
-            "Child",
-            secondary=association_table,
-            back_populates="parents")
-
-    class Child(Base):
-        __tablename__ = 'right'
-        id = Column(Integer, primary_key=True)
-        parents = relationship(
-            "Parent",
-            secondary=association_table,
-            back_populates="children")
-
-When using the `backref` parameter instead of `relationship.back_populates`, the backref will automatically use the same secondary argument for the reverse relationship:
-
-The secondary argument of `relationship()` also accepts a callable that returns the ultimate argument, which is evaluated only when mappers are first used, i.e. after all module initialization is complete:
-
-    class Parent(Base):
-        __tablename__ = 'left'
-        id = Column(Integer, primary_key=True)
-        children = relationship("Child",
-                        secondary=lambda: association_table,
-                        backref="parents")
-
-**Association object**
-
-In the association object pattern, the many-to-many table is mapped by a full class instead of using the secondary argument to `relationship()`. It’s used when your association table contains additional columns beyond those which are foreign keys to the left and right tables.
-
-he bidirectional version makes use of `relationship.back_populates` or `relationship.backref`:
-
-    class Association(Base):
-        __tablename__ = 'association'
-        left_id = Column(Integer, ForeignKey('left.id'), primary_key=True)
-        right_id = Column(Integer, ForeignKey('right.id'), primary_key=True)
-        extra_data = Column(String(50))
-        child = relationship("Child", back_populates="parents")
-        parent = relationship("Parent", back_populates="children")
-
-    class Parent(Base):
-        __tablename__ = 'left'
-        id = Column(Integer, primary_key=True)
-        children = relationship("Association", back_populates="parent")
-
-    class Child(Base):
-        __tablename__ = 'right'
-        id = Column(Integer, primary_key=True)
-        parents = relationship("Association", back_populates="child")
-
-Working with the association pattern in its direct form requires that child objects are associated with an association instance before being appended to the parent; similarly, access from parent to child goes through the association object:
-
-    # create parent, append a child via association
-    p = Parent()
-    a = Association(extra_data="some data")
-    a.child = Child()
-    p.children.append(a)
-
-    # iterate through child objects via association, including association
-    # attributes
-    for assoc in p.children:
-        print(assoc.extra_data)
-        print(assoc.child)
-
 Mapper Configuration
 --------------------
 
@@ -351,14 +70,6 @@ Provides a syntactical shortcut to the cls argument sent to `declarative_base()`
         # parent = relationship("Parent")
         parent = relationship("Parent", back_populates="children")
 
-`@declared_attr` is usually applicable to mixins; turns the attribute into a scalar-like property that can be invoked from the uninstantiated class.
-
-    class ProvidesUser(object):
-
-        @declared_attr
-        def user(self):
-            return relationship("User")
-
 **Runtime Inspection API system**
 
 Using the `inspect()` function, one can acquire the `Mapper` from a mapped class:
@@ -370,7 +81,8 @@ Using the `inspect()` function, one can acquire the `Mapper` from a mapped class
 
 Mixin and Custom Base Classes
 -----------------------------
-For sharing functionality (common columns, table options, mapped properties etc.) across many classes when using `declarative`,
+[Docs](https://docs.sqlalchemy.org/en/latest/orm/extensions/declarative/mixins.html)
+For sharing functionality (common columns, table options, mapped properties etc.) across classes when using `declarative`,
 i.e. custom declarative base class and “mixins”.
 
     class MyMixin(object):
@@ -461,214 +173,202 @@ Below is an example which combines a foreign key column and a relationship so th
         __tablename__ = 'target'
         id = Column(Integer, primary_key=True)
 
-Relationship Loading Techniques
--------------------------------
+Loading Columns
+---------------
+Additional options regarding the loading of columns
 
-**The N+1 problem in relational databases**
+**Deferred Column Loading**
 
-A common side effect of the lazy load pattern. Suppose you have a user table and each user has bought a number of products, listed in a sales table. To get a list of all products bought by users in the last 2 days, this could be done by:
+This feature allows particular columns of a table be loaded only upon direct access, instead of when the entity is queried using Query. This feature is useful when one wants to avoid loading a large text or binary field into memory when it’s not needed. Individual columns can be lazy loaded by themselves or placed into groups that lazy-load together, using the `orm.deferred()` function when defining a mapping:
 
-    SELECT * FROM User;
+    from sqlalchemy.orm import deferred
+    from sqlalchemy import Integer, String, Text, Binary, Column
 
-and then for each user, you query the number of products they have bought:
-
-    SELECT * FROM Sales WHERE user_id = ? AND date > two_days_ago
-
-In other words, you have one Select statement for the user table followed by N additional Select statements to get the associated products, where N is the total number of users.
-
-Each access to the database has a certain overhead, this will scale quite badly with the number of users.
-If you would write pure SQL, you would directly see the number of select statements you submit, while in SQLAlchemy it is not obvious so it is important to understand the loading options.
-
-    #Flask-SQLAlchemy
-    class User(db.Model):
-        id = db.Column(db.Integer, primary_key=True)
+    class Book(Base):
         ...
-        products = db.relationship('product',
-                                   secondary=sales)
+        book_id = Column(Integer, primary_key=True)
+        excerpt = deferred(Column(Text))
+        photo = deferred(Column(Binary))
 
-We have two main choices for how we can implement the products relationship defined above. The default setting of SQLAlchemy is lazy loading, which means that the related rows in the sales table are not loaded together with the user object.
-In this case lazy loading means we will run into the N+1 problem.
+Deferred columns can be associated with a “group” name, so that they load together when any of them are first accessed.
+You can defer or undefer columns at the Query level using options, including `orm.defer()` and `orm.undefer()`:
 
-To solve this problem we have to make use of the lazy keyword, which by default is set to 'select' like this
+    session.query(MyClass).options(
+                        defer("attribute_one"),
+                        defer("attribute_two"))
 
-    products = db.relationship('product', secondary=sales, lazy='select')
+    session.query(MyClass).options(
+                        defer(MyClass.attribute_one),
+                        defer(MyClass.attribute_two))
 
-One useful option is `lazy='dynamic'` like this
+    # undefer two columns
+    session.query(MyClass).options(undefer("col1"), undefer("col2"))
 
-    products = db.relationship('product',
-                               secondary=sales,
-                               lazy='dynamic')
+    # undefer all columns specific to a single class using Load + *
+    session.query(MyClass, MyOtherClass).options(
+        Load(MyClass).undefer("*"))
 
-Here, `user.products` returns a query object rather than table rows. This gives you a lot of flexibility how the second database access might look. E.g. you could add additional filters:
+**Load Only Cols**
 
-    user.products.filter_by(Products.date > two_days_ago).all()
+Indicate that for a particular entity, only the given list of column-based attribute names should be loaded; all others will be deferred.
 
-This can be very useful, say if there are many rows in the products table, the additional filter might make the second database access much quicker.
-However, it will still need a second trip to the database. To avoid the N+1 problem we need to load the rows in the sales table together with the users.
+This function is part of the `Load` interface and supports both method-chained and standalone operation.
 
-To do this we have to make use of eager loading and SQLAlchemy provides three choices for that: joined loading `(lazy='joined')`, subquery loading `(lazy='subquery')` and select IN loading `(lazy='selectin')`
+Example - given a class `User`, load only the name and fullname attributes:
 
-Let's start with the subquery loading since that one is often a good choice. Here two Select statements are run, one to retrieve all users and one to retrieve all related rows in the sales table. So rather N+1 we have 2 Select statements.
+    session.query(User).options(load_only("name", "fullname"))
 
-Alternatively, joined loading squeezes everything into one Select statement. So we save another Select statement compared to subquery loading, but the downside is that if the products table is large, this can become very slow since it makes use of an outer left join.
+Example - given a relationship `User.addresses -> Address`, specify subquery loading for the `User.addresses` collection, but on each `Address` object load only the `email_address` attribute:
 
-More commonly, instead of adding this loading option to the mapping, the loading style is set at runtime. You can do that with `joinedload()`, `subqueryload()`, `selectinload()` and `lazyload()`:
+    session.query(User).options(
+            subqueryload("addresses").load_only("email_address")
+    )
 
-    from sqlalchemy.orm import subqueryload, joinedload, selectinload
+For a `Query` that has multiple entities, the lead entity can be specifically referred to using the `Load` constructor:
 
-    users = User.query.options(selectinload(User.products)).all()
+    session.query(User, Address).join(User.addresses).options(
+                Load(User).load_only("name", "fullname"),
+                Load(Address).load_only("email_addres")
+            )
 
-**Controlling Loading via Options**
+SQL Expressions as Mapped Attributes
+------------------------------------
+Attributes on a mapped class can be linked to SQL expressions, which can be used in queries.
 
-Configure loading strategies on a per-query basis against specific attributes.
+**Hybrid property**
 
-The most common loader options are `joinedload()`, `subqueryload()`, `selectinload()` and `lazyload()`
+The easiest and most flexible way to link relatively simple SQL expressions to a class; provides for an expression that works at both the Python level as well as at the SQL expression level.
 
-    # set children to load lazily
-    session.query(Parent).options(lazyload('children')).all()
+    from sqlalchemy.ext.hybrid import hybrid_property
 
-    # same, using class-bound attribute
-    session.query(Parent).options(lazyload(Parent.children)).all()
+    class User(Base):
+        ...
+        firstname = Column(String(50))
+        lastname = Column(String(50))
 
-    # set children to load eagerly with a join
-    session.query(Parent).options(joinedload('children')).all()
+        @hybrid_property
+        def fullname(self):
+            return self.firstname + " " + self.lastname
 
-The loader options can also be “chained” using method chaining to specify how loading should occur further levels deep:
+Above, the `fullname` attribute is interpreted at both the instance and class level, so that it is available from an instance:
 
-    session.query(Parent).options(
-        joinedload(Parent.children).
-        subqueryload(Child.subelements)).all()
+    some_user = session.query(User).first()
+    print(some_user.fullname)
 
-Chained loader options can be applied against a “lazy” loaded collection. This means that when a collection or association is lazily loaded upon access, the specified option will then take effect:
+as well as usable within queries:
 
-    session.query(Parent).options(
-        lazyload(Parent.children).
-        subqueryload(Child.subelements)).all()
+    some_user = session.query(User).filter(User.fullname == "John Smith").first()
 
-Navigate along a path without changing the existing loader style of a particular attribute:
+Cascades
+--------
+Refer to how operations performed on a “parent” object relative to a particular `Session` should be propagated to items referred to by that relationship
 
-    session.query(A).options(
-        defaultload("atob").
-        joinedload("btoc")).all()
+The default value of `cascade` is `save-update, merge`. The typical alternative setting for this parameter is either all or more commonly all, delete-orphan. The all symbol is a synonym for save-update, merge, refresh-expire, expunge, delete, and using it in conjunction with delete-orphan indicates that the child object should follow along with its parent in all cases, and be deleted once it is no longer associated with that parent.
 
-**Lazy Loading**
+Cascade behavior is configured using the `cascade` option on `relationship()`:
 
-Default for inter-object relationships is known as “lazy” or “select” loading - the name “select” because a “SELECT” statement is typically emitted when the attribute is first accessed.
+    class Order(Base):
+        __tablename__ = 'order'
 
-The scalar or collection attribute associated with a `relationship()` contains a trigger which fires the first time the attribute is accessed. This trigger typically issues a SQL call at the point of access:
+        items = relationship("Item", cascade="all, delete-orphan")
+        customer = relationship("User", cascade="save-update")
 
-    >>> jack.addresses
-    SELECT
-        addresses.id AS addresses_id,
-        addresses.email_address AS addresses_email_address,
-        addresses.user_id AS addresses_user_id
-    FROM addresses
-    WHERE ? = addresses.user_id
-    [5]
-    [<Address(u'jack@google.com')>, <Address(u'j25@yahoo.com')>]
+To set cascades on a `backref`, the same flag can be used with the `backref()` function:
 
-While lazy loading can be expensive for related collections, in the case that one is loading lots of objects with simple many-to-ones against a relatively small set of possible target objects, lazy loading may be able to refer to these objects locally without emitting as many SELECT statements as there are parent objects.
+    class Item(Base):
+        __tablename__ = 'item'
 
-**Addressing the N+1 problem with `raiseload()**
+        order = relationship("Order",
+                        backref=backref("items", cascade="all, delete-orphan")
+                    )
 
- The problem of code that may access other attributes that were not eagerly loaded, where lazy loading is not desired, may be addressed using the raiseload() strategy; this loader strategy replaces the behavior of lazy loading with an informative error being raised.
+The `save-update` cascade is on by default, and is typically taken for granted; it simplifies code by allowing a single call to `Session.add()` to register an entire structure of objects within that `Session` at once.
 
-    from sqlalchemy.orm import raiseload
-    session.query(User).options(raiseload(User.addresses))
+    >>> sess.add(user1
+    >>> address3 = Address()
+    >>> user1.append(address3)
+    >>> address3 in sess
+    >>> True
 
-Above, a `User` object loaded from the above query will not have the `.addresses` collection loaded; if some code later on attempts to access this attribute, an ORM exception is raised.
+[Controlling Cascade on Backrefs](https://docs.sqlalchemy.org/en/latest/orm/cascades.html#controlling-cascade-on-backrefs)
+One case where save-update cascade does sometimes get in the way is with bi-directional relationships
 
-To set up only one attribute as eager loading, and all the rest as raise (by using a wildcard specifier):
+    mapper(Order, order_table, properties={
+        'items' : relationship(Item, backref='order')
+    })
 
-    session.query(Order).options(
-    joinedload(Order.items), raiseload('*'))
+    >>> o1 = Order()
+    >>> session.add(o1)
+    >>> o1 in session
+    True
 
-**Joined Eager Loading**
+    >>> i1 = Item()
+    >>> i1.order = o1
+    >>> i1 in o1.items
+    True
+    >>> i1 in session
+    True
 
-Connects a JOIN (by default a LEFT OUTER join) to the SELECT statement emitted by a Query and populates the target scalar/collection from the same result set as that of the parent.
+This behavior can be disabled using the cascade_backrefs flag:
 
-Usually used for collections rather than many-to-one-references.
+    mapper(Order, order_table, properties={
+        'items' : relationship(Item, backref='order',
+                                    cascade_backrefs=False)
+    })
 
-    >>> jack = session.query(User).\
-    ... options(joinedload(User.addresses)).\
-    ... filter_by(name='jack').all()
-    SELECT
-        addresses_1.id AS addresses_1_id,
-        addresses_1.email_address AS addresses_1_email_address,
-        addresses_1.user_id AS addresses_1_user_id,
-        users.id AS users_id, users.name AS users_name,
-        users.fullname AS users_fullname,
-        users.password AS users_password
-    FROM users
-    LEFT OUTER JOIN addresses AS addresses_1
-        ON users.id = addresses_1.user_id
-    WHERE users.name = ?
-    ['jack']
+So above, the assignment of `i1.order = o1` will append `i1` to the items collection of `o1`, but will not add `i1` to the session. You can, of course, `add()` `i1` to the session at a later point. This option may be helpful for situations where an object needs to be kept out of a session until it’s construction is completed, but still needs to be given associations to objects which are already persistent in the target session.
 
-The JOIN emitted by default is a LEFT OUTER JOIN, to allow for a lead object that does not refer to a related row. For an attribute that is guaranteed to have an element, such as a many-to-one reference to a related object where the referencing foreign key is NOT NULL, the query can be made more efficient by using an inner join:
+**delete**
 
-    session.query(Address).options(
-    joinedload(Address.user, innerjoin=True))
+    class User(Base):
+        # ...
 
-**The Zen of Joined Eager Loading**
+        addresses = relationship("Address", cascade="save-update, merge, delete")
 
-It is critical to understand the distinction that while `Query.join()` is used to alter the results of a query, `joinedload()` goes through great lengths to not alter the results of the query, and instead hide the effects of the rendered join to only allow for related objects to be present.
+If using the above mapping, we have a User object and two related Address objects:
 
-The philosophy behind loader strategies is that any set of loading schemes can be applied to a particular query, and the results don’t change - only the number of SQL statements required to fully load related objects and collections changes. A particular query might start out using all lazy loads. After using it in context, it might be revealed that particular attributes or collections are always accessed, and that it would be more efficient to change the loader strategy for these. The strategy can be changed with no other modifications to the query, the results will remain identical, but fewer SQL statements would be emitted. In theory (and pretty much in practice), nothing you can do to the Query would make it load a different set of primary or related objects based on a change in loader strategy.
+    >>> user1 = sess.query(User).filter_by(id=1).first()
+    >>> address1, address2 = user1.addresses
 
-**Subquery Eager Loading and Select IN loading**
+If we mark user1 for deletion, after the flush operation proceeds, address1 and address2 will also be deleted:
 
-Is configured in the same manner as that of joined eager loading.  Using `subqueryload()` option rather than `joinedload()` option can give greater query than joined eager loading in the area of loading collections.
+    >>> sess.delete(user1)
+    >>> sess.commit()
+    DELETE FROM address WHERE address.id = ?
+    ((1,), (2,))
+    DELETE FROM user WHERE user.id = ?
+    (1,)
+    COMMIT
 
-Select IN loading is similar but has a much simpler structure than that of subquery eager loading, and is often superior.
-This style of loading emits a SELECT that refers to the primary key values of the parent object inside of an IN clause, in order to load related associations:
+Alternatively, if our User.addresses relationship does not have delete cascade, SQLAlchemy’s default behavior is to instead de-associate address1 and address2 from user1 by setting their foreign key reference to NULL. Using a mapping as follows:
 
-    >>> jack = session.query(User).\
-    ... options(selectinload('addresses')).\
-    ... filter(or_(User.name == 'jack', User.name == 'ed')).all()
-    SELECT
-        users.id AS users_id,
-        users.name AS users_name,
-        users.fullname AS users_fullname,
-        users.password AS users_password
-    FROM users
-    WHERE users.name = ? OR users.name = ?
-    ('jack', 'ed')
-    SELECT
-        users_1.id AS users_1_id,
-        addresses.id AS addresses_id,
-        addresses.email_address AS addresses_email_address,
-        addresses.user_id AS addresses_user_id
-    FROM users AS users_1
-    JOIN addresses ON users_1.id = addresses.user_id
-    WHERE users_1.id IN (?, ?)
-    ORDER BY users_1.id, addresses.id
-    (5, 7)
+    class User(Base):
+        # ...
 
-Above, the second SELECT refers to `users_1.id IN (5, 7)`, where the “5” and “7” are the primary key values for the previous two User objects loaded; after a batch of objects are completely loaded, their primary key values are injected into the IN clause for the second SELECT.
+        addresses = relationship("Address")
 
-**What Kind of Loading to Use ?**
+Upon deletion of a parent User object, the rows in address are not deleted, but are instead de-associated:
 
-Typically comes down to optimizing the tradeoff between number of SQL executions, complexity of SQL emitted, and amount of data fetched. Lets take two examples, a relationship() which references a collection, and a `relationship()` that references a scalar many-to-one reference.
+    >>> sess.delete(user1)
+    >>> sess.commit()
+    UPDATE address SET user_id=? WHERE address.id = ?
+    (None, 1)
+    UPDATE address SET user_id=? WHERE address.id = ?
+    (None, 2)
+    DELETE FROM user WHERE user.id = ?
+    (1,)
+    COMMIT
 
-One to Many Collection
+delete cascade is more often than not used in conjunction with `delete-orphan` cascade, which will emit a `DELETE` for the related row if the “child” object is deassociated from the parent. The combination of delete and delete-orphan cascade covers both situations where SQLAlchemy has to decide between setting a foreign key column to NULL versus deleting the row entirely.
 
-default lazy loading: if you load 100 objects, and then access a collection on each of them, a total of 101 SQL statements will be required.
+**ORM-level “delete” cascade vs. FOREIGN KEY level “ON DELETE” cascade**
 
-joined loading: the same would only one emit SQL statement. However, the total number of rows fetched will be equal to the sum of the size of all the collections, plus one extra row for each parent object that has an empty collection. Each row will also contain the full set of columns represented by the parents, repeated for each collection item. Therefore joined eager loading only makes sense when the size of the collections are relatively small.
+The behavior of SQLAlchemy’s “delete” cascade has a lot of overlap with the `ON DELETE CASCADE` feature of a database foreign key, as well as with that of the ON `DELETE SET NULL` foreign key setting when “delete” cascade is not specified.
 
-subquery loading: makes sense when the collections are larger.
+It is important to note the differences between the ORM and the relational database’s notion of “cascade” as well as how they integrate:
 
-selectin loading: the load of 100 objects will also emit two SQL statements, the second of which refers to the 100 primary keys of the objects loaded
+A database level `ON DELETE` cascade is configured effectively on the many-to-one side of the relationship; that is, we configure it relative to the FOREIGN KEY constraint that is the “many” side of a relationship. At the ORM level, this direction is reversed. SQLAlchemy handles the deletion of “child” objects relative to a “parent” from the “parent” side, which means that delete and delete-orphan cascade are configured on the one-to-many side.
 
-Many to One Reference
+Database level foreign keys with no `ON DELETE` setting are often used to prevent a parent row from being removed, as it would necessarily leave an unhandled related row present. If this behavior is desired in a one-to-many relationship, SQLAlchemy’s default behavior of setting a foreign key to `NULL` can be caught in one of two ways:
 
-default lazy loading: if the many-to-one reference is a simple foreign key reference to the target’s primary key, each reference will be checked first in the current identity map using `Query.get()`. So here, if the collection of objects references a relatively small set of target objects, using the default of `lazy=’select’` is by far the most efficient way to go.
-
-joined loading: For a load of objects where there are many possible target references which may have not been loaded already, joined loading with an INNER JOIN is extremely efficient. Configure with `innerjoin=True` if FK reference is not nullable.
-
-not much advantage for subquery loading or selectin loading
-
-
-
-
+The easiest and most common is just to set the foreign-key-holding column to `NOT NULL` at the database schema level. An attempt by SQLAlchemy to set the column to `NULL` will fail with a simple `NOT NULL` constraint exception.

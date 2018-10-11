@@ -81,3 +81,20 @@ stmt2 = select([users.c.name, func.count(addresses.c.id)]).\
            select_from(users.join(addresses))
 print(conn.execute(stmt2).fetchall())
 
+
+
+stmt = select([users.c.id, users.c.name, addresses.c.email_address]).where(users.c.name.like('jac%')).select_from(
+        users.join(addresses))
+res = conn.execute(stmt).fetchall()
+print(res)
+
+
+
+stmt = select([addresses.c.email_address]).\
+    where(users.c.name.contains("jack"))
+
+print(conn.execute(stmt).scalar())
+
+
+print(select([addresses.c.email_address]).\
+    where(users.c.name.contains("jack")).compile())
