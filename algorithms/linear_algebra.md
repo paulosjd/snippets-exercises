@@ -11,7 +11,6 @@ Exponents (F(x) = x<sup>2</sup>) aren’t predictable: 10<sup>2</sup> is 100, bu
 
 ![](../images/linalg7.png)
 
-
 Linear Transformations
 ----------------------------
 
