@@ -13,6 +13,7 @@ Backslash remove special meaning, allow search of metacharacters in regex patter
     `\w` matches any alphanumeric character; equiv to [a-zA-Z0-9_]
     `\W` matches any non-alphanumeric character; equiv to [^a-zA-Z0-9_]
 
+    . matches anything except a newline
     | or operator. A|B will match any string that matches either A or B.
 
 **Repetition**
@@ -73,7 +74,38 @@ creating a pattern and calling it's methods, except for where access regex withi
     >>> m.group(2)
     'b'
 
+**Lookahead Assertions**
 
+`(?=...)` Positive lookahead assertion
+
+`(?!...)` Positive lookahead assertion
+
+
+Consider a simple pattern to match a filename and split it apart into a base name and an extension
+The pattern to match this is quite simple: `.*[.].*$`
+
+The `.` needs to be specially-treated as its a metacharacter. The trailing `$` is needed to ensure that all the rest of the string must be included in the extension. This regular expression matches foo.bar and autoexec.bat and sendmail.cf and printers.conf.
+
+What if you want to match filenames where the extension is not bat? This is where a negative lookahead is used:
+
+    .*[.](?!bat$).*$
+
+The negative lookahead means: if the expression bat doesn’t match at this point, try the rest of the pattern; if bat$ does match, the whole pattern will fail. The trailing $ is required to ensure that something like sample.batch, where the extension only starts with bat, will be allowed.
+The following pattern excludes filenames that end in either bat or exe:
+
+    .*[.](?!bat$|exe$).*$
+
+**Modifying Strings**
+
+The `split()` method of a pattern splits a string apart wherever the RE matches occurs. There’s a module-level `re.split()` function, too.
+Capturing groups can be used to determine the delimiter:
+
+    >>> p2 = re.compile(r'(\W+)')
+    >>> p2.split('This... is a test.')
+    ['This', '... ', 'is', ' ', 'a', ' ', 'test', '.', '']
+
+The `sub()` method of a pattern (and the module-level function) performs a similar task to `str.replace()`
+For such operations, only use the re module where it is necessary.  Strings have several methods for performing operations with fixed strings and they’re usually much faster, because the implementation is a single small C loop that’s been optimized for the purpose, instead of the large, more generalized regular expression engine.
 
 Dict constructor
 ---------------

@@ -46,4 +46,59 @@ Examples is binary search, a technique used to search sorted data sets. When sea
 
 ![](../images/binary-search.png)
 
+In computer science, big O notation is used to classify algorithms according to how their running time or space requirements grow as the input size grows. The letter O is used because the growth rate of a function is also referred to as the order of the function. The Big-O is not concerned with factors that do not change as the input increases (constants).
+
+It is useful in the analysis of algorithms. Simply put, it describes how the algorithm scales (performs) in the worst case scenario as it is is run with more input. e.g. the scenario that the Big-O describes is when the target element is last (or not present at all). This particular algorithm is O(N) so the same algorithm working on an array with 25 elements should take approximately 5 times longer than an array with 5 elements.
+It is easy to lose sight of the fact that there is more to consider about an algorithm other than how fast it runs. The Big-O can also be used to describe other behavior such as memory consumption. We often optimize by trading memory for time. You may need to choose a slower algorithm because it also consumes less of a resource that you need to be frugal with.
+It is important to note that there is no single algorithm that is fastest in all cases, as data can be input into a program in all manners of states. And the approaches of each algorithm will have a best case and worst case scenario where they perform at their best or worst.
+Big O notation ranks an algorithms’ efficiency
+
+![](../images/big-o-chart.png)
+
+`O` refers to the order of the function, or its growth rate, and `n` is the length of the array to be sorted.
+If an algorithm has the number of operations required formula of:
+
+    f(n) = 6n^4 - 2n^3 + 5
+
+As “n” approaches infinity, of the three terms present, `6n^4` is the only one that matters. So the lesser terms, `2n^3` and `5`, are omitted because they are insignificant. Same goes for the “6” in `6n^4`, actually.
+
+Therefore, this function would have an order growth rate, or a “big O” rating, of `O(n^4)`
+
+When looking at many of the most commonly used sorting algorithms, the rating of `O(n log n)` in general is the best that can be achieved.
+
+![](../images/big-o-chart.png)
+
+Consider an algorithm to guess a number within a list of prime numbers. Iterating through or randomly guessing new values each time, in the worst case the number of guesses
+is the length of the list. i.e. The big o notation is O(n) so worst case is linearly proportional to n.
+
+    def random_choices(primes, target):
+        count = 0
+        guess = primes.pop(random.choice(range(len(primes))))
+        while guess != target and primes:
+            count += 1
+            guess = primes.pop(random.choice(range(len(primes))))
+        return 'Answer is {}. Wrong guesses: {}'.format(guess, count)
+
+The following implements a binary search, and in a list of 16 items, the worst case number of guesses needed is 4, log2(16) i.e. O(log n)
+
+    def find_number(primes, target):
+        count = 0
+        guess = random.choice(primes)
+        while guess != target:
+            count += 1
+            if guess < target:
+                primes = primes[primes.index(guess) + 1:]
+                guess = random.choice(primes)
+            elif guess > target:
+                primes = primes[:primes.index(guess)]
+                guess = random.choice(primes)
+            if len(primes) == 1:
+                guess = primes[0]
+                break
+        return 'Answer is {}. Wrong guesses: {}'.format(guess, count)
+
+
+
+
+
 
