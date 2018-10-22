@@ -12,6 +12,24 @@ Exponents (F(x) = x<sup>2</sup>) aren’t predictable: 10<sup>2</sup> is 100, bu
 ![](../images/linalg7.png)
 
 
+Linear Transformations
+----------------------------
+
+![](../images/linalg10.png)
+
+What this is saying is that the entire 2-d linear transformation is completely described by just 4 numbers.
+It is common to package these coordinates into a 2x2 matrix where you can interpret the columns as the 2 vectors where i-hat and j-hat both land.
+
+![](../images/linalg12.png)
+
+If you are given a 2x2 matrix and some specific vector and you want to know where that linear transformation
+takes that vector you can take the coords of the vector, multiply by the corresponding columns, and add together what you get:
+
+![](../images/linalg15.png)
+
+The general matrix containing variables 'a', 'b', 'c', 'd' is just a way to package the information for a linear transormation.
+In such transformations, grid lines remain parallel and evenly-spaced, such that the origin always remain fixed.
+
 Vectors and spaces
 ------------------
 **Linear combinations**
@@ -77,12 +95,3 @@ Matrices are used to solve a large set of linear equations.
 
 A linear equation in 3 variables represents the set of all points whose coordinates satisfy the equations.
 Basically, a linear equation in three variables represents a plane. Matrices enable us to deal with data in more the 3-dimensions.
-
-More on Linear Transformations
-----------------------------
-
-![](../images/linalg10.png)
-
-ADD FROM 5:58 IN Linear transformations and matrices _ Essence of linear algebra, chapter 3
-
-
