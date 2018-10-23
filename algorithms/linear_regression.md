@@ -120,7 +120,7 @@ Now we need a cost function to audit how our model is performing.
 
 Again using the Chain rule for our gradient descent:
 
-    def update_weights(features, targets, weights, lr):
+    def update_weights_vectorized(X, targets, weights, lr):
         '''
         Features:(200, 3)
         Targets: (200, 1)
@@ -146,6 +146,3 @@ Again using the Chain rule for our gradient descent:
         weights[2][0] -= (lr * np.mean(d_w3))
 
         return weights
-
-
-
