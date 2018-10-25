@@ -50,7 +50,7 @@ Often, anonymous functions will be used instead of a function reference on an ev
 
 AJAX
 ----
-he jQuery `ajax()` method returns a Promise object. Using Promises with Ajax allows us to bind multiple callback functions to our request, write flexible code where our ajax handling logic is in a different place than our actual request, and wait for multiple requests to complete before starting an action.
+The jQuery `ajax()` method returns a Promise object. Using Promises with Ajax allows us to bind multiple callback functions to our request, write flexible code where our ajax handling logic is in a different place than our actual request, and wait for multiple requests to complete before starting an action.
 
 Here is an example of separating the handling logic from the actual request:
 
@@ -110,5 +110,43 @@ Here is how you would do it:
     }(window.jQuery, window, document));
     // The global jQuery object is passed as a parameter
 
+Hooks and callbacks
+-------------------
+
+A hook is essentially a place in code that allows you to tap in to a module to either provide different behavior or to react when something happens.
+Tne good example of usage of hooks, coincidentally in web development, are WordPress' hooks. They are named appropriately in that they allow a way to 'hook into' certain points of the execution of a program.
+
+So for example, the wp_head is an 'action' that is emitted when a WordPress theme is being rendered and it's at the part where it renders the part that's within the tags. Say that you want to write a plugin that requires an additional stylesheet, script, or something that would normally go within those tags. You can 'hook into' this action by defining a function to be called when this action is emitted. Something like:
+
+    add_action('wp_head', 'your_function');
+
+your_function() could be something as simple as:
+
+    function your_function() {
+        echo '<link rel="stylesheet" type="text/css" href="lol.css" />';
+    }
+
+Now, when WordPress emits this action by doing something like do_action('wp_head');, it will see that your_function() was 'hooked into' that action, so it will call that function (and pass it any arguments it may have).
+Long story short: It allows you to add additional functionality at specific points of the execution of a program by 'hooking into' those points, in most cases by assigning a function callback.
+In general, a callback is a function that you register with the API to be called at the appropriate time in the flow of processing.
+
+A webhook is a general method for altering the behaviour of a web app with custom call. They are "user-defined HTTP callbacks", usually triggered by some event, such as pushing code to a repository or a comment being posted to a blog, and result in a HTTP POST payload being sent to the webhook's configured URL. Common uses are to trigger builds with continuous integration systems or to notify bug tracking systems.
+
+**Callbacks in JavaScripts**
+
+A callback function, also known as a higher-order function, is a function that is passed to another function as a parameter, and so the callback function is called (or executed) inside the other function.
+Consider this common use of a callback function in jQuery:
+
+    //The item in the click method's parameter is a function, not a variable.​
+    //The item is a callback function
+    $("#btn_1").click(function() {
+    alert("Btn 1 Clicked");
+    });
+
+As you see in the preceding example, we pass a function as a parameter to the click method. And the click method will call (or execute) the callback function we passed to it. Note the way we pass an anonymous function (a function without a name) to the jQuery method as a parameter.
+
+Callback Functions Are Closures - when we pass a callback function as an argument to another function, the callback is executed at some point inside the containing function’s body just as if the callback were defined in the containing function. This means the callback is a closure.
+
+We can pass functions around like variables and return them in functions and use them in other functions. When we pass a callback function as an argument to another function, we are only passing the function definition. We are not executing the function in the parameter. In other words, we aren’t passing the function with the trailing pair of executing parenthesis () like we do when we are executing a function. And since the containing function has the callback function in its parameter as a function definition, it can execute the callback anytime.
 
 

@@ -5,10 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4d364c83-bf30-4cab-a5b5-73eb0835c5f7" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/images/lr-prediction.png" afterPath="" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js-notes/DOM.md" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/js-notes/jquery.md" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/images/fitted-line.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/images/fitted-line2.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/images/residual-plot.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/javascript/jquery.md" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/numpy/stats_analysis_notes.md" afterPath="" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/javascript/basics.md" afterPath="$PROJECT_DIR$/js-notes/basics.md" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/javascript/events.md" afterPath="$PROJECT_DIR$/js-notes/events.md" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/javascript/mvc_frameworks.md" afterPath="$PROJECT_DIR$/js-notes/mvc_frameworks.md" />
+      <change type="MOVED" beforePath="$PROJECT_DIR$/javascript/node.md" afterPath="$PROJECT_DIR$/js-notes/node.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/algorithms/linear_regression.md" afterPath="$PROJECT_DIR$/algorithms/linear_regression.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/algorithms/decision-trees.md" afterPath="$PROJECT_DIR$/algorithms/decision-trees.md" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/algorithms/logistic_regression.md" afterPath="$PROJECT_DIR$/algorithms/logistic_regression.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/numpy/scipy_stats.md" afterPath="$PROJECT_DIR$/numpy/scipy_stats.md" />
     </list>
     <ignored path="snippets-exercises.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -28,27 +39,12 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="600">
-      <file leaf-file-name="decision-trees.md" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/algorithms/decision-trees.md">
+      <file leaf-file-name="events.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/js-notes/events.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="297">
-                <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="38" />
-                <folding />
-              </first_editor>
-              <second_editor>
-                <js_state />
-              </second_editor>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="logistic_regression.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/algorithms/logistic_regression.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="212">
-                <caret line="189" column="45" selection-start-line="189" selection-start-column="4" selection-end-line="189" selection-end-column="45" />
+              <first_editor relative-caret-position="1947">
+                <caret line="104" column="22" selection-start-line="104" selection-start-column="22" selection-end-line="104" selection-end-column="22" />
                 <folding />
               </first_editor>
               <second_editor>
@@ -73,15 +69,7 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/django-notes/Views.md" />
-        <option value="$PROJECT_DIR$/git-notes/remote_branches.md" />
-        <option value="$PROJECT_DIR$/databases-notes/rel_db_design.md" />
-        <option value="$PROJECT_DIR$/numpy/ndarrays.md" />
-        <option value="$PROJECT_DIR$/numpy/array_operations.md" />
-        <option value="$PROJECT_DIR$/javascript/scope_closures.md.py" />
-        <option value="$PROJECT_DIR$/unix_shell/deploy_notes.md" />
         <option value="$PROJECT_DIR$/javascript/scope_closures.md" />
-        <option value="$PROJECT_DIR$/javascript/jquery.md" />
         <option value="$PROJECT_DIR$/sqlalchemy/orm_relationships.md" />
         <option value="$PROJECT_DIR$/sqlalchemy/test_scripts/core_sql_exp_lang.md" />
         <option value="$PROJECT_DIR$/sqlalchemy/core_engine.md" />
@@ -117,13 +105,21 @@
         <option value="$PROJECT_DIR$/algorithms/data_structures.md" />
         <option value="$PROJECT_DIR$/scikit-learn/decision-trees.md" />
         <option value="$PROJECT_DIR$/algorithms/intro-concepts.md" />
-        <option value="$PROJECT_DIR$/algorithms/decision-trees.md" />
         <option value="$PROJECT_DIR$/algorithms/ML_intro.md" />
         <option value="$PROJECT_DIR$/algorithms/scratch_files/log_reg.py" />
         <option value="$PROJECT_DIR$/algorithms/statistics.md" />
         <option value="$PROJECT_DIR$/algorithms/linear_algebra.md" />
         <option value="$PROJECT_DIR$/algorithms/linear_regression.md" />
         <option value="$PROJECT_DIR$/algorithms/logistic_regression.md" />
+        <option value="$PROJECT_DIR$/numpy/stats_analysis_notes.md" />
+        <option value="$PROJECT_DIR$/numpy/scipy_stats.md" />
+        <option value="$PROJECT_DIR$/javascript/jquery_filter.md" />
+        <option value="$PROJECT_DIR$/algorithms/decision-trees.md" />
+        <option value="$PROJECT_DIR$/javascript/DOM.md" />
+        <option value="$PROJECT_DIR$/javascript/mvc_frameworks.md" />
+        <option value="$PROJECT_DIR$/javascript/jquery.md" />
+        <option value="$PROJECT_DIR$/javascript/hooks_callbacks.md" />
+        <option value="$PROJECT_DIR$/javascript/events.md" />
       </list>
     </option>
   </component>
@@ -188,7 +184,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="images" />
+              <option name="myItemId" value="numpy" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -202,7 +198,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="algorithms" />
+              <option name="myItemId" value="js-notes" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -211,7 +207,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../frags" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
   </component>
@@ -528,13 +524,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-16" y="-16" width="3232" height="1732" extended-state="6" />
-    <editor active="false" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2263492" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294714" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32657495" sideWeight="0.5120635" order="8" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Python Console" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.31716147" sideWeight="0.4879365" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3352643" sideWeight="0.4879365" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35047066" sideWeight="0.48857144" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294714" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
@@ -567,69 +563,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/sqlalchemy/test_scripts/executing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="594">
-          <caret line="46" column="0" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sqlalchemy/test_scripts/declarative_base.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sqlalchemy/test_scripts/metadata.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="858">
-          <caret line="35" column="0" selection-start-line="35" selection-start-column="0" selection-end-line="35" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sqlalchemy/test_scripts/one_to_one.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sqlalchemy/test_scripts/association.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-660">
-          <caret line="1" column="27" selection-start-line="1" selection-start-column="27" selection-end-line="1" selection-end-column="27" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sqlalchemy/test_scripts/basic_relationships_3.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sqlalchemy/test_scripts/order_by_count.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1023">
-          <caret line="43" column="30" selection-start-line="43" selection-start-column="30" selection-end-line="43" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sqlalchemy/test_scripts/joins.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="965">
-          <caret line="94" column="0" selection-start-line="94" selection-start-column="0" selection-end-line="94" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sqlalchemy/test_scripts/pycentral.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="759">
-          <caret line="89" column="9" selection-start-line="89" selection-start-column="9" selection-end-line="89" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sqlalchemy/orm_session.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
@@ -763,30 +696,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/javascript/mvc_frameworks.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="499">
-            <caret line="21" column="26" selection-start-line="21" selection-start-column="26" selection-end-line="21" selection-end-column="26" />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/javascript/node.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="750">
-            <caret line="237" column="7" selection-start-line="237" selection-start-column="7" selection-end-line="237" selection-end-column="7" />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/misc_python.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
@@ -862,18 +771,6 @@
           <first_editor relative-caret-position="165">
             <caret line="35" column="53" selection-start-line="35" selection-start-column="53" selection-end-line="35" selection-end-column="53" />
             <folding />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/numpy/scipy_stats.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="726">
-            <caret line="46" column="18" selection-start-line="46" selection-start-column="18" selection-end-line="46" selection-end-column="18" />
           </first_editor>
           <second_editor>
             <js_state />
@@ -996,19 +893,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/algorithms/decision-trees.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="297">
-            <caret line="9" column="0" selection-start-line="9" selection-start-column="0" selection-end-line="9" selection-end-column="38" />
-            <folding />
-          </first_editor>
-          <second_editor>
-            <js_state />
-          </second_editor>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/algorithms/statistics.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
@@ -1022,10 +906,57 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/algorithms/logistic_regression.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="635">
+            <caret line="318" column="0" selection-start-line="318" selection-start-column="0" selection-end-line="318" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/numpy/stats_analysis_notes.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="0">
+            <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/numpy/brain_size.csv">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/numpy/scipy_stats.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="-3622">
+            <caret line="4" column="35" selection-start-line="4" selection-start-column="35" selection-end-line="4" selection-end-column="35" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/algorithms/linear_algebra.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="595">
+          <first_editor relative-caret-position="2384">
             <caret line="96" column="0" selection-start-line="96" selection-start-column="0" selection-end-line="96" selection-end-column="0" />
             <folding />
           </first_editor>
@@ -1038,8 +969,8 @@
     <entry file="file://$PROJECT_DIR$/algorithms/linear_regression.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="4026">
-            <caret line="134" column="0" selection-start-line="134" selection-start-column="0" selection-end-line="134" selection-end-column="0" />
+          <first_editor relative-caret-position="550">
+            <caret line="19" column="0" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="27" />
             <folding />
           </first_editor>
           <second_editor>
@@ -1048,11 +979,120 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/algorithms/logistic_regression.md">
+    <entry file="file://$PROJECT_DIR$/javascript/jquery_filter.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="212">
-            <caret line="189" column="45" selection-start-line="189" selection-start-column="4" selection-end-line="189" selection-end-column="45" />
+          <first_editor relative-caret-position="0">
+            <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/images/factorial.png">
+      <provider selected="true" editor-type-id="images">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/algorithms/decision-trees.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="1683">
+            <caret line="63" column="21" selection-start-line="63" selection-start-column="21" selection-end-line="63" selection-end-column="21" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js-notes/mvc_frameworks.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="2200">
+            <caret line="76" column="5" selection-start-line="76" selection-start-column="5" selection-end-line="76" selection-end-column="5" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js-notes/DOM.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="1056">
+            <caret line="77" column="0" selection-start-line="77" selection-start-column="0" selection-end-line="77" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js-notes/jquery.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="3630">
+            <caret line="110" column="16" selection-start-line="110" selection-start-column="16" selection-end-line="110" selection-end-column="16" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js-notes/node.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="2271">
+            <caret line="237" column="7" selection-start-line="237" selection-start-column="7" selection-end-line="237" selection-end-column="7" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js-notes/basics.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="0">
+            <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/javascript/hooks_callbacks.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="0">
+            <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor>
+            <js_state />
+          </second_editor>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js-notes/events.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="1947">
+            <caret line="104" column="22" selection-start-line="104" selection-start-column="22" selection-end-line="104" selection-end-column="22" />
             <folding />
           </first_editor>
           <second_editor>

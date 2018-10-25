@@ -177,15 +177,50 @@ The average age of customers who bought the term deposit is higher, and the pday
 
 ![](../images/logreg18.png)
 
-**Create training data**
+**Create dummy variables and training data**
 
-**Recursive Feature Elimination (RFE)**
+Nominal variables, or variables that describe a characteristic using two or more categories are not always useable in their categorical form. A common workaround for incorporating these variables into a regression analysis is to use dummy variables.
+Consider the favorite class variable, originally coded as science = 1, math = 2, and language = 3:
 
-Based on the idea to repeatedly construct a model and choose either the best or worst performing feature, setting the feature aside and then repeating the process with the rest of the features. This process is applied until all features in the dataset are exhausted. The goal of RFE is to select features by recursively considering smaller and smaller sets of features.
+![](../images/logreg20.png)
+
+We do not use all three categories in a regression however. Doing so would give the regression redundant information and result in multicollinearity.
+This means we have to leave one category out, and we call this missing category the reference category. Using the reference category makes all interpretation in reference to that category. For example, if you included the dummy variable of science and used language as the reference, results for that variable tell you those students’ results in comparison to students with language as their favorite class. The author edreference category is usually chosen based on how you want to interpret the results, so if you would rather talk about students in comparison to those with math as their favorite class, simply include the other two instead.
+
+    cat_vars=['job','marital','education','default','housing','loan','contact','month','day_of_week','poutcome']
+    for var in cat_vars:
+        cat_list='var'+'_'+var
+        cat_list = pd.get_dummies(data[var], prefix=var)
+        data1=data.join(cat_list)
+        data=data1
+
+    data_vars=data.columns.values.tolist()
+    to_keep=[i for i in data_vars if i not in cat_vars]
+
+    data_final=data[to_keep]
+    data_final.columns.values
+
+    X = data_final.loc[:, data_final.columns != 'y']
+    y = data_final.loc[:, data_final.columns == 'y']
+
+    # Over-sample with SMOTE in creation of training data
+
+    from imblearn.over_sampling import SMOTE
+
+    os = SMOTE(random_state=0)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+    columns = X_train.columns
+
+    os_data_X,os_data_y=os.fit_sample(X_train, y_train)
+    os_data_X = pd.DataFrame(data=os_data_X,columns=columns )
+    os_data_y= pd.DataFrame(data=os_data_y,columns=['y'])
+    # we can then check the numbers of our data
 
     data_final_vars=data_final.columns.values.tolist()
     y=['y']
     X=[i for i in data_final_vars if i not in y]
+
+    # Implelemnt RFE to train the model by choosing best performing features
 
     from sklearn.feature_selection import RFE
     from sklearn.linear_model import LogisticRegression
@@ -197,12 +232,26 @@ Based on the idea to repeatedly construct a model and choose either the best or 
     print(rfe.support_)
     print(rfe.ranking_)
 
-
     cols=['euribor3m', 'job_blue-collar', 'job_housemaid', 'marital_unknown', 'education_illiterate', 'default_no', 'default_unknown',
           'contact_cellular', 'contact_telephone', 'month_apr', 'month_aug', 'month_dec', 'month_jul', 'month_jun', 'month_mar',
           'month_may', 'month_nov', 'month_oct', "poutcome_failure", "poutcome_success"]
     X=os_data_X[cols]
     y=os_data_y['y']
+
+    # We can now implement the model
+
+The SMOTE algorithm works by creating synthetic samples from the minor class instead of creating copies.
+After this, we now have a perfect balanced set of data. We over-sampled only on the training data, so none of the information in the test data is used to create synthetic observations
+
+Synthetic data: collecting the necessary amount of labeled training data needed to train machine learning algorithms can be cost prohibitive or impractical, or say the data needs to certain conditions that cannot be obtained with authentic data (e.g. 98% of samples negative).
+
+**Recursive Feature Elimination (RFE) to select best-performing features**
+
+The performance of machine learning algorithms is typically evaluated using predictive accuracy. However, this is not appropriate when the data is imbalanced and/or the costs of diﬀerent errors vary markedly. As an example, consider the classiﬁcation of pixels in mammogram images as possibly cancerous. A typical mammography dataset might contain 98% normal pixels and 2% abnormal pixels. A simple default strategy of guessing the majority class would give a predictive accuracy of 98%. However, the nature of the application requires a fairly high rate of correct detection in the minority class and allows for a small error rate in the majority class in order to achieve this. Simple predictive accuracy is clearly not appropriate in such situations. The Receiver Operating Characteristic (ROC) curve is a standard technique for summarizing classiﬁer performance over a range of tradeoﬀs between true positive and false positive error rates
+
+Where classiﬁcation categories are not approximately equally represented. Often real-world data sets are predominately composed of “normal” examples with only a small percentage of “abnormal” or “interesting” examples. It is also the case that the cost of misclassifying an abnormal (interesting) example as a normal example is often much higher than the cost of the reverse error. Under-sampling of the majority (normal) class has been proposed as a good means of increasing the sensitivity of a classiﬁer to the minority class. This paper (on [SMOTE algorithm](https://arxiv.org/pdf/1106.1813.pdf)) shows that a combination of our method of over-sampling the minority (abnormal) class and under-sampling the majority (normal) class can achieve better classiﬁer performance (in ROC space) than only under-sampling the majority class.
+
+Recursive Feature Elimination (RFE) is based on the idea to repeatedly construct a model and choose either the best or worst performing feature, setting the feature aside and then repeating the process with the rest of the features. This process is applied until all features in the dataset are exhausted. The goal of RFE is to select features by recursively considering smaller and smaller sets of features.
 
 **Implementing the model**
 
@@ -210,6 +259,8 @@ Based on the idea to repeatedly construct a model and choose either the best or 
     logit_model=sm.Logit(y,X)
     result=logit_model.fit()
     print(result.summary2())
+
+![](../images/logreg21.png)
 
 The p-values for most of the variables are smaller than 0.05, except four variables which we remove:
 
@@ -220,5 +271,48 @@ The p-values for most of the variables are smaller than 0.05, except four variab
     result=logit_model.fit()
     print(result.summary2())
 
+**Logistic Regression Model Fitting**
 
+    from sklearn.linear_model import LogisticRegression
+    from sklearn import metrics
 
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+    logreg = LogisticRegression()
+    logreg.fit(X_train, y_train)
+
+    y_pred = logreg.predict(X_test)
+    print('Accuracy of logistic regression classifier on test set: {:.2f}'.format(logreg.score(X_test, y_test)))
+
+Accuracy of logistic regression classifier on test set: 0.74.
+
+**Confusion Matrix**
+
+![](../images/logreg22.png)
+
+    from sklearn.metrics import confusion_matrix
+    confusion_matrix = confusion_matrix(y_test, y_pred)
+    print(confusion_matrix)
+
+The result is telling us that we have 6124+5170 correct predictions and 2505+1542 incorrect predictions.
+
+**ROC Curve**
+
+    from sklearn.metrics import roc_auc_score
+    from sklearn.metrics import roc_curve
+    logit_roc_auc = roc_auc_score(y_test, logreg.predict(X_test))
+    fpr, tpr, thresholds = roc_curve(y_test, logreg.predict_proba(X_test)[:,1])
+    plt.figure()
+    plt.plot(fpr, tpr, label='Logistic Regression (area = %0.2f)' % logit_roc_auc)
+    plt.plot([0, 1], [0, 1],'r--')
+    plt.xlim([0.0, 1.0])
+    plt.ylim([0.0, 1.05])
+    plt.xlabel('False Positive Rate')
+    plt.ylabel('True Positive Rate')
+    plt.title('Receiver operating characteristic')
+    plt.legend(loc="lower right")
+    plt.savefig('Log_ROC')
+    plt.show()
+
+![](../images/logreg23.png)
+
+The ROC curve is another common tool used with binary classifiers. The dotted line represents the ROC curve of a purely random classifier; a good classifier stays as far away from that line as possible (toward the top-left corner).

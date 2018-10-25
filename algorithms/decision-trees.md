@@ -28,12 +28,47 @@ Visualise your tree as you are training by using the `export` function. Use `max
 
 Remember that the number of samples required to populate the tree doubles for each additional level the tree grows to. Use `max_depth` to control the size of the tree to prevent overfitting.
 
+Example - Titanic dataset
+-------------------------
+The leaf nodes represent whether the passenger died or survived, so this is a Classification tree; egression trees are represented in the same manner, just they predict continuous values like price of a house. . A real dataset may have a lot more features, in which case this will just be a branch in a bigger tree.
+
+Decide which features to choose and what conditions to use for splitting, along with knowing when to stop.
+
+**Recursive Binary Splitting**
+
+This algorithm is recursive in nature as the groups formed can be sub-divided using same strategy.
+The root node is the best predictor/classifier.
+
+Say we have 3 features, so will have 3 candidate splits. Now we will calculate how much accuracy each split will cost us, using a function. The split that costs least is chosen, which in our example is sex of the passenger.
+
+**Cost of a split**
+
+Cost functions used for classification and regression:
+
+![](../images/dectree3.png)
+
+**When to stop splitting?**
+
+A large set of features will result in a large number of split, which in turn gives a huge tree. Such trees are complex and can lead to overfitting. So, we need to know when to stop.
+
+One way of doing this is to set a minimum number of training inputs to use on each leaf. e.g. a minimum of 10 passengers and ignore any leaf with < 10 passengers. Another way is to set maximum depth of your model (from root to leaf).
+
+**Pruning**
+
+Involves removing the branches that make use of features having low importance. This can improve performance of the tree by reducing complexity and therefore overfitting.
+
+The simplest method of pruning starts at leaves and removes each node with most popular class in that leaf, this change is kept if it doesn't deteriorate accuracy. Its also called reduced error pruning.
+
+Cost complexity pruning where a learning parameter (alpha) is used to weigh whether nodes can be removed based on the size of the sub-tree. This is also known as weakest link pruning.
+
+**Drawbacks of CART**
+
+Decision trees can be unstable because small variations in the data might result in a completely different tree being generated. This is called variance, which needs to be lowered by methods like bagging and boosting.
+
+Decision tree learners create biased trees if some classes dominate. It is therefore recommended to balance the data set prior to fitting with the decision tree.
+
 **Random forests and boosting**
 
 Are two strategies for combining decision trees; increased accuracy often can be achieved by combining the results of a collection of decision trees.
 
-
-
-
-https://towardsdatascience.com/decision-trees-in-machine-learning-641b9c4e8052
 
