@@ -20,7 +20,7 @@ In many cases the queryset should be stored and re-used instead of consuming:
     entry = Entry.objects.get(id=1)
     entry.blog  # Blog object is retried
     entry.blog  # cached version, no DB lookup
-    
+
     entry.authors.all()    #query performed
     entry.authors.all()    #query performed again
 
@@ -30,19 +30,19 @@ select_related is useful for optimization DB operations:
     class Album(models.Model):
     title = models.CharField(max_length=50)
     year = models.IntegerField()
-    
+
     Song(models.Model):
     name = models.CharField(max_length=50)
     album = models.ForeignKey(Album)
-    
+
     song = Song.objects.get(id=5) # query performed
-    
+
     album =  song.album # query performed again
-    
-    Only one db lookup needed: 
-    
+
+    Only one db lookup needed:
+
     song = Song.objects.select_related(‘album’).get(id=5)
-    
+
     # song.album # database query not required
 
 As caching objects can involve significant memory usage, if the queryset will not need to be re-used sometimes then there is no need for it to be cached.

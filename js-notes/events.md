@@ -149,4 +149,21 @@ Callback Functions Are Closures - when we pass a callback function as an argumen
 
 We can pass functions around like variables and return them in functions and use them in other functions. When we pass a callback function as an argument to another function, we are only passing the function definition. We are not executing the function in the parameter. In other words, we aren’t passing the function with the trailing pair of executing parenthesis () like we do when we are executing a function. And since the containing function has the callback function in its parameter as a function definition, it can execute the callback anytime.
 
+`event.preventDefault()` vs. `return false`
+-------------------------------------------
+    $('a').click(function (e) {
+        // custom handling here
+        e.preventDefault();
+    });
+
+    $('a').click(function () {
+    // custom handling here
+    return false;
+    });
+
+`return false` from within a jQuery event handler is effectively the same as calling both `e.preventDefault` and `e.stopPropagation` on the passed `jQuery.Event` object. Note that for normal (non-jQuery) event handlers, `return false` does not stop the event from bubbling up.
+
+The benefit to using `event.preventDefault()` is that you can add this as the first line in the handler, thereby guaranteeing that the anchor's default behavior will not fire, regardless if the last line of the function is not reached (eg. runtime error).
+
+
 

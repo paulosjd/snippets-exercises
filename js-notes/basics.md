@@ -2,6 +2,19 @@
 Difference between `==` and `===` is that `==` will perform a type convserion
 when comparing objects whereas `===` will not.
 
+Standard built-in objects
+-------------------------
+Here, global objects refer to objects in the global scope. The global scope consists of the properties of the global object (accessed using the `this` operator in the global scope), including inherited properties, if any.
+Other objects in the global scope are either created by the user script or provided by the host application.
+
+Value properties are global properties that return a simple value; they have no properties or methods. E.g. `NaN`, `undefined`, `null`
+
+Function properties are functions which are called globally rather than on an object, e.g. `isNaN()`, `parseFloat()`, `parseInt()`
+
+Fundamental objects are basic objects upon which all other objects are based, e.g. `Object`, `Function`, `Boolean`, `Error`
+
+Numbers and dates: `Number`, `Math`, `Date`. Text processing: 'String', `RegExp`. Indexed collections: e.g. `Array`. Structured data e.g. `JSON`.
+
 Keywords
 --------
 `let` allows you to declare variables that are limited in scope to the block, statement, or expression on which it is used. This is unlike the var keyword, which defines a variable globally, or locally to an entire function regardless of block scope.

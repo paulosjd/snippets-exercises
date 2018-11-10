@@ -91,7 +91,6 @@ If an object is used as the collection, the callback is passed a key-value pair 
 We can break the `$.each()` loop at a particular iteration by making the callback function return `false`.
 The `$.each()` function is not the same as `$(selector).each()`, which is used to iterate, exclusively, over a jQuery object.
 
-
 Tree Traversal and DOM Filtering
 --------------------------------
 Child Selector (“parent > child”) Selects all direct child elements specified by “child” of elements specified by “parent”.
@@ -141,4 +140,71 @@ The result of this call is a red background for items 3, 4, and 5:
 Now only items 3 and 4 are selected:
 
     $( "li" ).slice( 2, 4 ).css( "background-color", "red" );
+
+StackOverflow forum snippets
+----------------------------
+
+    $('input[name=checkBoxName]').parents('span').addClass("checked");
+    $("input[name=checkBoxName]").prop('checked', 'checked');
+
+I have two check boxes, that I want to make to behave like they are radio buttons (only one of them is checked at time).
+...You need to be setting the checked status by it's property to achieve what you want:
+
+    $("input:checkbox").click(function(){
+        var group = "input:checkbox[name='"+$(this).attr("name")+"']";
+        $(group).prop("checked", false);
+        $(this).prop("checked", true);
+    });
+
+[sFiddle here.](http://jsfiddle.net/FGecS/)
+
+**In jQuery, how to attach events to dynamic html elements?**
+
+Suppose I have some jQuery code that attaches an event handler to all elements with class "myclass". For example:
+
+    $(function(){
+        $(".myclass").click( function() {
+            // do something
+        });
+    });
+
+And my html might be as follows:
+
+    <a class="myclass" href="#">test1</a>
+    <a class="myclass" href="#">test2</a>
+    <a class="myclass" href="#">test3</a>
+
+That works with no problem. However, consider if the "myclass" elements were written to the page at some future time. E.g:
+
+    <a id="anchor1" href="#">create link dynamically</a>
+    <script type="text/javascript">
+    $(function(){
+        $("#anchor1").click( function() {
+            $("#anchor1").append('<a class="myclass" href="#">test4</a>');
+        });
+    });
+    </script>
+
+In this case, the "test4" link is created when a user clicks on `#anchor1`
+The "test4" link does not have the `click()` handler associated with it, even though it has `class="myclass"`. Any idea how I can fix this?
+
+**Store JSON object in data attribute in HTML jQuery**
+
+I am storing data using the data- approach in a HTML tag...
+
+just use `$('#myElement').data('key',jsonObject);`. To get the JSON back don't parse it, just call:
+
+    var getBackMyJSON = $('#myElement').data('key');
+
+If you are getting `[Object Object]` instead of direct JSON, just access your JSON by the data key:
+
+    var getBackMyJSON = $('#myElement').data('key').key;
+
+E.g.: `<div data-foobar='{"foo":"bar"}'></div>` access by:
+
+    $('div').data('foobar').foo
+
+
+
+
 
