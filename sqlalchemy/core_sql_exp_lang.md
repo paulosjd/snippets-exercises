@@ -433,4 +433,80 @@ A common system of dealing with duplicates in composed SELECT statements is the 
     ()
     [(u'jack',), (u'wendy',)]
 
+Examples of common expression clauses
+-------------------------------------
+**where**
 
+    SQL :
+    SELECT * FROM census
+    WHERE sex = F
+
+    SQLAlchemy :
+    db.select([census]).where(census.columns.sex == 'F')
+
+**in**
+
+    SQL :
+    SELECT state, sex
+    FROM census
+    WHERE state IN (Texas, New York)
+
+    SQLAlchemy :
+    db.select([census.columns.state, census.columns.sex]).where(census.columns.state.in_(['Texas', 'New York']))
+
+**and, or, not**
+
+    SQL :
+    SELECT * FROM census
+    WHERE state = 'California' AND NOT sex = 'M'
+
+    SQLAlchemy :
+    db.select([census]).where(db.and_(census.columns.state == 'California', census.columns.sex != 'M'))
+
+**order by**
+
+    SQL :
+    SELECT * FROM census
+    ORDER BY State DESC, pop2000
+
+    SQLAlchemy :
+    db.select([census]).order_by(db.desc(census.columns.state), census.columns.pop2000)
+
+**functions**
+
+    SQL :
+    SELECT SUM(pop2008)
+    FROM census
+
+    SQLAlchemy :
+    db.select([db.func.sum(census.columns.pop2008)])
+
+Other functions include avg, count, min, max…
+
+**group by**
+
+    SQL :
+    SELECT SUM(pop2008) as pop2008, sex
+    FROM census
+
+    SQLAlchemy :
+    db.select([db.func.sum(census.columns.pop2008).label('pop2008'), census.columns.sex]).group_by(census.columns.sex)
+
+**distinct**
+
+    SQL :
+    SELECT DISTINCT state
+    FROM census
+
+    SQLAlchemy :
+    db.select([census.columns.state.distinct()])
+
+**case & cast**
+
+The `case()` expression accepts a list of conditions to match and the column to return if the condition matches, followed by an else_ if none of the conditions match.
+`cast()` function to convert an expression to a particular type
+
+    female_pop = db.func.sum(db.case([(census.columns.sex == 'F', census.columns.pop2000)],else_=0))
+    total_pop = db.cast(db.func.sum(census.columns.pop2000), db.Float)
+    query = db.select([female_pop/total_pop * 100])
+    result = connection.execute(query).scalar()

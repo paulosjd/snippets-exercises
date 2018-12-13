@@ -88,7 +88,16 @@ If an object is used as the collection, the callback is passed a key-value pair 
     // flammable: inflammable
     // duh: no duh
 
-We can break the `$.each()` loop at a particular iteration by making the callback function return `false`.
+We can break the `$.each()` loop at a particular iteration by making the callback function return `false`. Or continue with next iteration:
+
+    var arr = [ "one", "two", "three", "four", "five" ];
+        $.each(arr, function(i) {
+            if(arr[i] == 'three') {
+                return true;
+            }
+            alert(arr[i]);     // Will alert one, two, four, five
+        });
+
 The `$.each()` function is not the same as `$(selector).each()`, which is used to iterate, exclusively, over a jQuery object.
 
 Tree Traversal and DOM Filtering
@@ -140,6 +149,71 @@ The result of this call is a red background for items 3, 4, and 5:
 Now only items 3 and 4 are selected:
 
     $( "li" ).slice( 2, 4 ).css( "background-color", "red" );
+
+$.ajax promise
+--------------
+      $.ajax({
+        url: "/someurl",
+        method: "GET",
+        data: {
+          a: "a"
+        },
+        success: function(data) {
+          console.log('success', data)
+        },
+        error: function(xhr) {
+          console.log('error', xhr);
+        }
+      })
+
+Async call has to wait for something to happen before execute some callback function (which may have another ajax call, which can wait for another result and another callback function on success/failure). This could become 'nested callback function hell' - hard to read and debug etc.
+
+Promise method can be used to bind multiple callbacks:
+
+      $.ajax({
+        url: "/someurl",
+        method: "GET",
+        data: {
+          a: "a"
+      })
+      .done(function(data) {
+        console.log('success callback 1', data)
+      })
+      .done(function(data) {
+        console.log('success callback 2', data)
+      })
+      .fail(function(xhr) {
+        console.log('error callback 1', xhr);
+      })
+      .fail(function(xhr) {
+        console.log('error callback 2', xhr);
+      });
+
+Also, Promise can be used to bind callback conditionaly:
+
+      var jqXhr = $.ajax({
+        url: "/someurl",
+        method: "GET",
+        data: {
+          a: "a"
+      });
+
+      if (someConditionIstrue) {
+        jqXhr
+        .done(function(data) {
+          console.log('when condition is true', data);
+        })
+        .fail(function(xhr) {
+          console.log('error callback for true condition', xhr);
+        });
+      } else {
+        jqXhr.done(function(data){
+          console.log('when condition is false', data);
+        })
+        .fail(function(xhr) {
+          console.log('error callback for false condition', xhr);
+        });
+      }
 
 StackOverflow forum snippets
 ----------------------------

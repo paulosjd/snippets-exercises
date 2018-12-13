@@ -199,4 +199,45 @@ That is, `Foo.__getattr__` and `Foo.__getattribute__` would be used to find what
 
 Put yet another way, if `MyDescriptor` did not define `__get__`, then `f.x` would simply return the instance of `MyDescriptor`
 
+Miscellaeneous Gotchas
+----------------------
+
+Immutable objects with same value always have the same hash in Python.
+
+    some_dict = {}
+    some_dict[5.5] = "Ruby"
+    some_dict[5.0] = "JavaScript"
+    some_dict[5] = "Python"
+
+    >>> some_dict[5.5]
+    "Ruby"
+    >>> some_dict[5.0]
+    "Python"
+    >>> some_dict[5]
+    "Python"
+
+Python dictionaries check for equality and compare the hash value to determine if two keys are the same:
+
+    >>> 5 == 5.0
+    True
+    >>> hash(5) == hash(5.0)
+    True
+
+The following behavior is due to CPython optimization (called string interning) that tries to use existing immutable objects in some cases rather than creating a new object every time.
+After being interned, many variables may point to the same string object in memory (thereby saving memory).
+
+    >>> a = "wtf"
+    >>> b = "wtf"
+    >>> a is b
+    True
+
+Strings that are not composed of ASCII letters, digits or underscores, are not interned.
+
+    >>> a = "wtf!"
+    >>> b = "wtf!"
+    >>> a is b
+    False
+
+
+
 

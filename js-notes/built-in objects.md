@@ -1,3 +1,7 @@
+`String`, `Number`, `Boolean`, `Object`, `Function`, `Array`, `Date`, `RegExp`, `Error`
+
+Their names seem to imply they are directly related to their simple primitives counter-parts, but in fact, their relationship is more complicated
+
 Object
 ------
 
@@ -150,6 +154,8 @@ A closure is one way of supporting first-class functions; it is an expression th
 
 ![](../images/js_promise.png)
 
+![](../images/ajax_promise.png)
+
 Numbers
 -------
 "double-precision 64-bit format IEEE 754 values", there's no such thing as an integer in JS; In practice, integer values are treated as 32-bit ints.
@@ -254,6 +260,25 @@ Another example:
 
     avg(2, 3, 4, 5); // 3.5
 
+Sort method, note that numbers may be treated as strings, to sort numerically pass a callback function:
+
+    const str_array = ['d', 'a', 't', 5, 'l']
+    str_array.sort()  // [5, "a", "d", "l", "t"]
+
+    const numbers = [15, 12, 8, 22]
+    numbers.sort()  // [12, 15, 22, 8]
+
+    numbers.sort((a, b) => a - b)  // [8, 12, 15, 22]
+
+    const obj_array = [{ id : 1, name : "Fred", address : "12 Smith St"},
+                      { id : 2, name : "Dan", address : "42 Some St"}]
+
+    obj_array.sort(function(a,b){if (a.name < b.name)
+                                     return -1;
+                                 else if (a.name == b.name)
+                                     return 0;
+                                 else return 1; });
+
 **`map()`**
 
 The `map()` method creates a new array with the results of calling a provided function on every element in this array.
@@ -300,8 +325,11 @@ Here can you 'for of' loop as for arrays, because Map has iteratory property.
 
 Weakmaps are used where to want to enable garbage-collection of key no longer used.
 
+Miscellaneous
+-------------
+![](../images/js1.png)
 
-
+![](../images/js2.png)
 
 
 
