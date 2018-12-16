@@ -88,4 +88,3 @@ print(dept_color.value)
 dept_color2 = s.query(Department.color).filter(Department.id == 1).one()
 print(dept_color2.color.value)
 # 'green'
-

@@ -261,6 +261,7 @@ to convert them back to a JSON object on the client and/or the server side use `
 Arrow Functions
 ---------------
 An arrow function expression has a shorter syntax than a function expression and does not have its own this, arguments, super, or new.target.
+So the value of `this` inside the function is not altered: it is the same as the value of this outside the function. No more `var self = this` to keep track of the current scope.
 Arrow functions do not have their own arguments object. Thus, in this example, arguments is simply a reference to the arguments of the enclosing scope:
 
     var arguments = [1, 2, 3];

@@ -1,10 +1,6 @@
-import enum
-from sqlalchemy import Column, String, Integer, ForeignKey, Enum, select
-from sqlalchemy.orm import relationship, backref
+from sqlalchemy import Column, String, Integer, ForeignKey, create_engine, func, and_
+from sqlalchemy.orm import relationship, backref, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base, declared_attr, as_declarative
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
 
 @as_declarative()
 class Base(object):
@@ -14,46 +10,70 @@ class Base(object):
 
     id = Column(Integer, primary_key=True)
 
-class ColorSet(enum.Enum):
-    one = 'red'
-    two = 'green'
-    three = 'blue'
-
-class Department(Base):
-    id = Column(Integer, primary_key=True)
+class Exchange(Base):
     name = Column(String)
-    color = Column(Enum(ColorSet))
+    country = Column(String)
 
-class Employee(Base):
-    id = Column(Integer, primary_key=True)
-    name = Column(String)
-    first_name = Column(String, nullable=True)
-    last_name = Column(String, nullable=True)
-    department_id = Column(Integer, ForeignKey('department.id'))
-    department = relationship(Department, backref=backref('employees', uselist=True))
+class Shares(Base):
+    company = Column(String)
+    price = Column(Integer)
+    quantity = Column(Integer)
+    exchange_id = Column(Integer, ForeignKey('exchange.id'))
+    exchange = relationship(Exchange, backref=backref('shares'))
 
 engine = create_engine('sqlite:///')
 session = sessionmaker(bind=engine)
 Base.metadata.create_all(engine)
 
-john = Employee(name='john')
-dan = Employee(name='dan')
-it_department = Department(name='IT', color=ColorSet.two)
-john.department = it_department
-dan.department = it_department
-
 s = session()
 
-s.add(john)
-s.add(dan)
-s.add(it_department)
+nyse = Exchange(name='NYSE', country='USA')
+nasdaq = Exchange(name='NASDAQ', country='Canada')
+
+s.add(nyse)
+s.add(nasdaq)
+
+goog1 = Shares(company='Google', price=95, quantity=5, exchange=nyse)
+goog2 = Shares(company='Google', price=95, quantity=20, exchange=nyse)
+goog3 = Shares(company='Google', price=104, quantity=15, exchange=nyse)
+goog3 = Shares(company='Google', price=104, quantity=25, exchange=nyse)
+goog3 = Shares(company='Google', price=92, quantity=30, exchange=nyse)
+msoft = Shares(company='Microsoft', price=84, quantity=40, exchange=nasdaq)
+
+for i in [goog1, goog2, goog3, msoft]:
+    s.add(i)
+
 s.commit()
 
-it = s.query(Department).filter(Department.name == 'IT').one()
-print(it.employees[0].name)
-# john
+# select price, sum(quantity) as num from shares where company='Google' group by price;
 
-find_it = select([Employee.name]).where(Department.name == 'IT')
-find_it2 = select([Employee.name]).where(Department.id == john.department_id)
-print(s.execute(find_it2).fetchall())
-# ('john', )
+prices = s.query(Shares.price, func.sum(Shares.quantity)) \
+                .filter(Shares.company == 'Google').group_by(Shares.price).all()
+print(prices)
+
+prices = s.query(Shares.price, func.sum(Shares.quantity).label('total_sold')) \
+                .filter(Shares.company == 'Google').group_by(Shares.price).first()
+print(prices.total_sold)
+
+us_shares = s.query(Shares.company)\
+    .join(Exchange, Exchange.id == Shares.id)\
+    .filter(Exchange.country == 'USA').all()
+
+print(us_shares)
+
+number = s.query(func.sum(Shares.quantity).label('number')).as_scalar()
+
+prices = s.query(Shares.price, Shares.quantity)\
+            .join(Exchange, Exchange.id == Shares.exchange_id)\
+            .filter(and_(
+                Exchange.name == 'NYSE',
+                number > 20)
+            ).group_by(Shares).all()
+print(prices)
+
+
+
+
+
+
+

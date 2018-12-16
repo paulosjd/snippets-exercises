@@ -144,6 +144,12 @@ gives behavior like Enums, described in PEP 435:
     >>> numbers.reverse_mapping
     {0: 'ZERO', 1: 'ONE', 'bar': 'foo'}
 
+Local and Global Variables
+--------------------------
+Simply speaking a variable is an abstraction layer for the memory cells that contain the actual value.
+Every module, class and function has its own namespace and variables are locally bound to that.
+Generally, modifying global variables within functions is considered bad practice as it can lead to hard-to-detect side effects.
+
 Descriptors
 -----------
 n.b. See 'Customizing Attribute Access' in python-data-model.ipynb for further reading.

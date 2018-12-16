@@ -174,9 +174,13 @@ A subquery is correlated if it depends on data in the enclosing `SELECT`.
 (Python Database API Specification) widely used specification within Python to define common usage patterns for all database connection packages. The DBAPI is a “low level” API which is typically the lowest level system used in a Python application to talk to a database. SQLAlchemy’s dialect system is constructed around the operation of the DBAPI, providing individual dialect classes which service a specific DBAPI on top of a specific database engine.
 Nearly all Python database modules such as `sqlite3`, `psycopg` and `mysql-python` conform to this interface.
 
-**DDL**
+**DDL, DML,**
 
-Data Definition Language is the subset of SQL that relational databases use to configure tables, constraints, and other permanent objects within a database schema. SQLAlchemy provides a rich API for constructing and emitting DDL expressions.
+DDL is Data Definition Language: used to define data structures. E.g. instructions such as `create table`, `alter table`, ...
+
+DML is Data Manipulation Language: used to manipulate data itself. E.g. instructions such as `insert`, `update`, `delete`, ...
+
+![](../images/sql-commands.png)
 
 **Descriptors**
 
