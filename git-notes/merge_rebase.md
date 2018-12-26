@@ -1,3 +1,12 @@
+git stash, git reset, git revert:
+
+https://realpython.com/advanced-git-for-pythonistas/
+
+![](../images/stash.png)
+
+Rebase
+-------
+![](../images/rebase2.png)
 
 Branching and Merging
 ---------------------

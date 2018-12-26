@@ -23,7 +23,7 @@ The following query returns the process_id value from the process table and then
       AND process.state IN ( 'C', 'F', 'Z' )
       AND process.status != 'archived';
 
-The SQLAlchemy `aliased()` method declares multiple references to `ObjectProperty` that can be used independently: `op1`, `op2`, and `op3`. The other advanced technique is to use the `outerjoin()` method to relate the need for a LEFT OUTER join.
+The SQLAlchemy `aliased()` method is mostly used when using the same table more than once in a query. Below, multiple references to `ObjectProperty` can be used independently: `op1`, `op2`, and `op3`. The other advanced technique is to use the `outerjoin()` method to relate the need for a LEFT OUTER join.
 
     op1 = aliased(ObjectProperty)
     op2 = aliased(ObjectProperty)
@@ -110,8 +110,10 @@ This should work (different SQL, same result):
 
 **`Query.select_from()`**
 
-Often used in conjunction with `Query.join()` in order to control which entity is selected from on the “left” side of the join.
+To control the first entity in the list of JOINs, use the Query.select_from() method:
 
-Usually, the default “join point” is the leftmost entity in the `Query` object’s list of entities to be selected.
+    query = session.query(User, Address).select_from(Address).join(User)
+
+Often used in conjunction with `Query.join()` in order to control which entity is selected from on the “left” side of the join.
 
 

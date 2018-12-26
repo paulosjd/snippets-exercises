@@ -244,6 +244,30 @@ Strings that are not composed of ASCII letters, digits or underscores, are not i
     >>> a is b
     False
 
+Bitwise operators
+-----------------
+The bitwise operators are similar to the logical operators, except that they work on binary representations of data. Bitwise operations are generally used in low level programming, e.g. such as networking, hardware register operations, data compression, and security/encryption operations. As such, they tend to be restricted to operating system and driver levels of code, embedded systems.
+E.g. usually bitwise operations are faster than doing multiply/divide.
+
+
+`and` tests whether both expressions are True in a boolean context while `&` will test if identity of both is `True`. Similar for `or` and `|`
+
+    >>> a = True
+    >>> b = True
+    >>> a & b
+    True
+    >>> a = False
+    >>> b = True
+    >>> a & b
+    False
+    >>> a = 3
+    >>> a | b
+    3
+    >>> b = 2
+    >>> a & b
+    2
+
+The short-circuiting boolean operators (`and`, `or`) can't be overriden. & and | (and not, by the way) can be fully overriden, as they don't short circuit.
 
 
 

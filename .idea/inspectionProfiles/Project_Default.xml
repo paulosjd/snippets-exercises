@@ -5,6 +5,10 @@
       <option name="ignoredIdentifiers">
         <list>
           <option value="sqlalchemy.*" />
+          <option value="unix_shell.socket_server.f" />
+          <option value="unix_shell.socket_client.f" />
+          <option value="f" />
+          <option value="" />
         </list>
       </option>
     </inspection_tool>

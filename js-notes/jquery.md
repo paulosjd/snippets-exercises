@@ -278,7 +278,14 @@ E.g.: `<div data-foobar='{"foo":"bar"}'></div>` access by:
 
     $('div').data('foobar').foo
 
+**What is the difference between `text()` and `html()` ?**
 
+Where you only need text, or where you also need html tags:
+
+    $(function() {
+      $("#div1").html('<a href="example.html">Link</a><b>hello</b>');
+      $("#div2").text('<a href="example.html">Link</a><b>hello</b>');
+    });
 
 
 

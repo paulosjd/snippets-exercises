@@ -75,5 +75,3 @@ print(prices)
 
 
 
-
-
