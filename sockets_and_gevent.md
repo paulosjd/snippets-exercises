@@ -333,6 +333,42 @@ Queues are ordered sets of data that have the usual put / get operations but are
 
 For example if one Greenlet grabs an item off of the queue, the same item will not be grabbed by another Greenlet executing simultaneously.
 
+    import gevent
+    from gevent.queue import Queue
+
+    tasks = Queue()
+
+    def worker(n):
+        while not tasks.empty():
+            task = tasks.get()
+            print('Worker %s got task %s' % (n, task))
+            gevent.sleep(0)
+
+        print('Quitting time!')
+
+    def boss():
+        for i in xrange(1,25):
+            tasks.put_nowait(i)
+
+    gevent.spawn(boss).join()
+
+    gevent.joinall([
+        gevent.spawn(worker, 'steve'),
+        gevent.spawn(worker, 'john'),
+        gevent.spawn(worker, 'nancy'),
+    ])
+
+    Worker steve got task 1
+    Worker john got task 2
+    Worker nancy got task 3
+    Worker steve got task 4
+    Worker john got task 5
+    Worker nancy got task 6
+    ...
+    Quitting time!
+    Quitting time!
+    Quitting time!
+
 *Timeouts*
 
 Timeouts are a constraint on the runtime of a block of code or a Greenlet.
@@ -356,6 +392,10 @@ They can also be used with a context manager, in a `with` statement.
 Like any other segment of code, Greenlets can fail in various ways. A greenlet may fail to throw an exception, fail to halt or consume too many system resources.
 The internal state of a greenlet is generally a time-dependent parameter. There are a number of flags on greenlets which let you monitor the state of the thread, e.g. `started`, `ready()`, `successful()` etc
 
+*Monkey patching*
+
+If you see: `from gevent import monkey` and `monkey.patch_all()`, this goes through and monkeypatches Python's stdlib, "green"-ing the libraries as it goes.
+
 **Python sockets**
 
 Python’s standard socket module can easily be used to create a socket for IPC (Inter-Process Communication).
@@ -363,3 +403,39 @@ Python’s standard socket module can easily be used to create a socket for IPC 
 When a socket is created, an endpoint for communication becomes available and a corresponding file descriptor is returned - an abstract indicator for accessing a file with an integer value of 0, 1 or 2 corresponding to stdin, stdout or stderr.
 
 Our webservers can be implemented in whatever language but the basis from which data is passed between each other via the HTTP (TCP) protocol rest upon sockets. Sockets are the fundamental building block from which HTTP, HTTPS, FTP, SMTP protocols (all of these are TCP-type protocols) are defined.
+
+**Long Polling**
+
+Unlike websockets it works in all browsers pretty consistently & does "push" data very well.
+
+The technique around long-polling essentially just means that, rather than quickly finishing a request & closing out the connection, the server starts the response but never closes the connection. To the client, it looks like things are taking a long time to load, but to the server, you're stalling for time/data.
+
+    import gevent
+    from gevent.queue import Queue, Empty
+    from gevent.pywsgi import WSGIServer
+    import simplejson as json
+
+    data_source = Queue()
+
+    def producer():
+        while True:
+            data_source.put_nowait('Hello World')
+            gevent.sleep(1)
+
+    def ajax_endpoint(environ, start_response):
+        status = '200 OK'
+        headers = [
+            ('Content-Type', 'application/json')
+        ]
+
+        start_response(status, headers)
+
+        while True:
+            try:
+                datum = data_source.get(timeout=5)
+                yield json.dumps(datum) + '\n'
+            except Empty:
+                pass
+
+    gevent.spawn(producer)
+    WSGIServer(('', 8000), ajax_endpoint).serve_forever()
