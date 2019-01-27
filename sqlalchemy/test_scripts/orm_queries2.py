@@ -81,7 +81,8 @@ sub_query2 = s.query(Exchange.id).join(Country, Country.id == Exchange.country_i
 
 query = s.query(Shares.price, Company.name, Exchange.name)\
             .join(Company, Company.id == Shares.company_id)\
-            .join(Exchange, Exchange.id == Company.exchange_id)\
+
+query = query.join(Exchange, Exchange.id == Company.exchange_id)\
             .filter(Exchange.id.in_([a.id for a in sub_query2]))\
             .all()
 
