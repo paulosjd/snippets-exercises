@@ -171,6 +171,18 @@ You can convert a string to an integer using the built-in parseInt() function. T
 
 Similarly there is `parseFloat()` which, unlike `parseInt()`, always uses base 10.
 
+Any mathematic operation you perform without both operands being numbers (or values that can be interpreted as regular numbers in base 10 or base 16) will result in the operation failing to produce a valid number, in which case you will get the NaN value.
+
+`NaN` is a special type of ` number `. The label/description is very poor and misleading, it is more accurate to think of `NaN` as being "invalid number," "failed number," or even "bad number," than to think of it as "not a number."
+
+    var a = 2 / "foo";		// NaN
+    
+    typeof a === "number";	// true
+
+`NaN` is a very special value in that it's never equal to another `NaN` value (i.e., it's never equal to itself). It's the only value, in fact, that is not reflexive (without the Identity characteristic `x === x`). So, `NaN !== NaN`
+
+So to test for it, use `Number.isNaN(..)`
+
 String
 ------
 

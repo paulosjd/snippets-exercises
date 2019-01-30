@@ -1,0 +1,2 @@
+![](../images/redux.png)
+

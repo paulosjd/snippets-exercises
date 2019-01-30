@@ -1,3 +1,7 @@
+**Callbacks**
+
+![](../images/js_callback.png)
+
 **Spread/Rest**
 
 When `...` is used in front of an array (actually, any iterable, which we cover in Chapter 3), it acts to "spread" it out into its individual values.

@@ -204,6 +204,8 @@ Since hard binding is such a common pattern, it's provided with a built-in utili
 
 As of ES6, the hard-bound function produced by `bind(..)` has a `.name` property that derives from the original target function. For example: `bar = foo.bind(..)` should have a `bar.name` value of `"bound foo"`, which is the function call name that should show up in a stack trace.
 
+![](../images/this_binding.png)
+
 **`new` Binding**
 
 In JS, constructors are just functions that happen to be called with the `new` operator in front of them. They are not attached to classes, nor are they instantiating a class. They are not even special types of functions.
