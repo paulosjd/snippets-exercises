@@ -2,7 +2,11 @@ https://facebook.github.io/react-native/docs/network.html
 
 https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch
 
-JS interface for accessing and manipulating requests and responses. It provides a global `fetch()` method that provides an easy, logical way to fetch resources asynchronously across the network.
+How can I make an AJAX call in React?
+
+You can use any AJAX library you like with React. Some popular ones are Axios, jQuery AJAX, and the browser built-in window.fetch.
+
+window.fetch is a JS interface for accessing and manipulating requests and responses. It provides a global `fetch()` method that provides an easy, logical way to fetch resources asynchronously across the network.
 
     import React, { Component } from 'react';
     

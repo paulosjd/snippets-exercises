@@ -92,6 +92,86 @@ Iteration
 The `for..of` loop asks for an iterator object (from a default internal function known as `@@iterator`) of the thing to be iterated, and the loop then iterates over the successive return values from calling that iterator object's `next()` method, once for each loop iteration.
 Regular objects do not have a built-in `@@iterator` but you can define one for them.
 
+Properties
+------------
+
+Two kinds: *data properties* and *accessor properties*. The latter are essentially functions that work on getting and setting a value, but look like regular *data properties* to an external code.
+
+**Flags and Descriptors**
+
+Normal *data properties* on an object, besides a ` value `, have three special attributes (“flags”):
+
+`writable` – if true, can be changed, otherwise it’s read-only.
+
+`enumerable` – if true, then listed in loops, otherwise not listed.
+
+`configurable` – if true, the property can be deleted and these attributes can be modified, otherwise not.
+
+    let user = {
+      name: "John"
+    };
+    Object.getOwnPropertyDescriptor(user, 'name');
+    // Object { value: "John", writable: true, enumerable: true, configurable: true }
+
+When we create a property “the usual way”, all of them are true. But we also can change them anytime.
+
+To change the flags, we can use `Object.defineProperty`. If the property exists, `defineProperty` updates its flags. Otherwise, it creates the property with the given value and flags; in that case, if a flag is not supplied, it is assumed `false`.
+
+    let user = {};
+    Object.defineProperty(user, "name", {
+      value: "John"
+    });
+    Object.getOwnPropertyDescriptor(user, 'name');
+    // Object { value: "John", writable: false, enumerable: false, configurable: false }
+
+The `writable` flag specifies whether property is read-only. `configurable`: a non-configurable property can not be deleted or altered with `defineProperty`. `enumerable` controls whether the property shows up in `for..in` loops, and also whether they are include in `Object.keys`:
+
+    Object.keys(user)  \\ Array []
+    let user2 = {name: "Sam"}
+    Object.keys(user2)  \\ Array [ "name" ]
+
+**Property getters and setters**
+
+    let user = {
+      name: "John",
+      surname: "Smith",
+
+      get fullName() {
+        return `${this.name} ${this.surname}`;
+      },
+
+      set fullName(value) {
+        [this.name, this.surname] = value.split(" ");
+      }
+    };
+
+    // set fullName is executed with the given value.
+    user.fullName = "Alice Cooper";
+
+    alert(user.name); // Alice
+    alert(user.surname); // Cooper
+
+Now we have a “virtual” property. It is readable and writable, but in fact does not exist.
+
+Descriptors for accessor properties are different – as compared with data properties.
+For accessor properties, there is no value and writable, but instead there are get and set functions:
+
+`get` – a function without arguments, that works when a property is read. `set` – a function with one argument, that is called when the property is set
+
+`enumerable` – same as for data properties. `configurable` – same as for data properties
+
+Getters/setters can be used as wrappers over “real” property values to gain more control over them:
+
+    let user = {
+      ...
+      set name(value) {
+        if (value.length < 4) {
+          alert("Name is too short, need at least 4 characters");
+          return;
+        }
+        this._name = value;
+      }
+    };
 
 
 

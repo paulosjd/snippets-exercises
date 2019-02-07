@@ -1,3 +1,6 @@
+**Two-way Binding**
+
+![](../images/two-way-binding.png)
 
 
 var Tags = React.createClass({
