@@ -86,3 +86,34 @@ A Function Expression defines a function as a part of a larger expression syntax
     })();
 
 Typically functions created by Function Expressions are unnamed. However, debugging with anonymous functions can be frustrating.
+
+**try...catch and throw operator**
+
+    let json = "{ bad json }";
+
+    try {
+      let user = JSON.parse(json);
+    } catch (e) {
+      alert( e.name );
+      alert( e.message );
+    }
+
+Catch should only process errors that it knows and “rethrow” all others.
+
+Catch gets all errors. In `catch(err) {...}` block we analyze the error object `err`.
+If we don’t know how to handle it, then we do throw `err`.
+
+In the code below, we use rethrowing so that catch only handles `SyntaxError`:
+
+    let json = '{ "age": 30 }';
+    try {
+      let user = JSON.parse(json);
+      if (!user.name) {
+        throw new SyntaxError("Incomplete data: no name"); // (*)
+      }
+      alert( user.name );
+    } catch(e) {
+      alert( "JSON Error: " + e.message );
+    }
+
+
