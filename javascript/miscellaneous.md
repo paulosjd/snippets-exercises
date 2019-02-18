@@ -2,6 +2,21 @@
 
 ![](../images/js_callback.png)
 
+**Increment operator**
+
+When used as a standalone statement, these mean the same thing:
+
+    x++;
+    ++x;
+
+The difference comes when you use the value of the expression elsewhere (post- and pre-increment):
+
+    x = 0;
+    y = array[x++]; // This will get array[0]
+
+    x = 0;
+    y = array[++x]; // This will get array[1]
+
 **Spread/Rest**
 
 When `...` is used in front of an array (actually, any iterable, which we cover in Chapter 3), it acts to "spread" it out into its individual values.
@@ -38,6 +53,25 @@ The other common usage of ... can be seen as essentially the opposite; instead o
 
 	foo( 1, 2, 3, 4, 5);			// [1,2,3,4,5]
 
+**Array and object destructuring**
+
+Arrays:
+
+    [foo, bar] = [1,2]
+    console.log(foo)  // 1
+
+    const [, , ,fourth, , , , , ,tenth] = states;
+    console.log(fourth, tenth); // Akwa Ibom, Delta
+
+Objects:
+
+    const me = {name: 'Charles Odili', company: 'Andela'};
+
+    const { name } = me;
+    console.log(name); // Charles Odili
+
+    const { name: chalu } = me;
+    console.log(chalu); // Charles Odili
 
 **Default Parameters**
 
@@ -115,5 +149,87 @@ In the code below, we use rethrowing so that catch only handles `SyntaxError`:
     } catch(e) {
       alert( "JSON Error: " + e.message );
     }
+
+**Extending `Error`**
+
+We often need our own error classes to reflect specific cases, by creating e.g. `HttpError` or `ValidationError` which inherits from `Error`
+
+    class ValidationError extends Error {
+      constructor(message) {
+        super(message); // (1)
+        this.name = "ValidationError"; // (2)
+      }
+    }
+    try {
+      throw new ValidationError("Whoops!");
+    } catch(err) {
+      alert(err.message + err.name);
+    }
+
+The above class is very generic, below is a more concrete class:
+
+    class PropertyRequiredError extends ValidationError {
+      constructor(property) {
+        super("No property: " + property);
+        this.name = "PropertyRequiredError";
+        this.property = property;
+      }
+    }
+
+    // Usage
+    function readUser(json) {
+      let user = JSON.parse(json);
+      if (!user.age) {
+        throw new PropertyRequiredError("age");
+      }
+      if (!user.name) {
+        throw new PropertyRequiredError("name");
+      }
+      return user;
+    }
+
+    try {
+      let user = readUser('{ "age": 25 }');
+    } catch (err) {
+      if (err instanceof ValidationError) {
+        alert("Invalid data: " + err.message); // Invalid data: No property: name
+      } else {
+        throw err; // unknown error, rethrow it
+      }
+    }
+
+**Curried functions**
+
+First, examine this function with two parameters …
+
+    const add = (x, y) => x + y
+    add(2, 3) //=> 5
+
+Here it is again in curried form …
+
+    const add = x => y => x + y
+
+Here is the same1 code without arrow functions …
+
+    const add = function (x) {
+      return function (y) {
+        return x + y
+      }
+    }
+
+So our `add` function returns a *function*:
+
+    add(2) // returns (y => 2 + y)
+
+In order to use our curried function, we have to call it a bit differently:
+
+    add(2)(3)  // returns 5
+
+The first (outer) function call returns a second (inner) function. Only after we call the second function do we actually get the result.
+More than two arrow functions can be sequenced:
+
+    const three = a => b => c => a + b + c
+    three (1) (2) (3) // 6
+
 
 

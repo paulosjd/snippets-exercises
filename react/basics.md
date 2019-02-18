@@ -129,6 +129,9 @@ write this.state and set it equal to an object.
 Now to enable the state to be modified from inside a component, something you are not able to do with props.
 This involves listening for the click event and running the `setState()` method.
 
+    this.setState({ ... })
+    this.setState(state => { ... })
+
 `setState` does two things: It will update the value of the score state, and it will tell React that this component needs to be
 re-rendered to make sure that everything is up to date in the UI.
 

@@ -308,7 +308,6 @@ JS does not support multiple inheritance, but mixins can be implemented by copyi
 
 
 
-
 Additional
 ------------
 
