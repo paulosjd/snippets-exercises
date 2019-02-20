@@ -163,3 +163,100 @@ In composition, a more “specific” component renders a more “generic” one
 ![](../images/containment2.png)
 
 
+PropTypes
+---------
+
+Now a separate package to React, it is for type checking for reducing bugs relating to types.
+It also serves as a handy documentation on how a component has to be used in terms of passing props. Many code editors support code completion for props.
+
+Example for basic data types:
+
+    Person.propTypes = {
+      email: PropTypes.string,
+      age: PropTypes.number,
+      worksRemote: PropTypes.bool,
+      updateCallback: PropTypes.func
+    }
+
+Further types that can be used are:
+
+    PropTypes.array,
+    PropTypes.arrayOf(PropTypes.string),
+    PropTypes.object,
+    PropTypes.objectOf(PropTypes.number)
+
+You can enforce that props are passed by using `isRequired`:
+
+    Article.propTypes = {
+      title: PropTypes.string.isRequired,
+      url: PropTypes.string.isRequired,
+      author: PropTypes.string.isRequired
+    };
+
+**Complex data types**
+
+Validate a plain JS object against a certain shape:
+
+    Person.propTypes = {
+      car: PropTypes.shape({
+        registrationNumber: PropTypes.string,
+        year: PropTypes.number
+      })
+    }
+
+**Specifying a Range of Valid Prop Values**
+
+From time to time you might want to have a prop value passed, that is exactly one out of a given set of values. Doing so, could look like this:
+
+    Person.propTypes = {
+      gender: PropTypes.oneOf([
+        'female', 'male'
+      ])
+    }
+
+In cases where a prop is optional (i.e. not using isRequired), you can set a default value to make sure something gets passed:
+
+    Developer.defaultProps = {
+      language: 'JavaScript'
+    }
+
+The `propTypes` typechecking happens after `defaultProps` are resolved, so typechecking will also apply to the `defaultProps`.
+
+Pure Components
+---------------
+A component is said to be pure if it is guaranteed to return the same result given the same props and state.
+A functional component is a good example of a pure component because, given an input, you know what will be rendered.
+
+    const HelloWorld = ({name}) => (
+     <div>{`Hi ${name}`}</div>
+    );
+
+Pure components defined as function will always re-render once new props get passed down it.
+You can wrap those in `React.memo()` to avoid that (unless obviously the properties changed)
+
+Class components can be pure too as long as their props and state are immutable.
+`React.PureComponent` is used for optimizing performance and relates to re-rendering.
+
+When `setState` is called in a component then it will be re-rendered, and this is somewhat
+'blind', i.e. even if the state in unchanged. Often re-rendering will not be necessary.
+This unnecessary re-rendering can avoided by using `shouldComponentUpdate` (which otherwise defaults to `true`):
+
+    shouldComponentUpdate(nextProps, nextState) {
+      return this.state.value != nextState.value;
+    }
+
+Here, `nextState` is whatever the next state used in `setState`. So this can be compared
+with the current state to find out if it has changed. If the method returns `false` then it will not re-render, if `true` then it will.
+It works for both props and state.
+
+An alternative approach is to use pure components. This simply involves extending from `PureComponent` instead of `Component`
+Care should be taken when using them however, since they only do a shallow comparison, for performance reasons.
+Shallow comparison means that you compare the immediate contents of the objects instead of recursively comparing all the key/value pairs of the object. So only the object references are compared, and if the state/props are mutated, this might not work as intended.
+
+Higher Order Components
+-----------------------
+Allow you to abstract out common functionality in components into a function which
+you can pass your components to to wrap them and give them the common functionality.
+
+
+

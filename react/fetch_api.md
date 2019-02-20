@@ -82,5 +82,54 @@ To extract the JSON body content from the HTTP response, we use the `json()` met
         .then(response => response.json()); // parses response to JSON
     }
 
+**Response Metadata**
+
+    fetch('users.json').then(function(response) {
+        console.log(response.headers.get('Content-Type'));
+        console.log(response.status);
+        console.log(response.type);
+        console.log(response.url);
+    });
+
+`response.type` will be either of `"basic"`, `"cors"` or `"opaque"`.
+You can define a mode for a fetch request such that only certain requests will resolve. The modes you can set include
+`same-origin`, which only succeeds for requests for assets on the same origin, and
+`cors` will allow requests for assets on the same-origin and other origins which return the appropriate CORs headers.
+
+    fetch('http://some-site.com/cors-enabled/some.json', {mode: 'cors'})
+      .then(function(response) {
+        return response.text();
+      })
+
+**Chaining Promises**
+
+If you are working with a JSON API, you'll need to check the status and parse the JSON for each response. You can simplify your code by defining the status and JSON parsing in separate functions which return promises, freeing you to only worry about handling the final data and the error case.
+
+    function status(response) {
+      if (response.status >= 200 && response.status < 300) {
+        return Promise.resolve(response)
+      } else {
+        return Promise.reject(new Error(response.statusText))
+      }
+    }
+
+    function json(response) {
+      return response.json()
+    }
+
+    fetch('users.json')
+      .then(status)
+      .then(json)
+      .then(function(data) {
+        console.log('Request succeeded with JSON response', data);
+      }).catch(function(error) {
+        console.log('Request failed', error);
+      });
+
+The great thing with this is that you can share the logic across all of your fetch requests, making code easier to maintain, read and test.
+
+
+
+
 
 

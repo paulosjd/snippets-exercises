@@ -135,6 +135,8 @@ This involves listening for the click event and running the `setState()` method.
 `setState` does two things: It will update the value of the score state, and it will tell React that this component needs to be
 re-rendered to make sure that everything is up to date in the UI.
 
+Never mutate `this.state` directly, as calling `setState()` afterwards may replace the mutation you made. Treat `this.state` as if it were immutable.
+
 For now there is no binding to the component, so we're not able to reference it with this from within the `incrementScore()` method.
 
 ![](../images/react25.png)

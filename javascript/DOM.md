@@ -329,10 +329,25 @@ Note that pressing 'enter' on an input field as well as clicking on `<input type
 
 To submit a form to the server manually, we can call `form.submit()`, in which case the 'submit' event is not generated.
 
+Frames and windows
+------------------
+**Cross-window communication**
 
+The “Same Origin” (same site) policy limits access of windows and frames to each other.
+Two URLs are said to have the “same origin” if they have the same protocol, domain and port.
 
+`iframe` from one side it’s a tag, just like `<script>` or `<img>`. From the other side it’s a window-in-window.
+From the other side it’s a window-in-window.
+The embedded window has a separate `document` and `window` objects.
+We can access them like using the properties `iframe.contentDocument` and `iframe.contentWindow`
 
+The `sandbox` attribute allows for the exclusion of certain actions inside an `<iframe>` in order to prevent it executing untrusted code. It “sandboxes” the iframe by treating it as coming from another origin and/or applying other limitations.
+`<iframe sandbox src="...">` has the “default set” of restrictions are applied. But we can provide a list of limitations to lift, like this: `<iframe sandbox="allow-forms allow-popups">`.
 
+**X-Frame-Options**
 
+The server-side header X-Frame-Options can permit or forbid displaying the page inside a frame.
+The header may have 3 values:
 
+![](../images/iframe.png)
 

@@ -18,14 +18,52 @@ The so-called regular, or dumb, components receive data from their parent (conta
 
 ![](../images/formjs2.png)
 
-
-
-
 ![](../images/react-form3.png)
 
+**Multiple options in a `select` tag**
 
+    <select multiple={true} value={['B', 'C']}>
 
-PropTypes
----------
+**Checkbox example**
+
+Checkbox can be interacted with in two ways: check or uncheck an item. This corresponds to two actions: adding an item into the array, or removing an existing item from the array.
+
+Consider the following where `selectedOptions` is array of selected values passed to the component as props. If the user had selected choices beforehand, this array would be populated with those.
+
+![](../images/checkbox2.png)
+
+The `indexOf` method checks whether a particular item exists within an array and returns its index, or `-1` is it doesn't.
+
+In the following function for handling checkboxes, the `newSelection` variable has the value of the newly selected (or deselected) item. We compare it with the existing selection of items stored at `this.state.newUser.skills`
+Note: If a checkbox is unchecked when its form is submitted, there is no value submitted to the server.
+If it's part of the array, the condition falls true and the new selection item is filtered out??. Otherwise, the `newSelection` item is concatenated into the array using spread operator.
+
+    handleSkillsCheckBox(e) {
+      const newSelection = e.target.value;
+      let newSelectionArray;
+      if (this.state.newUser.skills.indexOf(newSelection) > -1) {
+        newSelectionArray = this.state.newUser.skills.filter(s => s !== newSelection)
+      } else {
+        newSelectionArray = [...this.state.newUser.skills, newSelection];
+      }
+      this.setState( prevState => ({ newUser:
+        {...prevState.newUser, skills: newSelectionArray }
+      })
+      )
+    }
+
+**Form Actions: `handleClearForm` and `handleFormSubmit`**
+
+The line `e.preventDefault()` prevents the page from being refreshed on form submission, which is the default form behavior.
+Form submission involving making an AJAX request to the server. The data that needs to be sent is available at `this.state.newUser`
+
+![](../images/react-form5.png)
+
+**Handling Multiple Inputs**
+
+When you need to handle multiple controlled input elements, you can add a name attribute to each element and let the handler function choose what to do based on the value of `event.target.name`
+
+![](../images/react-form4.png)
+
 
 
