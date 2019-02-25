@@ -173,6 +173,67 @@ Getters/setters can be used as wrappers over “real” property values to gain 
       }
     };
 
+**Computed property names**
+
+Object initializer syntax supports computed property names, which allows you to put an expression in brackets `[]`, that will be computed as the property name.
+For example:
+
+    const myKey = 'foo'
+    let obj =  {[myKey]: 'bar'}  // Object { foo: "bar" }
+    let obj2 = {[obj.foo]: 5}  // Object { bar: 5 }
+
+Symbol type
+-----------
+
+`Symbol` is a primitive type for unique identifiers.
+They are created with `Symbol()` call with an optional description. Symbols are always different values, even if they have the same name.
+
+By specification, object property keys may be either of string type, or of symbol type. Not numbers, not booleans, only strings or symbols, these two types.
+
+While most values in JavaScript support implicit conversion to a string, Symbol does not:
+
+    let id = Symbol("id");
+    alert(id); // TypeError: Cannot convert a Symbol value to a string
+
+Symbols have two main use cases:
+
+- “Hidden” object properties. If we want to add a property into an object that “belongs”
+  to another script or a library, we can create a symbol and use it as a property key.
+  A symbolic property does not appear in `for..in`, also it won’t be accessed directly,
+   because another script does not have our symbol,
+
+- There are many system symbols used by JS which are accessible as `Symbol.*`.
+ We can use them to alter some built-in behaviors. E.g., `Symbol.iterator` for iterables, `Symbol.toPrimitive` to setup object-to-primitive conversion.
+
+Suppose we want to store an “identifier” for the object user, we can use a symbol as a key for it.
+Imagine that another script wants to have its own “id” property inside `user`, for its own purposes.
+Then that script can create its own `Symbol("id")`:
+
+![](../images/symbol.png)
+
+There will be no conflict, because symbols are always different, even if they have the same name, whereas there would
+be if we used a string `"id"`.
+
+Symbols in an object literal:
+
+![](../images/symbol2.png)
+
+System symbols are used by JS internally. We can use them to fine-tune various aspects of our objects. E.g. `Symbol.toPrimitive` allows us to describe object to primitive conversion.
+
+Object to primitive conversion
+------------------------------
+First consider type conversion on primitives:
+
+![](../images/type.png)
+
+For objects, there’s no to-boolean conversion, because all objects are `true` in a boolean context. So there are only string and numeric conversions.
+
+The numeric conversion happens when we apply mathematical functions. E.g. `Date` objects can be subtracted to give the time difference.
+
+When an object is used in the context where a primitive is required, e.g. `alert`, it’s converted to a primitive value using the `ToPrimitive` algorithm.
+
+That algorithm allows us to customize the conversion using a special object method.
+Depending on the context, the conversion has a so-called “hint”. There are three variants:
 
 
 

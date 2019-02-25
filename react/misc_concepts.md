@@ -257,6 +257,15 @@ Higher Order Components
 -----------------------
 Allow you to abstract out common functionality in components into a function which
 you can pass your components to to wrap them and give them the common functionality.
+Things you might do include injecting new props, build custom erros, set defaults etc.
 
+Suppose you had a number of button components which used the same logic for setting styles:
 
+![](../images/hoc1.png)
+
+Instead of repeating the same logic in each component, we could move the logic out into a wrapper function.
+
+![](../images/hoc2.png)
+
+The `displayName` string is used in debugging messages. This is a class property and is useful when you create HOCs.
 

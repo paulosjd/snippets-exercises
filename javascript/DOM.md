@@ -41,6 +41,18 @@ Any hyphenated CSS property will be written in camelCase in JavaScript.
 However, right click on the page and select "View Page Source". You will notice that the source of the website does not contain the new style attribute we added via JavaScript. The source of a website will not change and will never be affected by client-side JavaScript.
 If you refresh the page, the new code we added in the console will disappear.
 
+**Walking the DOM**
+
+All operations on the DOM start with the `document` object. From it we can access any node.
+
+Given a DOM node, we can go to its immediate neighbours using navigation properties. There are two main sets of them:
+
+- For all nodes: `parentNode`, `childNodes`, `firstChild`, `lastChild`, `previousSibling`, `nextSibling`
+
+- For element nodes only: `parentElement`, `children`, `firstElementChild`, `lastElementChild`, `previousElementSibling`, `nextElementSibling`
+
+Some types of DOM elements, e.g. tables, provide additional properties and collections to access their content.
+
 Data Attributes
 ---------------
 
@@ -350,4 +362,3 @@ The server-side header X-Frame-Options can permit or forbid displaying the page 
 The header may have 3 values:
 
 ![](../images/iframe.png)
-

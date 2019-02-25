@@ -95,4 +95,78 @@ The following example is the above callback example re-written:
 
 ![](../images/promise5.png)
 
+Promises chaining
+-----------------
+
+![](../images/promise7.png)
+
+The whole thing works, because a call to `promise.then` returns a promise, so that we can call the next `.then` on it.
+
+When a handler returns a value, it becomes the result of that promise, so the next `.then` is called with it.
+
+**Returning promises**
+
+Normally, a value returned by a .then handler is immediately passed to the next handler. But there’s an exception.
+
+If the returned value is a promise, then the further execution is suspended until it settles. After that, the result of that promise is given to the next .then handler.
+
+![](../images/promise8.png)
+
+**Example: `loadScript`**
+
+Using this feature with `loadScript` to load scripts one by one, in sequence:
+
+![](../images/promise9.png)
+
+Here each `loadScript` call returns a promise, and the next `.then` runs when it resolves. Then it initiates the loading of the next script. So scripts are loaded one after another.
+
+We can add more asynchronous actions to the chain. Note the code is still “flat”, it grows down, not to the right. There are no signs of "callback hell".
+
+**Error handling**
+
+When a promise rejects, e.g. `fetch` fails if the remote server is not available, the control jumps to the closest rejection handler down the chain.
+
+If we throw inside `.then` handler, that means a rejected promise, so the control jumps to the nearest error handler.
+That’s so not only for throw, but for any errors, including programming errors as well:
+
+    new Promise(function(resolve, reject) {
+      resolve("ok");
+    }).then(function(result) {
+      blabla(); // no such function
+    }).catch(alert); // ReferenceError: blabla is not defined
+
+`.catch` behaves like `try..catch`. We may have as many `.then` as we want, and then use a single `.catch` at the end to handle errors in all of them.
+
+In a regular `try..catch` we can analyze the error and maybe rethrow it if can’t handle. The same thing is possible for promises.
+
+![](../images/promise10.png)
+
+Async/await
+-----------
+The keyword `async` before a function means one simple thing: a function always returns a promise.
+i.e. the functions return value is wrapped in a resolved promise.
+
+    async function f() {
+      return 1;
+    }
+
+    f().then(alert); // 1
+
+The keyword `await` makes JavaScript wait until that promise settles and returns its result.
+
+![](../images/promise11.png)
+
+`await` literally makes JS wait until the promise settles, and then go on with the result. That doesn’t cost any CPU resources, because the engine can do other jobs meanwhile: execute other scripts, handle events etc.
+
+It’s just a more elegant syntax of getting the promise result than `promise.then`. Note that we need to have a wrapping async function for the code that awaits.
+
+![](../images/promise12.png)
+
+**Summaru**
+
+The async keyword before a function has two effects: Makes it always return a promise. Allows to use `await` in it.
+The `await` keyword before a promise makes JavaScript wait until that promise settles
+Together they provide a great framework to write asynchronous code that is easy both to read and write.
+
+With `async/await` we rarely need to write `promise.then/catch`, but we still shouldn’t forget that they are based on promises, because sometimes (e.g. in the outermost scope) we have to use these methods
 

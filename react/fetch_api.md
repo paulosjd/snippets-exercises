@@ -85,10 +85,10 @@ To extract the JSON body content from the HTTP response, we use the `json()` met
 **Response Metadata**
 
     fetch('users.json').then(function(response) {
-        console.log(response.headers.get('Content-Type'));
-        console.log(response.status);
-        console.log(response.type);
-        console.log(response.url);
+        alert(response.headers.get('Content-Type'));
+        alert(response.status);
+        alert(response.type);
+        alert(response.url);
     });
 
 `response.type` will be either of `"basic"`, `"cors"` or `"opaque"`.
@@ -121,15 +121,102 @@ If you are working with a JSON API, you'll need to check the status and parse th
       .then(status)
       .then(json)
       .then(function(data) {
-        console.log('Request succeeded with JSON response', data);
+        alert('Request succeeded with JSON response', data);
       }).catch(function(error) {
-        console.log('Request failed', error);
+        alert('Request failed', error);
       });
 
 The great thing with this is that you can share the logic across all of your fetch requests, making code easier to maintain, read and test.
 
+**Notes from https://javascript.info/promise-chaining**
+
+`let promise = fetch(url);` makes a network request to the url and returns a promise. The promise resolves with a `response` object when the remote server responds with headers, but before the full response is downloaded.
+
+To read the full response, we should call `response.text()` or `response.json()`, which returns a promise that resolves when the full text downloaded from the remote server, with that text as a result.
+
+![](../images/fetch2.png)
+
+As a rule, an asynchronous action should always return a promise.
+
+That makes possible to plan actions after it. Even if we don’t plan to extend the chain now, we may need it later.
+
+![](../images/fetch3.png)
+
+**Error handling**
+
+When a promise rejects, e.g. `fetch` fails if the remote server is not available, the control jumps to the closest rejection handler down the chain.
+
+If we throw inside `.then` handler, that means a rejected promise, so the control jumps to the nearest error handler.
+That’s so not only for throw, but for any errors, including programming errors as well:
+
+    new Promise(function(resolve, reject) {
+      resolve("ok");
+    }).then(function(result) {
+      blabla(); // no such function
+    }).catch(alert); // ReferenceError: blabla is not defined
+
+`.catch` behaves like `try..catch`. We may have as many .then as we want, and then use a single `.catch` at the end to handle errors in all of them.
+
+In a regular `try..catch` we can analyze the error and maybe rethrow it if can’t handle. The same thing is possible for promises.
+
+![](../images/promise10.png)
+
+The promise returned by fetch only rejects when it’s impossible to make a request, e.g. remote server not available, or URL is malformed.
+But if the remote server responds with error 404, or even error 500, then it’s considered a valid response.
+
+What if the server returns a non-JSON page with error 500 in the line (*)? What if there’s no such user, and github returns a page with error 404 at (**)?
+
+    fetch('no-such-user.json') // (*)
+      .then(response => response.json())
+      .then(user => fetch(`https://api.github.com/users/${user.name}`)) // (**)
+      .then(response => response.json())
+      .catch(alert); // SyntaxError: Unexpected token < in JSON at position 0
+      // ...
+
+As of now, the code tries to load the response as JSON no matter what and dies with a syntax error.
+The error just falls through the chain, without details: what failed and where.
+
+So we should check the `response.status` property and if it’s not `200`, then `throw` an error:
+
+![](../images/fetch4.png)
+
+*Extending Error* see notes in ./miscellaneous.md. In having our own class for errors we can easily check for it in error-handling code:
+
+![](../images/fetch5.png)
 
 
 
+XMLHttpRequest
+--------------
+
+`fetch(url)` is a more modern method named than `XMLHttpRequest` , but this is still widely used.
+
+![](../images/requests.png)
+
+`xhr.open(method, URL, async, user, password)`, contrary to its name, does not open the connection. It only configures the request.
+
+`xhr.send([body])` opens the connection and sends the request to server. The optional body parameter contains the request body (e.g. in `POST` request).
+
+After the request is sent, `xhr` starts to generate events. We can use `addEventListener` or `on<event>` properties to handle them, just like with DOM objects.
+
+    function load(url) {
+      let xhr = new XMLHttpRequest();
+      xhr.open('GET', url);
+      xhr.timeout = 1000;
+      xhr.send();
+      xhr.onload = function() {
+        alert(`Loaded: ${this.status} ${this.responseText}`);
+      };
+      xhr.onerror = () => alert('Error');
+      xhr.ontimeout = () => alert('Timeout!');
+    }
+
+**HTTP-headers**
+
+`setRequestHeader(name, value)` sets the request header with the given name and value. E.g. `xhr.setRequestHeader('Content-Type', 'application/json');`
+
+Several headers are managed exclusively by the browser, e.g. `Referer` and `Host`.
+
+`getResponseHeader(name)` gets the response header with the given name, e.g. `xhr.getResponseHeader('Content-Type')`
 
 

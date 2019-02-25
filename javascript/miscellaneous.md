@@ -17,7 +17,7 @@ The difference comes when you use the value of the expression elsewhere (post- a
     x = 0;
     y = array[++x]; // This will get array[1]
 
-**Spread/Rest**
+**Spread operator**
 
 When `...` is used in front of an array (actually, any iterable, which we cover in Chapter 3), it acts to "spread" it out into its individual values.
 
@@ -39,6 +39,8 @@ But `...` can be used to spread out/expand a value in other contexts as well, su
 
 In this usage, ... is basically replacing concat(..), as it behaves like [1].concat( a, [5] ) here.
 
+**Array and object destructuring**
+
 The other common usage of ... can be seen as essentially the opposite; instead of spreading a value out, the ... gathers a set of values together into an array. Consider:
 
 	function foo(x, y, ...z) {
@@ -53,7 +55,13 @@ The other common usage of ... can be seen as essentially the opposite; instead o
 
 	foo( 1, 2, 3, 4, 5);			// [1,2,3,4,5]
 
-**Array and object destructuring**
+In object destructuring, what if the object has more properties than we have variables? We take some and then assign the “rest” somewhere:
+
+![](../images/rest.png)
+
+Overview:
+
+![](../images/destruct2.png)
 
 Arrays:
 
@@ -72,6 +80,20 @@ Objects:
 
     const { name: chalu } = me;
     console.log(chalu); // Charles Odili
+
+Nested destructuring:
+
+For more complex cases, the left side must have the same structure as the right one.
+In the code below `options` has another object in the property `size` and an array in the property `items`.
+
+![](../images/destruct.png)
+
+Note that `size` and `items` are not destructured.
+
+Often we have a complex object with many properties that we want to extract
+
+    // take size as a whole into a variable, ignore the rest
+    let { size } = options;
 
 **Default Parameters**
 
@@ -231,5 +253,18 @@ More than two arrow functions can be sequenced:
     const three = a => b => c => a + b + c
     three (1) (2) (3) // 6
 
+**Recursion**
 
+![](../images/recursion2.png)
+
+HTML and XML documents are well-known example of recursive structures.
+Trees like HTML elements tree are naturally recursive: they branch and every branch can have other branches.
+Recursive functions can be used to walk them.
+
+Another recursive structure is the “Linked list”, which is a better alternative for arrays in some cases.
+Imagine, we want to store an ordered list of objects. The natural choice would be an array: `let arr = [obj1, obj2, obj3];`
+
+…But there’s a problem with arrays. The “delete element” and “insert element” operations are expensive. For instance, `arr.unshift(obj)` operation has to renumber all elements to make room for a new `obj`, and if the array is big, it takes time. Same with `arr.shift()`.
+The only structural modifications that do not require mass-renumbering are those that operate with the end of array: `arr.push/pop`.
+If we really need fast insertion/deletion, we can implement a linked-list data structure.
 
