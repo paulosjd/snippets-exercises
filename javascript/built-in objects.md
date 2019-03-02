@@ -70,91 +70,10 @@ Every time we create a person object we are creating two brand new function obje
 
 `Person.prototype` is an object shared by all instances of `Person`. It forms part of a lookup chain (that has a special name, "prototype chain"): any time you attempt to access a property of `Person` that isn't set, JavaScript will check `Person.prototype` to see if that property exists there instead.
 
-Function
---------
+Functions
+---------
 
-Function objects inherit from `Function.prototype`. This object has the following methods:
-
-`Function.prototype.apply()`
-    Calls a function and sets its `this` to the provided value, arguments can be passed as an Array object.
-
-`Function.prototype.call()`
-    Calls (executes) a function and sets its `this` to the provided value, arguments can be passed as they are.
-
-![](../images/jsfunc.png)
-
-Difference between the above: `apply` lets you invoke the function with arguments as an array; `call` requires the parameters be listed explicitly.
-
-![](../images/js_func.png)
-
-`Function.prototype.bind()`
-    Creates a new function which, when called, has its this set to the provided value, with a given sequence of arguments preceding any provided when the new function was called.
-
-**Inner functions and Closures**
-
-An important detail of nested functions in JavaScript is that they can access variables in their parent function's scope:
-
-    function parentFunc() {
-      var a = 1;
-
-      function nestedFunc() {
-        var b = 4; // parentFunc can't use this
-        return a + b;
-      }
-      return nestedFunc(); // 5
-    }
-
-If a called function relies on one or two other functions that are not useful to any other part of your code, you can nest those utility functions inside it. This keeps the number of functions that are in the global scope down, which is always a good thing.
-When writing complex code it is often tempting to use global variables to share values between multiple functions — which leads to code that is hard to maintain. Nested functions can share variables in their parent, so you can use that mechanism to couple functions together when it makes sense without polluting your global namespace — "local globals" if you like.
-
-    function makeAdder(a) {
-      return function(b) {
-        return a + b;
-      };
-    }
-    var x = makeAdder(5);
-    var y = makeAdder(20);
-    x(6); // returns 11
-    y(7); // returns 27
-
-Here's what's actually happening. Whenever JavaScript executes a function, a 'scope' object is created to hold the local variables created within that function. It is initialized with any variables passed in as function parameters.
-
-So when `makeAdder()` is called, a scope object is created with one property: `a`, which is the argument passed to `makeAdder()` which returns a newly created function. Normally JavaScript's garbage collector would clean up the scope object created for `makeAdder()` at this point, but the returned function maintains a reference back to that scope object. As a result, the scope object will not be garbage-collected until there are no more references to the function object that `makeAdder()` returned.
-
-Scope objects form a chain called the scope chain, similar to the prototype chain used by JavaScript's object system.
-
-A closure is the combination of a function and the scope object in which it was created. Closures let you save state — as such, they can often be used in place of objects.
-
-    function foo(x) {
-      var tmp = 3;
-      function bar(y) {
-        console.log(x + y + (++tmp)); // will log 16
-      }
-      bar(10);
-    }
-    foo(2);  // 16
-
-Whenever you see the function keyword within another function, the inner function has access to variables in the outer function.
-
-That is a closure. A function doesn't have to return in order to be called a closure. Simply accessing variables outside of your immediate lexical scope creates a closure.  JS function creates a closure.
-
-    function sayHello2(name) {
-        var text = 'Hello ' + name; // Local variable
-        var say = function() { console.log(text); }
-        return say;
-    }
-    var say2 = sayHello2('Bob');
-    say2(); // logs "Hello Bob"
-
-When a function (foo) declares other functions (bar and baz), the family of local variables created in foo is not destroyed when the function exits. The variables merely become invisible to the outside world. Foo can therefore cunningly return the functions bar and baz, and they can continue to read, write and communicate with each other through this closed-off family of variables ("the closure") that nobody else can meddle with, not even someone who calls foo again in future.
-
-A closure is one way of supporting first-class functions; it is an expression that can reference variables within its scope (when it was first declared), be assigned to a variable, be passed as an argument to a function, or be returned as a function result.
-
-**Promises**
-
-![](../images/js_promise.png)
-
-![](../images/ajax_promise.png)
+See functions.md
 
 Numbers
 -------

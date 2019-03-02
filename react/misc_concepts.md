@@ -1,5 +1,24 @@
 [React cheatsheet](https://devhints.io/react)
 
+Conditional rendering
+---------------------
+There are various ways, as follows. Whenever conditions become too complex, it might be a good time to extract a component.
+
+**Element Variables**
+
+![](../images/cond_rend.png)
+
+While declaring a variable and using an if statement is a fine way to conditionally render a component, sometimes you might want to use a shorter syntax. There are a few ways to inline conditions in JSX:
+
+**Inline If with Logical `&&` Operator**
+
+![](../images/cond_rend1.png)
+
+This works because `true` is ignored/not rendered and if it is not `true` the overall expression evaluates to `false`
+
+**Inline If-Else with Conditional Operator**
+
+![](../images/cond_rend2.png)
 
 Refs
 ----
@@ -269,3 +288,53 @@ Instead of repeating the same logic in each component, we could move the logic o
 
 The `displayName` string is used in debugging messages. This is a class property and is useful when you create HOCs.
 
+Code-splitting
+------------------
+**Bundling**
+
+Most React apps will have their files “bundled” using tools like Webpack. Bundling is the process of following imported files and merging them into a single file: a “bundle”. This bundle can then be included on a webpage to load an entire app at once. For example:
+
+App:
+
+    // app.js
+    import { add } from './math.js';
+
+    console.log(add(16, 26)); // 42
+
+    // math.js
+    export function add(a, b) {
+      return a + b;
+    }
+
+Bundle:
+
+    function add(a, b) {
+      return a + b;
+    }
+
+    console.log(add(16, 26)); // 42
+
+If you’re using Create React App, or a similar tool, you will have a Webpack setup out of the box to bundle your app. If you aren’t, you’ll need to setup bundling yourself.
+
+**Code Splitting**
+
+Bundling is great, but as your app grows, your bundle will grow too. Especially if you are including large third-party libraries. You need to keep an eye on the code you are including in your bundle so that you don’t accidentally make it so large that your app takes a long time to load.
+
+To avoid winding up with a large bundle, it’s good to get ahead of the problem and start “splitting” your bundle. Code-Splitting is a feature supported by bundlers like Webpack which can create multiple bundles that can be dynamically loaded at runtime.
+
+Code-splitting your app can help you “lazy-load” just the things that are currently needed by the user, which can dramatically improve the performance of your app.
+
+The best way to introduce code-splitting into your app is through the dynamic `import()` syntax. Note that this syntax is a ECMAScript
+proposal not part of the standard yet but expected to be soon.
+
+Before:
+
+    import { add } from './math';
+
+    console.log(add(16, 26));
+
+After:
+
+    import("./math").then(math => {
+      console.log(math.add(16, 26));
+    });

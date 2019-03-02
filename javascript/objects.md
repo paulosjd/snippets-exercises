@@ -85,12 +85,75 @@ A shallow copy is fairly understandable and has far less issues, so ES6 has now 
     newObj.c === anotherArray;		// true
     newObj.d === anotherFunction;	// true
 
-Iteration
----------
+Iteration and Iterables
+-----------------------
+Some statements and expressions expect iterables, e.g. `for..of` loops, spread syntax, `yield*`, and destructuring assignment
+
 **ES6 `for..of` loop syntax**
+
+*Iterable* objects is a generalization of arrays and allows to make any object useable in a `for..of` loop.
+Many other built-in objects besides arrays, e.g. strings, are iterable. Many built-in operators and methods rely on them.
 
 The `for..of` loop asks for an iterator object (from a default internal function known as `@@iterator`) of the thing to be iterated, and the loop then iterates over the successive return values from calling that iterator object's `next()` method, once for each loop iteration.
 Regular objects do not have a built-in `@@iterator` but you can define one for them.
+
+In other words: in order to be iterable, an object must implement the `@@iterator` method, meaning that the object (or one of the objects up its prototype chain) must have a property with a `@@iterator` key which is available via constant `Symbol.iterator`
+
+**Symbol.iterator**
+
+![](../images/iterator.png)
+
+An object is an iterator when it implements a `next()` method with the correct semantics
+(i.e. a zero arguments function which returns object containing at least `done` and `value` properties.
+
+e.g. `String.prototype[@@iterator]()` returns a new Iterator object that iterates over the code points of a String value, returning each code point as a String value.
+
+    var someString = 'hi';
+    var iterator = someString[Symbol.iterator]();
+    terator.next();  // { value: "h", done: false }
+
+Lets say we have an object that is not an array, but looks suitable for `for..of`:
+To make the object iterable we need to add a method to the object named `Symbol.iterator` (a special built-in symbol just for that).
+
+    let range = {
+      from: 1,
+      to: 5,
+
+      [Symbol.iterator]() {
+        this.current = this.from;
+        return this;
+      },
+
+      next() {
+        if (this.current <= this.to) {
+          return { done: false, value: this.current++ };
+        } else {
+          return { done: true };
+        }
+      }
+    };
+
+**Iterables and array-likes**
+
+*Iterables* are objects that implement the `Symbol.iterator` method, as described above.
+
+*Array-likes* are objects that have indexes and `length`, so they look like arrays.
+
+The object `range` in the example above it iterable but not array-like. This object is array-like, but not iterable:
+
+    let arrayLike = { // has indexes and length => array-like
+      0: "Hello",
+      1: "World",
+      length: 2
+    };
+
+Both iterables and array-likes are usually not arrays, they don’t have `push`, `pop` etc. That’s rather inconvenient if we have such an object and want to work with it as with an array.
+`Array.from` takes an iterable or array-like value and makes an `Array` from it. Then we can call array methods on it.
+
+    let arr = Array.from(arrayLike);
+    alert(arr.pop()); // World
+
+
 
 Properties
 ------------
@@ -235,5 +298,28 @@ When an object is used in the context where a primitive is required, e.g. `alert
 That algorithm allows us to customize the conversion using a special object method.
 Depending on the context, the conversion has a so-called “hint”. There are three variants:
 
+![](../images/type2.png)
+
+To do the conversion, JS tries to find and call three object methods:
+
+![](../images/type3.png)
+
+**Symbol.toPrimitive**
+
+![](../images/type4.png)
+
+**toString/valueOf**
+
+If there’s no `Symbol.toPrimitive` then JS tries to find `toString` for 'string' hint, otherwise `valueOf`:
+
+![](../images/tostring.png)
+
+In practice, it’s often enough to implement only a single “catch-all” to handle all primitive conversions. In this case we can implement `toString` only:
+
+![](../images/tostring2.png)
+
+An operation that initiated the conversion gets that primitive, and then continues to work with it, applying further conversions if necessary. E.g:
+
+![](../images/tostring3.png)
 
 

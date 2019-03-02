@@ -162,7 +162,7 @@ It’s just a more elegant syntax of getting the promise result than `promise.th
 
 ![](../images/promise12.png)
 
-**Summaru**
+**Summary**
 
 The async keyword before a function has two effects: Makes it always return a promise. Allows to use `await` in it.
 The `await` keyword before a promise makes JavaScript wait until that promise settles
@@ -170,3 +170,8 @@ Together they provide a great framework to write asynchronous code that is easy 
 
 With `async/await` we rarely need to write `promise.then/catch`, but we still shouldn’t forget that they are based on promises, because sometimes (e.g. in the outermost scope) we have to use these methods
 
+**Further examples**
+
+![](../images/js_promise.png)
+
+![](../images/ajax_promise.png)

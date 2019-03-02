@@ -17,7 +17,8 @@ The difference comes when you use the value of the expression elsewhere (post- a
     x = 0;
     y = array[++x]; // This will get array[1]
 
-**Spread operator**
+Spread operator
+---------------
 
 When `...` is used in front of an array (actually, any iterable, which we cover in Chapter 3), it acts to "spread" it out into its individual values.
 
@@ -39,7 +40,8 @@ But `...` can be used to spread out/expand a value in other contexts as well, su
 
 In this usage, ... is basically replacing concat(..), as it behaves like [1].concat( a, [5] ) here.
 
-**Array and object destructuring**
+Array and object destructuring
+------------------------------
 
 The other common usage of ... can be seen as essentially the opposite; instead of spreading a value out, the ... gathers a set of values together into an array. Consider:
 
@@ -95,6 +97,7 @@ Often we have a complex object with many properties that we want to extract
     // take size as a whole into a variable, ignore the rest
     let { size } = options;
 
+----------------------------------------------------------
 **Default Parameters**
 
 The boolean operators in JavaScript can be used where you need to get the first truthy or falsy value among a set of values, making it it easier to assign a default value. For default parameters
@@ -114,36 +117,9 @@ The boolean operators in JavaScript can be used where you need to get the first 
 	foo( undefined, 6 );	// 17 <-- `undefined` is missing
 	foo( null, 6 );			// 6  <-- null coerces to `0`
 
-**What is a Function Declaration?**
 
-A Function Declaration defines a named function variable without requiring variable assignment. Function Declarations occur as standalone constructs and cannot be nested within non-function blocks. It’s helpful to think of them as siblings of Variable Declarations. Just as Variable Declarations must start with “var”, Function Declarations must begin with “function”.
-
-    function bar() {
-        return 3;
-    }
-
-**What is a Function Expression?**
-
-A Function Expression defines a function as a part of a larger expression syntax (typically a variable assignment ). Functions defined via Functions Expressions can be named or anonymous
-
-    //anonymous function expression
-    var a = function() {
-        return 3;
-    }
-
-    //named function expression
-    var a = function bar() {
-        return 3;
-    }
-
-    //self invoking function expression
-    (function sayHello() {
-        alert("hello!");
-    })();
-
-Typically functions created by Function Expressions are unnamed. However, debugging with anonymous functions can be frustrating.
-
-**try...catch and throw operator**
+try...catch and throw operator
+----------------------------
 
     let json = "{ bad json }";
 
@@ -219,52 +195,4 @@ The above class is very generic, below is a more concrete class:
         throw err; // unknown error, rethrow it
       }
     }
-
-**Curried functions**
-
-First, examine this function with two parameters …
-
-    const add = (x, y) => x + y
-    add(2, 3) //=> 5
-
-Here it is again in curried form …
-
-    const add = x => y => x + y
-
-Here is the same1 code without arrow functions …
-
-    const add = function (x) {
-      return function (y) {
-        return x + y
-      }
-    }
-
-So our `add` function returns a *function*:
-
-    add(2) // returns (y => 2 + y)
-
-In order to use our curried function, we have to call it a bit differently:
-
-    add(2)(3)  // returns 5
-
-The first (outer) function call returns a second (inner) function. Only after we call the second function do we actually get the result.
-More than two arrow functions can be sequenced:
-
-    const three = a => b => c => a + b + c
-    three (1) (2) (3) // 6
-
-**Recursion**
-
-![](../images/recursion2.png)
-
-HTML and XML documents are well-known example of recursive structures.
-Trees like HTML elements tree are naturally recursive: they branch and every branch can have other branches.
-Recursive functions can be used to walk them.
-
-Another recursive structure is the “Linked list”, which is a better alternative for arrays in some cases.
-Imagine, we want to store an ordered list of objects. The natural choice would be an array: `let arr = [obj1, obj2, obj3];`
-
-…But there’s a problem with arrays. The “delete element” and “insert element” operations are expensive. For instance, `arr.unshift(obj)` operation has to renumber all elements to make room for a new `obj`, and if the array is big, it takes time. Same with `arr.shift()`.
-The only structural modifications that do not require mass-renumbering are those that operate with the end of array: `arr.push/pop`.
-If we really need fast insertion/deletion, we can implement a linked-list data structure.
 
