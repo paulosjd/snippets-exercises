@@ -66,8 +66,8 @@ You’re not limited to a single child for a component, you may pass multiple ch
 
 ![](../images/children_slots.png)
 
-Update a components internal state as the result of changes in props
---------------------------------------------------------------------
+You probably don't need derived state
+-------------------------------------
 `getDerivedStateFromProps` exists for this purpose, and this only.
 `getDerivedStateFromProps` (and derived state in general) is an advanced feature and should be used sparingly because of this complexity.
 

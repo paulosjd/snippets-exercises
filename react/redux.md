@@ -3,8 +3,14 @@ Redux
 -----
 [Cheatsheet](https://devhints.io/redux). 3 principles: A single source of truth. State is read-only. State is updated using pure functions
 
-
 ![](../images/redux.png)
+
+Regarding the default parameter in `myReducer` above:
+
+![](../images/state6.png)
+
+A store holds the whole state tree of your application. The only way to change the state inside it is to dispatch an action on it.
+A store is just an object with a few methods on it. To create it, pass your root reducing function to `createStore`.
 
 ![](../images/redux1a.jpg)
 
