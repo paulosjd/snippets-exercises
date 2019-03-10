@@ -103,4 +103,7 @@ ENV/
 # Notebook Checkpoints
 .ipynb_checkpoints/
 
+# pycharm
+.idea/
+
 *.sqlite3

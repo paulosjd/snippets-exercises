@@ -8,7 +8,8 @@ Infrastructure Automation – create your systems, OS configs, and app deploymen
 
 Continuous Delivery – build, test, deploy your apps in a fast and automated manner.
 
-Site Reliability Engineering – operate your systems; monitoring and orchestration, sure, but also designing for operability in the first place.
+Site Reliability Engineering – operate your systems; monitoring and orchestration, sure, but also designing for
+operability in the first place.
 
 
 

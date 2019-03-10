@@ -214,6 +214,22 @@ Sort method, note that numbers may be treated as strings, to sort numerically pa
                                      return 0;
                                  else return 1; });
 
+**`splice`**
+
+How do I remove a particular element?
+Find the index of the array element you want to remove, then remove that index with `splice`.
+
+    The `splice()` method changes the contents of an array by removing existing elements and/or adding new elements.
+
+    var array = [2, 5, 9];
+    var index = array.indexOf(5);
+    if (index > -1) {
+      array.splice(index, 1);
+    }
+    console.log(array);  // array = [2, 9]
+
+The second parameter of `splice` is the number of elements to remove. Note that splice modifies the array in place and returns a new array containing the elements that have been removed.
+
 **`map()`**
 
 The `map()` method creates a new array with the results of calling a provided function on every element in this array.
