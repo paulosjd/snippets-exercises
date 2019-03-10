@@ -4,6 +4,29 @@
 
 ![](../images/setstate.png)
 
+**Updating state with values that depend on the current state**
+
+Pass a function instead of an object to `setState` to ensure the call always uses the most updated version of state
+
+    incrementCount() {
+      // Note: this will *not* work as intended.
+      this.setState({count: this.state.count + 1});
+    }
+
+React doesn't update `this.state.count` until the component is re-rendered.
+So above, `incrementCount()` ends up reading `this.state.count` as 0 every time.
+
+Passing an update function allows you to access the current state value inside the updater. Since `setState` calls are batched, this lets you chain updates and ensure they build on top of each other instead of conflicting:
+
+    incrementCount() {
+      this.setState((state) => {
+        // Important: read `state` instead of `this.state` when updating.
+        return {count: state.count + 1}
+      });
+    }
+
+*Currently*, `setState` is asynchronous inside event handlers. React *flushes* the state updates at the end of the browser event.
+
 **Actions on state, where state is considered immutable**
 
 Adding or Updating the value of a property:
@@ -33,6 +56,33 @@ Or even shorter as helper function:
     function deleteProperty(state, id) {
         return (({[id]: deleted, ...state}) => state)(state);
     }
+
+**Why is binding necessary at all?**
+
+These two code snippets are not equivalent:
+
+    obj.method();
+
+    var method = obj.method;
+    method();
+
+Above, `method` is a reference to the function which does not actually belong to `obj`. This is why you can borrow functions and call them from other objects. e.g.:
+
+    class Obj{
+        constructor(a){
+            this.a = a
+        }
+        method(){
+            return this.a + 1
+        }
+    }
+    let obj = new Obj(2)
+    let foo = {a: 3}
+    let method2 = obj.method.bind(foo)
+    alert(method2)  // 4
+
+Binding methods helps ensure that the second snippet works the same way as the first one.
+With React, typically you only need to bind the methods you pass to other components.
 
 **Stringify state used in `render`**
 

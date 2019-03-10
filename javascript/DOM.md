@@ -53,6 +53,52 @@ Given a DOM node, we can go to its immediate neighbours using navigation propert
 
 Some types of DOM elements, e.g. tables, provide additional properties and collections to access their content.
 
+**Interacting with the console**
+
+By inspecting an element in the browser inspector, we can run commands e.g. `$0.style.background = 'green'`
+
+**Searching: `getElement`\* and `querySelector`\***
+
+If an element has the `id` attribute, then there’s a global variable by that name:
+
+![](../images/dom2.png)
+
+Good for very simple scripts, but there may be name conflicts. Also, in the JS it’s not obvious where the variable comes from.
+The better alternative is to use a special method `document.getElementById(id)`.
+
+getElementsBy\*:
+
+    // get all divs in the document
+    let divs = document.getElementsByTagName('div');
+
+This method is callable in the context of any DOM element. E.g. an element with the id 'my_form'
+
+    my_form.getElementsByTagName('input')[0].value = 5;
+
+querySelectorAll:
+
+The call to `elem.querySelectorAll()` returns all elements inside `elem` matching the given CSS selector.
+
+![](../images/dom3.png)
+
+DOM Node Classes
+----------------
+DOM nodes have different properties depending on their class. There are also common properties and methods between them, because all classes of DOM nodes form a single hierarchy.
+DOM nodes are regular JavaScript objects. They use prototype-based classes for inheritance.
+
+![](../images/dom4.png)
+
+For example, consider `<input>` element. It belongs to `HTMLInputElement` class. It gets properties and methods from:
+
+`HTMLInputElement` provides input-specific properties, and inherits from…
+`HTMLElement` provides common HTML element methods (and getters/setters) and inherits from…
+`Element` provides generic element methods and inherits from…
+`Node` provides common DOM node properties and inherits from…
+`EventTarget` gives the support for events,
+…and finally it inherits from `Object`, so “pure object” methods like `hasOwnProperty` are also available.
+
+
+
 Data Attributes
 ---------------
 

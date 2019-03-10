@@ -1,25 +1,3 @@
-**Updating state with values that depend on the current state**
-
-Pass a function instead of an object to `setState` to ensure the call always uses the most updated version of state
-
-    incrementCount() {
-      // Note: this will *not* work as intended.
-      this.setState({count: this.state.count + 1});
-    }
-
-React doesn't update `this.state.count` until the component is re-rendered.
-So above, `incrementCount()` ends up reading `this.state.count` as 0 every time.
-
-Passing an update function allows you to access the current state value inside the updater. Since `setState` calls are batched, this lets you chain updates and ensure they build on top of each other instead of conflicting:
-
-    incrementCount() {
-      this.setState((state) => {
-        // Important: read `state` instead of `this.state` when updating.
-        return {count: state.count + 1}
-      });
-    }
-
-*Currently*, `setState` is asynchronous inside event handlers. React �flushes� the state updates at the end of the browser event.
 
 Redux
 -----
@@ -83,7 +61,49 @@ Actions are objects and by convention always have a `type` key.
       )
     })
 
+**Actions and Reducers - Key Points**
 
+Divide application into high-level stateful components and low-level stateless components.
+
+Giving the Action a Name:
+
+Define a constant to identify this action, can use a string initially, but use symbolic constants in namespaces eventually.
+
+    // constants.js
+    export const SET_SEARCH_TERM = "SET_SEARCH_TERM";
+
+Create an Action Object:
+
+Define a function to create an object representing an action. Put this in `actions.js` (in a small demo app):
+
+    import CHANGE_SEARCHTERM from 'constants'
+
+    export const setSearchTerm = (text) =>  { type: CHANGE_SEARCHTERM, payload: text }
+
+Handle the Action:
+
+Create the complement to our action generator in `reducers.js`. A constant defining the initial state…
+that is the default value of reducer function’s state argument…and an action that tells the function how to update state:
+
+    import { CHANGE_SEARCHTERM } from 'actions'
+
+    const initialState = {
+      searchTerm: ''
+    }
+
+    const robotsSearch = (state=initialState, action={}) => {
+      switch (action.type) {
+        case CHANGE_SEARCHTERM:
+          return {...state, searchTerm: action.payload}
+        default:
+          return state
+      }
+    }
+
+    export default robotsSearch;
+
+If our reducer doesn’t recognize the action, it does nothing, which makes it safe for us to chain reducers together
+Reducer functions always return a new state object. May recycle parts of the old state, but *never* mutate state in place
 
 **redux-thunk**
 
@@ -118,3 +138,13 @@ Meet redux-thunk, a Middleware, or a plugin that extends `dispatch()` to do more
     store.dispatch(load)
 
 
+
+
+
+
+
+
+
+You're talking about Redux and Redux-React (which provides the connect function, specifically for React components). Take a look at how Redux-React is implemented.
+
+connect is just a React specific abstraction over subscribe.

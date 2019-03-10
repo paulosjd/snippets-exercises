@@ -70,6 +70,10 @@ Every time we create a person object we are creating two brand new function obje
 
 `Person.prototype` is an object shared by all instances of `Person`. It forms part of a lookup chain (that has a special name, "prototype chain"): any time you attempt to access a property of `Person` that isn't set, JavaScript will check `Person.prototype` to see if that property exists there instead.
 
+**Object.keys, values, entries**
+
+![](../images/obj.png)
+
 Functions
 ---------
 
@@ -225,6 +229,12 @@ The `map()` method creates a new array with the results of calling a provided fu
             return item;
         });
     }
+
+**`findIndex()`**
+
+    const myArray = ['abcd', '123', 'third', {name: 'foo', value: 'bar'}]
+    myArray.findIndex(x => x.name === 'foo')  // 3
+    myArray.findIndex(x => x.length === 3)  // 1
 
 Sets and Weaksets
 -----------------

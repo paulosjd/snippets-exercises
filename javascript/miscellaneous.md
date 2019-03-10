@@ -196,3 +196,31 @@ The above class is very generic, below is a more concrete class:
       }
     }
 
+Modules
+-------
+
+![](../images/module.png)
+
+Import an entire module's contents (containing all the exports from the module):
+
+    import * as myModule from '/modules/my-module.js';
+
+Import an export with a more convenient alias:
+
+    import {reallyReallyLongName as shortName} from '/modules/my-module.js';
+
+Import a module for its side effects only (runs the module's global code, but doesn't actually import any values):
+
+    import '/modules/my-module.js';
+
+Export a *default* value from a module which can be imported using any name:
+
+![](../images/export2.png)
+
+The `import()` function can be called from anywhere. It returns a promise that resolved into a module object. E.g:
+
+![](../images/import2.png)
+
+
+
+

@@ -28,8 +28,39 @@ A Function Expression defines a function as a part of a larger expression syntax
 
 Typically functions created by Function Expressions are unnamed. However, debugging with anonymous functions can be frustrating.
 
-`call`, `apply`, `bind`
------------------------
+Function Binding
+----------------
+*See also* this_binding.md
+
+It’s easy to lose `this`. Once a method is passed somewhere separately from the object – `this` is lost. E.g.:
+
+    let user = {
+      firstName: "John",
+      sayHi() {
+        alert(`Hello, ${this.firstName}!`);
+      }
+    };
+    setTimeout(user.sayHi, 1000); // Hello, undefined!
+
+When we pass an object method, how to make sure that it will be called in the right context??
+
+Solution 1: a wrapper
+
+This works because the wrapping function receives `user` from the outer lexical environment, and then calls the method normally.
+
+    setTimeout(() => user.sayHi(), 1000); // Hello, John!
+
+Solution 2: bind
+
+Functions provide a built-in method bind that allows to fix `this`.
+
+    let sayHi = user.sayHi.bind(user); // (*)
+
+    setTimeout(sayHi, 1000); // Hello, John!
+
+The function assigned to `sayHi` is a “bound” function, that can be called alone or passed to `setTimeout` – doesn’t matter, the context will be right.
+
+**`call`, `apply`, `bind`**
 
 *See also* this_binding.md
 

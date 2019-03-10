@@ -20,6 +20,12 @@ This works because `true` is ignored/not rendered and if it is not `true` the ov
 
 ![](../images/cond_rend2.png)
 
+The virtual DOM
+---------------
+Aprogramming concept where an ideal, or “virtual”, representation of a UI is kept in memory and synced with the “real” DOM by a library such as ReactDOM. This process is called reconciliation.
+
+This approach enables the declarative API of React: You tell React what state you want the UI to be in, and it makes sure the DOM matches that state. This abstracts out the attribute manipulation, event handling, and manual DOM updating that you would otherwise have to use to build your app.
+
 Refs
 ----
 Refs provide a way to access DOM nodes or React elements created in the render method.
@@ -105,19 +111,6 @@ Performance-optimized version of `React.Component`. Doesn’t rerender if props/
       ···
     }
 
-Conditionals and Short-circuit evaluation
------------------------------------------
-    <Fragment>
-      {showMyComponent
-        ? <MyComponent />
-        : <OtherComponent />}
-    </Fragment>
-
-    <Fragment>
-      {showPopup && <Popup />}
-      ...
-    </Fragment>
-
 Default props
 -------------
 `defaultProps` can be defined as a property on the component class itself, to set the default props for the class.
@@ -130,7 +123,7 @@ Default props
       color: 'blue'
     };
 
-If props.color is not provided, it will be set by default to 'blue':
+If `props.color` is not provided, it will be set by default to 'blue':
 
       render() {
         return <CustomButton /> ; // props.color will be set to blue
@@ -139,52 +132,56 @@ If props.color is not provided, it will be set by default to 'blue':
         return <CustomButton color={null} /> ; // props.color will remain null
       }
 
-Lifting state up
-----------------
-Often, several components need to reflect the same changing data. We recommend lifting the shared state up to their closest common ancestor. Let’s see how this works in action.
-In this section, we will create a temperature calculator that calculates whether the water would boil at a given temperature...
- In React, sharing state is accomplished by moving it up to the closest common ancestor of the components that need it. This is called “lifting state up”. We will remove the local state from the TemperatureInput and move it into the Calculator instead. If the `Calculator` owns the shared state, it becomes the “source of truth” for the current temperature in both inputs. It can instruct them both to have values that are consistent with each other. Since the props of both `TemperatureInput` components are coming from the same parent `Calculator` component, the two inputs will always be in sync.
-https://reactjs.org/docs/lifting-state-up.html
+Context
+-------
+Maybe you don’t need all those fancy features of Redux – all you want to do is pass data around easily. Maybe your app is small, or you just need to get something working quickly.
 
-Composition and children
-------------------------------
-The component below contains an `<img>` that is receiving some `props` and then it is displaying `{props.children}`.
+Context provides a way to pass data through the component tree without having to pass props down manually at every level 
 
-Whenever this component is invoked `{props.children}` will also be displayed and this is just a reference to what is between the opening and closing tags of the component.
+Context is designed to share data that can be considered “global” for the entire React app.
+E.g. a logged in user, where user information is needed in a child component which we have to pass through another component which does not need this.
 
-    const Picture = (props) => {
-      return (
-        <div>
-          <img src={props.src}/>
-          {props.children}
-        </div>
-      )
-    }
+Context lets you “broadcast” such data, and changes to it, to all components below.
 
-    //App.js
-    render () {
-      return (
-        <div className='container'>
-          <Picture key={picture.id} src={picture.src}>
-              //what is placed here is passed as props.children
-          </Picture>
-        </div>
-      )
-    }
+There are 3 important pieces to the context API:
 
-This de-couples the `<Picture>` component from its content and makes it more reusable.
-Common for components like `Sidebar` or `Dialog` that represent generic “boxes”.
+The `React.createContext` function which creates the context
 
-![](../images/containment.png)
+The `Provider` (returned by `createContext`) which establishes the “electrical bus” running through a component tree
 
-In composition, a more “specific” component renders a more “generic” one and configures it with props:
+The `Consumer `(also returned by `createContext`) which taps into the “electrical bus” to extract the data
 
-![](../images/containment2.png)
+The `Provider` is very similar to React-Redux’s `Provider`. It accepts a `value` prop, most likely be an object containing your data and any actions you want to be able to perform on the data.
+The `Consumer` works a little bit like React-Redux’s `connect` function.
 
+[Further info](https://daveceddia.com/context-api-vs-redux/#how-to-use-the-react-context-api). CodeSandbox [example 1](https://codesandbox.io/s/q9w2qrw6q4), [example 2](https://codesandbox.io/s/jpy76nm1v).
+
+Context is primarily used when some data needs to be accessible by *many* components at different nesting levels. Apply it sparingly because it makes component reuse more difficult.
+
+Often, component composition is often a simpler solution than context.
+E.g. consider a `Page` component that passes a `user` and `avatarSize` prop several levels down so that deeply nested `Link` and `Avatar` components can read it:
+
+    <Page user={user} avatarSize={avatarSize} />
+    // ... which renders ...
+    <PageLayout user={user} avatarSize={avatarSize} />
+    // ... which renders ...
+    <NavigationBar user={user} avatarSize={avatarSize} />
+    // ... which renders ...
+    <Link href={user.permalink}>
+      <Avatar user={user} size={avatarSize} />
+    </Link>
+
+It might feel redundant to pass down the user and `avatarSize` props through many levels if in the end only the `Avatar` component really needs it. It’s also annoying that whenever the `Avatar` component needs more props from the top, you have to add them at all the intermediate levels too.
+One solution is to use containment, i.e. pass down the `Avatar` component itself:
+
+![](../images/react29.png)
+
+This *inversion of control* can make your code cleaner in many cases by reducing the amount of props you need to pass through your application and giving more control to the root components.
+However,  moving more complexity higher in the tree like this isn’t the right choice in every case.
+[Context API Docs](https://reactjs.org/docs/context.html)
 
 PropTypes
 ---------
-
 Now a separate package to React, it is for type checking for reducing bugs relating to types.
 It also serves as a handy documentation on how a component has to be used in terms of passing props. Many code editors support code completion for props.
 
@@ -271,6 +268,14 @@ It works for both props and state.
 An alternative approach is to use pure components. This simply involves extending from `PureComponent` instead of `Component`
 Care should be taken when using them however, since they only do a shallow comparison, for performance reasons.
 Shallow comparison means that you compare the immediate contents of the objects instead of recursively comparing all the key/value pairs of the object. So only the object references are compared, and if the state/props are mutated, this might not work as intended.
+
+`React.memo`
+------------
+Class components can bail out from rendering when their input props are the same using PureComponent or shouldComponentUpdate. Now you can do the same with function components by wrapping them in React.memo.
+
+    const MyComponent = React.memo(function MyComponent(props) {
+      /* only rerenders if props change */
+    });
 
 Higher Order Components
 -----------------------
