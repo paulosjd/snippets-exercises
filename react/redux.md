@@ -90,7 +90,7 @@ Divide application into high-level stateful components and low-level stateless c
 
 Giving the Action a Name:
 
-Define a constant to identify this action, can use a string initially, but use symbolic constants in namespaces eventually.
+Define a constant to identify this action, can use a string initially, but use symbolic constants in namespaces eventually (? - n.b. Redux docs says strings are better as are serializable).  Types can be defined as constants and imported from another module.
 
     // constants.js
     export const SET_SEARCH_TERM = "SET_SEARCH_TERM";
@@ -250,7 +250,7 @@ Finally, we create the `VisibleTodoList` by calling `connect()` and passing thes
 
     export default VisibleTodoList
 
-**Passing the Store**
+Passing the Store
 
 All container components need access to the Redux store so they can subscribe to it.
 One option would be to pass it as a prop to every container component. However it gets tedious.
