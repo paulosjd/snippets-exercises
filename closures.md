@@ -10,13 +10,9 @@
     def foo(x, y):
         print("Sum is {0}".format(x+y))
 
-    Sum is 11
+    >>> foo(3, 5)
+    Sum is 16
 
-    bar(4) returns a function (inner_bar)
-    Using @bar(4) to decorate foo calls inner_bar(foo).
-    inner_bar(foo) returns a function (inner_inner_bar)
-    This function (inner_inner_bar) is assigned back to the name foo
-    When you call foo, you are calling inner_inner_bar, so whatever arguments you pass are passed as the *args and **kwargs
 
 **Javascript**
 
@@ -33,7 +29,7 @@
 Whereas the local variable in `outerFunc()` would normally be garbage collected after it is executed, closures have access to the variables they were created in.
 
 A closure is a special kind of object that combines two things: a function, and the environment in which that function was created. The environment consists of any local variables that were in-scope at the time that the closure was created.
-MDN: https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Closures
+[MDN docs](https://developer.mozilla.org/en-US/docs/JavaScript/Guide/Closures)
 
 A "closure" is an expression (typically a function) that can have free variables together with an environment that binds those variables (that "closes" the expression).
 

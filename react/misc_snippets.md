@@ -1,61 +1,3 @@
-![](../images/state.png)
-
-**`setState()`**
-
-![](../images/setstate.png)
-
-**Updating state with values that depend on the current state**
-
-Pass a function instead of an object to `setState` to ensure the call always uses the most updated version of state
-
-    incrementCount() {
-      // Note: this will *not* work as intended.
-      this.setState({count: this.state.count + 1});
-    }
-
-React doesn't update `this.state.count` until the component is re-rendered.
-So above, `incrementCount()` ends up reading `this.state.count` as 0 every time.
-
-Passing an update function allows you to access the current state value inside the updater. Since `setState` calls are batched, this lets you chain updates and ensure they build on top of each other instead of conflicting:
-
-    incrementCount() {
-      this.setState((state) => {
-        // Important: read `state` instead of `this.state` when updating.
-        return {count: state.count + 1}
-      });
-    }
-
-*Currently*, `setState` is asynchronous inside event handlers. React *flushes* the state updates at the end of the browser event.
-
-**Actions on state, where state is considered immutable**
-
-Adding or Updating the value of a property:
-
-    function updateState(state, item) {
-      return {
-         ...state,
-         [item.id]: item
-      };
-    }
-
-Note: `[item.id]` is computed property name syntax.
-
-Deleting a property:
-
-    function deleteProperty(state, id) {
-        let  {[id]: deleted, ...newState} = state;
-        return newState;
-    }
-
-Or even shorter as helper function:
-
-    function deleteProperty({[id]: deleted, ...newState}, id) {
-        return newState;
-    }
-
-    function deleteProperty(state, id) {
-        return (({[id]: deleted, ...state}) => state)(state);
-    }
 
 **Why is binding necessary at all?**
 
@@ -84,24 +26,90 @@ Above, `method` is a reference to the function which does not actually belong to
 Binding methods helps ensure that the second snippet works the same way as the first one.
 With React, typically you only need to bind the methods you pass to other components.
 
-**Stringify state used in `render`**
+**Pass your components to to wrap them and give them the common functionality**
 
-  render() {
-    ...
-    return (
+A runtime wrapper:
+
+    const Wrapper = ({children}) => (
       <div>
-        {fields}
-        <div>{JSON.stringify(this.state)}</div>
+        <div>header</div>
+        <div>{children}</div>
+        <div>footer</div>
       </div>
     );
-  }
+
+    const App = () => <div>Hello</div>;
+
+    const WrappedApp = () => (
+      <Wrapper>
+        <App/>
+      </Wrapper>
+    );
+
+Initialization wrapper / HOC:
+
+    // a function that takes a component and returns a new component
+    const wrapHOC = (WrappedComponent) => (props) => (
+      <div>
+        <div>header</div>
+        <div><WrappedComponent {...props}/></div>
+        <div>footer</div>
+      </div>
+    )
+
+    const App = () => <div>Hello</div>;
+
+    const WrappedApp = wrapHOC(App);
+
+**Rerender react component when prop changes**
+
+    import equal from 'fast-deep-equal'  //  to compare the objects.
+
+    constructor(){
+      this.updateUser = this.updateUser.bind(this);
+    }
+    componentDidMount() {
+      this.updateUser();
+    }
+    componentDidUpdate(prevProps) {
+        // can also use some unique property,
+        // e.g. (this.props.user.id !== prevProps.user.id)
+        if(!equal(this.props.user, prevProps.user)) {
+               this.updateUser();
+        }
+    }
+    updateUser() {
+      if (this.props.isManager) {
+        this.props.dispatch(actions.fetchAllSites())
+      } else {
+        const currentUserId = this.props.user.get('id')
+        this.props.dispatch(actions.fetchUsersSites(currentUserId))
+      }
+    }
+
+**Transferring props**
+
+It's a common pattern in React to wrap a component in an abstraction. You can use JSX spread attributes to merge the old props with additional values:
+
+    <Component {...this.props} more="values" />
+
+However, most of the time you should explicitly pass the properties down. This ensures that you only expose a subset of the inner API, one that you know will work.
+
+    function FancyCheckbox(props) {
+      var fancyClass = props.checked ? 'FancyChecked' : 'FancyUnchecked';
+      return (
+        <div className={fancyClass} onClick={props.onClick}>
+          {props.children}
+        </div>
+      );
+    }
 
 **Curried function example**
 
     handleChange = field => e => {
-          e.preventDefault()
-          /// Do something here
-        }
+        e.preventDefault()
+        /// Do something here
+    }
 
 We'll start by representing it without using arrow functions …
 
@@ -128,7 +136,6 @@ function for a specified field. This is a handy React technique because you're r
 your own listeners on each input in order to update your applications state.
 By using the `handleChange` function, we can eliminate all the duplicated code that would result
 in setting up change listeners for each field.
-
 
 Miscellaneous JSX notes
 ------------------------------------

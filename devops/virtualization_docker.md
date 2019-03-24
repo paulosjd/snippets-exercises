@@ -10,10 +10,6 @@ Vrtualization by the container is often called virtualization at the operating s
 This kind of virtualization allows more isolated instances to run on a single machine.
 Typically, containers are designed to run a single program, as opposed to emulating a full multi-purpose server.
 
-VM's help development to run more efficiently and can improve the quality of work.
-However, they represent additional tools need to be maintain and troubleshooted,
-and development team need to learn how to use them properly.
-
 **Provisioning VM's with Vagrant and Ansible**
 
 In using a VM as described below, the host machine and virtual machine share the application files through the path configured under Vagrant.
@@ -36,8 +32,87 @@ Basically, to configure the virtual machine to include everything you need.
 Once you have the Ansible scripts set up you will be able to re-use them with different
 VMs and also run them against remote servers.
 
-Docker
-------
+Docker overview
+---------------
+Docker provides tooling and a platform to manage the lifecycle of your containers:
+
+- Develop your application and its supporting components using containers.
+- The container becomes the unit for distributing and testing your application.
+- When you’re ready, deploy your application into your production environment, as a container or an orchestrated service.
+This works the same whether your production environment is a local data center, a cloud provider, or a hybrid of the two.
+
+**Docker Engine** is a client-server application with these major components:
+
+![](../images/docker11.png)
+
+The CLI uses the Docker REST API to control or interact with the Docker daemon through scripting or direct CLI commands.
+Many other Docker applications use the underlying API and CLI.
+The daemon creates and manages Docker objects, such as images, containers, networks, and volumes.
+
+**Docker architecture** uses a client-server model. The Docker client talks to the Docker daemon, which does the heavy
+lifting of building, running, and distributing your Docker containers. The Docker client and daemon can run on the same
+system, or you can connect a Docker client to a remote Docker daemon.
+The Docker client and daemon communicate using a REST API, over UNIX sockets or a network interface.
+
+![](../images/docker12.png)
+
+The **Docker daemon** (`dockerd`) listens for Docker API requests and manages Docker objects such as images, containers, networks, and volumes.
+A daemon can also communicate with other daemons to manage Docker services.
+
+The **Docker client** (`docker`) is the primary way that many Docker users interact with Docker. When you use commands such
+as docker run, the client sends these commands to dockerd, which carries them out. The docker command uses the Docker API.
+The Docker client can communicate with more than one daemon.
+
+A **Docker registry** stores Docker images. Docker Hub is a public registry that anyone can use, and Docker is configured to
+look for images on Docker Hub by default. You can even run your own private registry. When you use the `docker pull` or
+`docker run` commands, or `docker push` the required images are pulled or push from your configured registry.
+
+**Docker objects**
+
+When you use Docker, you are creating and using images, containers, networks, volumes, plugins, and other objects.
+
+An *image* is a read-only template with instructions for creating a Docker container. Usually based on another image,
+with some additional customization. You might create your own images or you might only use those created by others and
+published in a registry. To build your own image, you create a Dockerfile with a simple syntax for defining the steps
+needed to create the image and run it. Each instruction in a Dockerfile creates a layer in the image. When you change the
+Dockerfile and rebuild the image, only those layers which have changed are rebuilt. This is part of what makes images so
+lightweight, small, and fast.
+
+A *container* is a runnable instance of an image. You can create, start, stop, move, or delete a container using the
+Docker API or CLI. You can connect a container to one or more networks, attach storage to it, or even create a new image
+based on its current state. A container is defined by its image as well as any configuration options you provide to it when
+you create or start it. When a container is removed, any changes to its state that are not stored in persistent storage
+disappear.
+
+**Example `docker run` command**
+
+The following command runs an `ubuntu` container, attaches interactively to your local command-line session, and runs `/bin/bash`.
+
+    $ docker run -i -t ubuntu /bin/bash
+
+When you run this command, the following happens:
+
+- If you do not have the ubuntu image locally, Docker pulls it from your configured registry, as though you had run docker pull ubuntu manually.
+- Docker creates a new container
+- Docker allocates a read-write filesystem to the container, as its final layer. This allows a running container to create or
+modify files and directories in its local filesystem.
+- Docker creates a network interface to connect the container to the default network, since you did not specify any
+networking options. This includes assigning an IP address to the container. By default, containers can connect to external
+networks using the host machine’s network connection.
+- Docker starts the container and executes `/bin/bash`. As the container is running interactively and attached to your
+terminal (due to the `-i` and `-t` flags), you can provide input and the output is logged to your terminal.
+- When you type `exit` to terminate the `/bin/bash` command, the container stops but is not removed. You can start it again or remove it.
+
+![](../images/docker13.png)
+
+**Services** allow you to scale containers across multiple Docker daemons, which all work together as a swarm with multiple
+managers and workers. Each member of a swarm is a Docker daemon, and the daemons all communicate using the Docker API.
+A service allows you to define the desired state, such as the number of replicas of the service that must be available at
+any given time. By default, the service is load-balanced across all worker nodes. To the consumer, the Docker service appears
+to be a single application.
+
+Docker in-depth
+---------------
 Often called virtualization at the OS level. Containers, like Docker, allow developers to isolate and run multiple applications on a
 single operating system, rather than dedicating a Virtual Machine for each application on the server.
 These more lightweight containers allows lower costs, better resource usage, and higher performance.
@@ -174,8 +249,190 @@ When a process attempts to write to an existing file, the filesystem implementin
 copy of the file in the topmost working layer. All other processes using the original image’s layers will continue to
 access the read-only, original version of the layer. This technique optimizes both image disk space usage and the performance of container start times.
 
+Dockerizing Python Applications
+-------------------------------
+Consider a basic Hello World Flask app with a requirements.txt file.
 
+    docker-flask-tutorial
+        ├── requirements.txt
+        ├── Dockerfile
+        └── app
+            └── app.py
+            └── <other .py files>
 
+A Dockerfile is essentially a text file with clearly defined instructions on how to build a Docker image for our project.
+
+File to create a Docker image based on Ubuntu 16.04 and Python 3.X:
+
+![](../images/dockerize.png)
+
+The `ENTRYPOINT` specifies a command that will always be executed when the container starts.
+The `CMD` specifies arguments that will be fed to the `ENTRYPOINT`.
+
+**How Docker Images are Built**
+
+Docker images are built using the `docker build` command. When building an image, Docker creates so-called
+"layers". Each layer records the changes resulting from a command in the Dockerfile and the state of the image after
+running the command.
+
+Whenever any layer is re-built all the layers that follow it in the Dockerfile need to be rebuilt too.
+E.g. Above we `COPY` the `requirements.txt` file first and install dependencies before `COPY`ing the rest of
+the app. This results in a Docker layer containing all the dependencies. This layer need not be re-built
+even if other files in the app change as long as there are no new dependencies.
+Thus we optimize the build process for our container by separating the `pip install` from the deployment of
+the rest of our app.
+
+Building the Docker Image:
+
+    $ docker build -t docker-flask:latest .
+
+**Running Application in Debug Mode with Auto-Restart**
+
+To enable auto-restart, we start the Docker container mapping our development directory to the app directory
+within the container. This means Flask will watch the files in the host (through this mapping) for any changes and restart the application automatically when it detects any changes.
+
+Additionally, we also need to forward the application ports from the container to the host. This is to
+enable a browser running on the host to access the application.
+
+To achieve this, we start the Docker container with volume-mapping and port-forwarding options:
+
+    $ docker run --name flaskapp -v$PWD/app:/app -p5000:5000 docker-flask:latest
+
+This starts a container based on the docker-flask image we built previously and sets its
+name `flaskapp` using the `--name` option. The `-v` option mounts the app folder on the host to the container.
+The `-p` option maps the port on the container to the host. Now the application can be accessed at `http://localhost:5000`.
+
+To stop the container, press Ctrl-C and remove the container by running `docker rm flaskapp`.
+
+**Running the Application in Production Mode**
+
+In production we need to handle multiple parallel connections so the app will be
+deployed over a WSGI-compliant web-server.
+
+When a Docker container starts, it calls its entrypoint command.
+Most of the time, this is the path to the service that should run in that
+container. It is however very common to run wrapping scripts in order to
+configure the container before starting the service.
+
+First, create an entrypoint script, a simple shell script, which will start our application in either development or
+production mode, i.e. runs either nginx or Python directly. Based on [entrypoint.sh](https://github.com/jazzdd86/alpine-flask/blob/master/entrypoint.sh). [Full article](https://stackabuse.com/dockerizing-python-applications/) containing original script.
+
+    #!/bin/bash
+
+    if [ ! -f /debug0 ]; then
+      touch /debug0
+
+      while getopts 'hd:' flag; do
+        case "${flag}" in
+          ...
+        esac
+      done
+    fi
+
+    if [ -e /debug1 ]; then
+      echo "Running app in debug mode!"
+      python3 app/app.py
+    else
+      echo "Running app in production mode!"
+      nginx && uwsgi --ini /app.ini
+    fi
+
+Entrypoint sets the command and parameters that will be executed first when a container is run.
+Any command line arguments passed to `docker run <image>` will be appended to the entrypoint
+command, and will override all elements specified using `CMD`. E.g. `docker run <image> bash`
+will add the command argument bash to the end of the entrypoint.
+
+Recall the last two lines of the Dockerfile above:
+
+    ENTRYPOINT [ "python3" ]
+    CMD [ "app/app.py" ]
+
+Docker has a default entrypoint which is `/bin/sh -c` but does not have a default command.
+
+When you run docker like this: `docker run -i -t ubuntu bash` the entrypoint is the
+default `/bin/sh -c`, the image is `ubuntu` and the command is `bash`.
+
+Next, we need to create a `.ini` file which describes our application entry-point to uWSGI/nginx,
+as referenced in our `.sh` script:
+
+    [uwsgi]
+    plugins = /usr/lib/uwsgi/plugins/python3
+    chdir = /app
+    module = app:app
+    uid = nginx
+    gid = nginx
+    socket = /run/uwsgiApp.sock
+    pidfile = /run/.pid
+    processes = 4
+    threads = 2
+
+Finally, we modify our Dockerfile to include nginx and uWSGI.
+Apart from installing nginx, uWSGI, and the uWSGI Python3 plugin,
+it now also copies the `nginx.conf` to the appropriate location and sets up user permissions
+required to run nginx. Also the Dockerfile `ENTRYPOINT` is set to the shell script:
+
+    FROM ubuntu:16.04
+
+    RUN apt-get update -y && \
+        apt-get install -y python3-pip python3-dev && \
+        apt-get install -y nginx uwsgi uwsgi-plugin-python3
+
+    COPY ./requirements.txt /requirements.txt
+    COPY ./nginx.conf /etc/nginx/nginx.conf
+
+    WORKDIR /
+
+    RUN pip3 install -r requirements.txt
+
+    COPY . /
+
+    RUN adduser --disabled-password --gecos '' nginx\
+      && chown -R nginx:nginx /app \
+      && chmod 777 /run/ -R \
+      && chmod 777 /root/ -R
+
+    ENTRYPOINT [ "/bin/bash", "/launcher.sh"]
+
+Now, we can rebuild the image and run the app using nginx:
+
+    $ docker build -t docker-flask:latest .
+    $ docker run -d --name flaskapp --restart=always -p 80:80 docker-flask:latest
+
+We can easily run the container in debug mode mounting our own version of the source tree:
+
+    $ docker run -it --name flaskapp -p 5000:5000 -v$PWD/app:/app docker-flask:latest -d
+
+A single file, checked in with your source code that specifies an environment, configuration, and access for your application.
+In its purest form, that is Docker and Infrastructure as Code. With that basic building block in place,
+you can use docker-compose to define composite applications with multiple services, each containing an individualized
+Dockerfile, or an imported image for a Docker repository
+
+Docker Compose
+--------------
+Allows configuring and starting multiple docker containers. This is mostly used as a helper when you want to start
+multiple docker containers and don't want to start each one separately using `docker run ....` Docker compose is used for
+starting containers on the **same** host.
+
+(from the docs): Compose is a tool for defining and running multi-container Docker applications. With Compose, you use a YAML file to configure your application’s services. Then, with a single command, you create and start all the services from your configuration.
+
+Compose has commands for managing the whole lifecycle of your application:
+
+   - Start, stop, and rebuild services
+   - View the status of running services
+   - Stream the log output of running services
+   - Run a one-off command on a service
+
+i.e. It is a tool that takes a YAML file which describes your multi-container application and helps you create, start/stop,
+remove all those containers without having to type multiple `docker ...` commands for each container.
+
+Kubernetes and Docker Swarm Overview
+------------------------------------
+Containerization enables applications to be released and updated in an easy and fast way without downtime.
+Kubernetes helps you make sure those containerized applications run where and when you want, and helps them find the resources
+and tools they need to work.
+
+These are container cluster management and orchestration tools. They manage containers running on **multiple** hosts and does
+things like scaling, starting a new container when one crashes, networking containers.
 
 
 

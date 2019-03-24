@@ -1,106 +1,5 @@
 [React cheatsheet](https://devhints.io/react)
 
-Conditional rendering
----------------------
-There are various ways, as follows. Whenever conditions become too complex, it might be a good time to extract a component.
-
-**Element Variables**
-
-![](../images/cond_rend.png)
-
-While declaring a variable and using an if statement is a fine way to conditionally render a component, sometimes you might want to use a shorter syntax. There are a few ways to inline conditions in JSX:
-
-**Inline If with Logical `&&` Operator**
-
-![](../images/cond_rend1.png)
-
-This works because `true` is ignored/not rendered and if it is not `true` the overall expression evaluates to `false`
-
-**Inline If-Else with Conditional Operator**
-
-![](../images/cond_rend2.png)
-
-The virtual DOM
----------------
-Aprogramming concept where an ideal, or “virtual”, representation of a UI is kept in memory and synced with the “real” DOM by a library such as ReactDOM. This process is called reconciliation.
-
-This approach enables the declarative API of React: You tell React what state you want the UI to be in, and it makes sure the DOM matches that state. This abstracts out the attribute manipulation, event handling, and manual DOM updating that you would otherwise have to use to build your app.
-
-Refs
-----
-Refs provide a way to access DOM nodes or React elements created in the render method.
-
-While there are a few good use cases for refs, e.g. managing focus and text selection, they should not be overused. E.g. think more critically about where state should be owned in the component hierarchy. Often, it becomes clear that the proper place to “own” that state is at a higher level in the hierarchy.
-
-    class MyComponent extends Component {
-      render () {
-        return <div>
-          <input ref={el => this.input = el} />
-        </div>
-      }
-
-      componentDidMount () {
-        this.input.focus()
-      }
-    }
-
-When a ref is passed to an element in `render`, a reference to the node becomes accessible at the `current` attribute of the ref.
-The value of the ref differs depending on the type of the node:
-
-When the `ref` attribute is used on an HTML element, the `ref` created in the constructor with `React.createRef()` receives the underlying DOM element as its `current` property.
-
-When the `ref` attribute is used on a custom class component, the ref object receives the mounted instance of the component as its `current`.
-
-    class CustomTextInput extends React.Component {
-        constructor(props) {
-            super(props);
-            // create a ref to store the textInput DOM element
-            this.textInput = React.createRef();
-            this.focusTextInput = this.focusTextInput.bind(this);
-        }
-
-        focusTextInput() {
-            this.textInput.current.focus();
-        }
-
-        render() {
-            return (
-                <div>
-                    <input
-                        type="text"
-                        ref={this.textInput} />
-                    <input
-                        type="button"
-                        value="Focus the text input"
-                        onClick={this.focusTextInput}
-                    />
-                </div>
-            );
-        }
-    }
-
-Fragments
----------
-Used to return multiple children without adding extra wrapping nodes to the DOM. Example using the shorter syntax:
-
-    class Columns extends React.Component {
-      render() {
-        return (
-          <>
-            <td>Hello</td>
-            <td>World</td>
-          </>
-        );
-      }
-    }
-
-Inline styles
--------------
-    const style = { height: 10 }
-    return <div style={style}></div>
-
-    return <div style={{ margin: 0, padding: 0 }}></div>
-
 Pure components
 ---------------
 Performance-optimized version of `React.Component`. Doesn’t rerender if props/state hasn’t changed.
@@ -110,6 +9,34 @@ Performance-optimized version of `React.Component`. Doesn’t rerender if props/
     class MessageBox extends PureComponent {
       ···
     }
+
+In the following example, the output depends on `props.imageUrl` and `props.username`. If in a parent
+component you render `<UserAvatar username="fabio" imageUrl="http://foo.com/fabio.jpg" />`, so
+always the same props, React would call `render` every time, even if the output would be exactly the same.
+
+    class UserAvatar extends Component {
+        render() {
+           return <div><img src={this.props.imageUrl} /> {{ this.props.username }} </div>
+        }
+    }
+
+If the `UserAvatar` component extends `PureComponent` instead, a shallow compare is performed. And because
+`props` and `nextProps` are the same, `render` will not be called at all.
+Using `PureComponent` in root-level components and components near the top of your hierarchy is usually where
+you would see the biggest performance gains.
+
+`PureComponent` performs a shallow comparison, so only works for simple props/state (no nested data structures).
+If you need some performance gains by performing custom comparison logic between next/current props and
+state. For example, you can quickly perform a deep comparison using lodash#isEqual:
+
+    class MyComponent extends Component {
+        shouldComponentUpdate (nextProps, nextState) {
+            return !_.isEqual(this.props, nextProps) || !_.isEqual(this.state, nextState);
+        }
+    }
+
+Note that implementing your own `shouldComponentUpdate` or extending from `PureComponent` are optimizations,
+and as usual you should start looking into that only if you have performance issues (avoid premature optimizations)
 
 Default props
 -------------
@@ -271,10 +198,13 @@ Shallow comparison means that you compare the immediate contents of the objects 
 
 `React.memo`
 ------------
-Class components can bail out from rendering when their input props are the same using PureComponent or shouldComponentUpdate. Now you can do the same with function components by wrapping them in React.memo.
+Class components can bail out from re-rendering when their input props are the same using `PureComponent`
+or `shouldComponentUpdate`. Now you can do the same with function components by wrapping them in `React.memo`.
 
-    const MyComponent = React.memo(function MyComponent(props) {
-      /* only rerenders if props change */
+    const MyComponent = React.memo((props) => {
+      return (
+        /* markup */
+      );
     });
 
 Higher Order Components

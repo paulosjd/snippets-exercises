@@ -1,3 +1,24 @@
+
+Conditional rendering
+---------------------
+There are various ways, as follows. Whenever conditions become too complex, it might be a good time to extract a component.
+
+**Element Variables**
+
+![](../images/cond_rend.png)
+
+While declaring a variable and using an if statement is a fine way to conditionally render a component, sometimes you might want to use a shorter syntax. There are a few ways to inline conditions in JSX:
+
+**Inline If with Logical `&&` Operator**
+
+![](../images/cond_rend1.png)
+
+This works because `true` is ignored/not rendered and if it is not `true` the overall expression evaluates to `false`
+
+**Inline If-Else with Conditional Operator**
+
+![](../images/cond_rend2.png)
+
 Conditionals and short-circuit evaluation
 -----------------------------------------
     <Fragment>

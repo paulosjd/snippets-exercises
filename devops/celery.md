@@ -1,4 +1,6 @@
-Task queues are used as a strategy to distribute the workload between threads/machines. Celery requires an external solution to send and receive messages. Those solutions are called message brokers. Currently, Celery supports RabbitMQ, Redis, and Amazon SQS as message broker solutions.
+Task queues are used as a strategy to distribute the workload between threads/machines. Celery requires an external
+solution to send and receive messages. Those solutions are called message brokers. Currently, Celery supports RabbitMQ,
+Redis, and Amazon SQS as message broker solutions.
 
 Used in web applications where the request-response cycle cannot be made fast, for specific tasks that are time-consuming e.g. a report page, export of big amount of data, video/image processing, where we would leave the user waiting for way too long.
 An asynchronous task queue allows tasks to be run asynchronously irrespective of current program flow.

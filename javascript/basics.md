@@ -215,6 +215,12 @@ Equivalent to enumerate in Python:
       console.log(i, shellfish[i]);
     }
 
+Additional example of for loop:
+
+    for (i=0; i < 5; i++){
+       console.log(i)
+    }
+
 JSON
 ----
 Developed to be compatible with any programming language.

@@ -1,3 +1,6 @@
+[**How to dispatch a Redux action with a timeout?**](https://stackoverflow.com/questions/35411423/how-to-dispatch-a-redux-action-with-a-timeout/35415559#35415559)
+
+[**Why do we need middleware for async flow in Redux?**](https://stackoverflow.com/a/34599594/7159945)
 
 Redux
 -----
@@ -128,10 +131,35 @@ that is the default value of reducer function’s state argument…and an action
 If our reducer doesn’t recognize the action, it does nothing, which makes it safe for us to chain reducers together
 Reducer functions always return a new state object. May recycle parts of the old state, but *never* mutate state in place
 
+`dispatch(action)`
+-------------------
+Dispatches an action. This is the only way to trigger a state change.
+
+The store's reducing function will be called with the current `getState()` result and the given action
+synchronously. Its return value will be considered the next state. It will be returned from `getState()`
+from now on, and the change listeners will immediately be notified.
+
+    import { createStore } from 'redux'
+    const store = createStore(todos, ['Use Redux'])
+
+    function addTodo(text) {
+      return {
+        type: 'ADD_TODO',
+        text
+      }
+    }
+
+    store.dispatch(addTodo('Read the docs'))
+    store.dispatch(addTodo('Read about the middleware'))
+
+If you wrap `createStore` with `applyMiddleware` ([docs](https://redux.js.org/api/applymiddleware)), the middleware can interpret actions differently,
+and provide support for dispatching async actions.
+
+
 
 Usage with React example
 ------------------------
-Redux works especially well with React as it lets you describe UI as a function of state, and Redux emits state updates in response to actions.
+Redux works especially well with React as it lets you describe UI as a function of stat, and Redux emits state updates in response to actions.
 React bindings are not included in Redux by default. You need to install them explicitly: `npm install --save react-redux`
 
 ![](../images/redux4.png)
@@ -198,10 +226,10 @@ Container components
 Technically, a container component is just a React component that uses `store.subscribe()` to read a part of the
 Redux state tree and supply props to a presentational component it renders.
 
+`store.subscribe` is a low-level API. Most likely, instead of using it directly, you'll use React (or other) bindings.
 It is recommended to generate container components using the React Redux library's `connect()` function,
 which provides many useful optimizations to prevent unnecessary re-renders. (One result of this is that you
 shouldn't have to worry about the React performance suggestion of implementing `shouldComponentUpdate` yourself.)
-`connect` is just a React specific abstraction over `subscribe`.
 
 To use `connect()`, you need to define a special function called `mapStateToProps` that describes how to
 transform the current Redux store state into the props you want to pass to a presentational component you
@@ -273,3 +301,86 @@ when you render the root component:
       </Provider>,
       document.getElementById('root')
     )
+
+React Redux
+-----------
+**Connect: Dispatching Actions with `mapDispatchToProps`**
+
+As the second argument passed in to `connect`, `mapDispatchToProps` is used for dispatching actions to the store.
+With React Redux, your components never access the store directly - `connect` does it for you.
+Often referred to as `mapDispatch` for short.
+
+With it you gain the ability to pass down the action dispatching functions to child (likely unconnected)
+components. This allows more components to dispatch actions, while keeping them "unaware" of Redux.
+
+    const TodoList = ({ todos, toggleTodo }) => (
+      <div>
+        {todos.map(todo => (
+          <Todo todo={todo} onClick={toggleTodo} />
+        ))}
+      </div>
+    )
+
+This is what React Redux’s connect does, it encapsulates the logic of talking to the Redux store and lets
+you not worry about it.
+
+The `mapDispatchToProps` parameter can be of two forms. While the function form allows flexibility in customizing
+the functions your component receives, and how they dispatch actions, the object form is easier to use and is recommended if you can use it.
+
+https://stackoverflow.com/questions/39419237/what-is-mapdispatchtoprops
+
+What is mapDispatchToProps?
+
+    const mapDispatchToProps = (dispatch) => {
+      return {
+        onTodoClick: (id) => {
+          dispatch(toggleTodo(id))
+        }
+      }
+    }
+
+Understand in the context of the `container-component` pattern.
+Your components are supposed to be concerned only with displaying stuff. The only place they are
+supposed to get information from is their props. E.g.:
+
+    class FancyAlerter extends Component {
+        sendAlert = () => {
+            this.props.sendTheAlert()
+        }
+
+        render() {
+            <div>
+              <h1>Today's Fancy Alert is {this.props.fancyInfo}</h1>
+              <Button onClick={sendAlert}/>
+            </div>
+         }
+    }
+
+This component gets the info it displays from props (which came from the redux store via `mapStateToProps`)
+and it also gets its action function from its props: `sendTheAlert()`.  It doesn't need to know about redux, store, dispatch, state etc.
+
+That's where `mapDispatchToProps` comes in: in the corresponding `container`:
+
+    // FancyButtonContainer.js
+
+    function mapDispatchToProps(dispatch) {
+        return({
+            sendTheAlert: () => {dispatch(ALERT_ACTION)}
+        })
+    }
+
+    function mapStateToProps(state} {
+        return({fancyInfo: "Fancy this:" + state.currentFunnyString})
+    }
+
+    export const FancyButtonContainer = connect(
+        mapStateToProps, mapDispatchToProps)(
+        FancyAlerter
+    )
+
+
+`mapDispatchToProps` is the means that redux provides to let the container easily pass that function into the wrapped
+component on its props.
+
+`mapStateToProps`  doesn't have access to `dispatch`. So you couldn't use `mapStateToProps` to give the wrapped
+component a method that uses `dispatch`.

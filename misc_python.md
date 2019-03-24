@@ -148,6 +148,7 @@ Local and Global Variables
 --------------------------
 Simply speaking a variable is an abstraction layer for the memory cells that contain the actual value.
 Every module, class and function has its own namespace and variables are locally bound to that.
+
 Generally, modifying global variables within functions is considered bad practice as it can lead to hard-to-detect side effects.
 
 Descriptors
@@ -205,6 +206,68 @@ That is, `Foo.__getattr__` and `Foo.__getattribute__` would be used to find what
 
 Put yet another way, if `MyDescriptor` did not define `__get__`, then `f.x` would simply return the instance of `MyDescriptor`
 
+Context Managers
+-----------------
+See also [notes](https://github.com/paulosjd/snippets-exercises/blob/master/concepts_A-L.ipynb). "try..finally is good. with is better."
+
+A simple implementation of the `open()` context manager:
+
+    class ManagedFile:
+        def __init__(self, name):
+            self.name = name
+
+        def __enter__(self):
+            self.file = open(self.name, 'w')
+            return self.file
+
+        def __exit__(self, exc_type, exc_val, exc_tb):
+            if self.file:
+                self.file.close()
+
+Our `ManagedFile` class follows the context manager protocol and now supports the `with` statement, just like `open()`:
+
+    >>> with ManagedFile('hello.txt') as f:
+    ...    f.write('hello, world!')
+
+The `ManagedFile` context manager written using `contextlib.contextmanager` decorator:
+
+    @contextmanager
+    def managed_file(name):
+        try:
+            f = open(name, 'w')
+            yield f
+        finally:
+            f.close()
+
+    >>> with managed_file('hello.txt') as f:
+    ...     f.write('hello, world!')
+    ...     f.write('bye now')
+
+*Side note on generators* The `yield` keyword turns a function into a generator.
+When you call a generator function, instead of running the code immediately Python returns a
+generator object, which is an iterator. An iterable object has a `__next__` method – allows
+state to by maintained by processing one item at a time rather than just whole sequence from start to finish.
+
+Above, `managed_file()` is a generator that first acquires the resource.
+Then it temporarily suspends its own executing and yields the resource so it can be used by the
+caller. When the caller leaves the with context, the generator continues to execute so that any
+remaining clean up steps can happen
+
+A context manager to change the current directory temporarily and then return to where you were:
+
+    @contextmanager
+    def working_directory(path):
+        current_dir = os.getcwd()
+        os.chdir(path)
+        try:
+            yield
+        finally:
+            os.chdir(current_dir)
+
+    with working_directory("data/stuff"):
+        # do something within data/stuff
+    # here I am back again in the original working directory
+
 Miscellaeneous Gotchas
 ----------------------
 
@@ -249,7 +312,6 @@ Bitwise operators
 The bitwise operators are similar to the logical operators, except that they work on binary representations of data. Bitwise operations are generally used in low level programming, e.g. such as networking, hardware register operations, data compression, and security/encryption operations. As such, they tend to be restricted to operating system and driver levels of code, embedded systems.
 E.g. usually bitwise operations are faster than doing multiply/divide.
 
-
 `and` tests whether both expressions are True in a boolean context while `&` will test if identity of both is `True`. Similar for `or` and `|`
 
     >>> a = True
@@ -267,7 +329,7 @@ E.g. usually bitwise operations are faster than doing multiply/divide.
     >>> a & b
     2
 
-The short-circuiting boolean operators (`and`, `or`) can't be overriden. & and | (and not, by the way) can be fully overriden, as they don't short circuit.
+The short-circuiting boolean operators (`and`, `or`) can't be overriden. & and | (and `not`, by the way) can be fully overriden, as they don't short circuit.
 
 
 

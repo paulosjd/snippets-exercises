@@ -71,6 +71,95 @@ To use redux-thunk middleware, firstly write our actions in `actions.js` which w
 
 ![](../images/thunk2.png)
 
+When the above 'ageUp' function runs after a button click, the action gets dispatched and then it gets caught by 'ageUp' function
+which catches the action then after the timeout dispatches another action which then reaches the reducer.
+
+Now we can import our `actionCreators` and use them in our `mapDispatchToProps` (the second argument passed to `connect`, and used for dispatching actions):
+
+![](../images/thunk3.png)
+
+Recap on middleware:
+
+Asynchronous middleware like redux-thunk or redux-promise wraps the store's `dispatch()` method and allows you to
+dispatch something other than actions, for example, functions or Promises. Any middleware you use can then intercept
+anything you dispatch, and in turn, can pass actions to the next middleware in the chain. For example, a Promise
+middleware can intercept Promises and dispatch a pair of begin/end actions asynchronously in response to each Promise.
+When the last middleware in the chain dispatches an action, it has to be a plain object.
+
+Redux Docs Async Actions
+------------------------
+When you call an asynchronous API, the moment you start the call, and the moment when you receive an answer (or a timeout),
+each will usually require a change in the application state.
+To do that, you need to dispatch normal actions that will be processed by reducers synchronously.
+
+This would involve at least three different kinds of actions to inform the reducer that either:
+
+- The request began. Reducers may handle this action by toggling an `isFetching` flag in the state so the UI knows to show a spinner.
+
+- The request finished successfully. May be handled by reducers by merging the new data into the state they manage and resetting `isFetching`.
+The UI would hide the spinner, and display the fetched data.
+
+- That the request failed. This action may be handled by resetting `isFetching`. Additionally, some reducers may want to store the error message so the UI can display it.
+
+You may use a dedicated status field in your actions:
+
+    { type: 'FETCH_POSTS' }
+    { type: 'FETCH_POSTS', status: 'error', error: 'Oops' }
+    { type: 'FETCH_POSTS', status: 'success', response: { ... } }
+
+Or you can define separate types for them:
+
+    { type: 'FETCH_POSTS_REQUEST' }
+    { type: 'FETCH_POSTS_FAILURE', error: 'Oops' }
+    { type: 'FETCH_POSTS_SUCCESS', response: { ... } }
+
+Before rushing into the implementation, it's important to consider the shape of the application's state. E.g. for a 'Reddit Headlines' app:
+
+    { selectedSubreddit: 'frontend',
+      postsBySubreddit: {
+        frontend: {
+          isFetching: true,
+          didInvalidate: false,
+          items: []
+        },
+        reactjs: {
+          isFetching: false,
+          didInvalidate: false,
+          lastUpdated: 1439478405547,
+          items: [
+            {id: 42, title: 'Confusion about Flux and Relay'},
+            {id: 500, ...
+
+For every list of items, you'll want to store `isFetching` to show a spinner, `didInvalidate`
+so you can later toggle it when the data is stale,
+In a real app, you'll also want to store pagination state like `fetchedPageCount` and `nextPageUrl`.
+
+**Handling Actions**
+
+In `reducers.js` we write functions which manage part of the state. Below we extract `posts(state, action)` that manages
+the state of a specific post list. This is just reducer composition! It is our choice how to split the reducer into
+smaller reducers, and in this case, we're delegating updating items inside an object to a `posts` reducer.
+
+Remember that reducers are just functions, so you can use functional composition and higher-order functions.
+`combineReducers()`, as described in  [Splitting Reducers](https://redux.js.org/basics/reducers#splitting-reducers) in the docs.
+
+![](../images/reducers.png)
+
+n.b. instead of `Object.assign()`, could use nicer object spread syntax  e.g. `{ ...state, didInvalidate: true}`
+
+**Async Action Creators**
+
+By using Redux Thunk middleware, an action creator can return a function instead of an action object.
+This way, the action creator becomes a thunk.
+
+When an action creator returns a function, that function will get executed by the middleware.
+This function doesn't need to be pure; it is thus allowed to have side effects, including executing asynchronous API calls.
+The function can also dispatch synchronous actions. Define these special thunk action creators inside our `actions.js` file:
+
+![](../images/thunk5.png)
+
+[Link](https://redux.js.org/advanced/async-actions#actionsjs-with-fetch) to example of a more sophisticated async control flow:
+
 
 
 

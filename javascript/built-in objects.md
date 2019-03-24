@@ -252,9 +252,40 @@ The `map()` method creates a new array with the results of calling a provided fu
     myArray.findIndex(x => x.name === 'foo')  // 3
     myArray.findIndex(x => x.length === 3)  // 1
 
+**Array.from**
+
+The array constructor has a number of methods including `Array.isArray` and `Array.from`.
+
+    [...'hey']  // [ "h", "e", "y" ]
+    Array.from('hey')  // [ "h", "e", "y" ]
+
+    [...new Set([2,2,3])]  // [ 2, 3 ]
+    Array.from(new Set([2,2,3]))  // [ 2, 3 ]
+
+Creating a custom array with and without using`Array.from`:
+
+    Array.from({length: 4}, (val, ind) => 'item_' + ind)  // [ "item_0", "item_1", "item_2", "item_3" ]
+    new Array(5).fill(0).map((val,ind) => 'item_' + ind)
+
+In the following snippet, `arguments` would not otherwise have all the useful array methods:
+
+    const func = function(){
+        console.log(Array.from(arguments).join(''))
+    }
+    func('h', 'e', 'y')  // hey
+
+**Arrays do not have negative indexes**
+
+You cannot have a negative index, in the following assignment, it assigns a key-value pair and the length remains three,:
+
+    cont ary = [1, 2, 3]
+    ary[-1] = 5
+    console.log(ary)  // [ 1, 2, 3 ]
+
+This is because they are still just a special type of object.
+
 Sets and Weaksets
 -----------------
-
     const ary = [1,2,2,3]
     new Set(ary)  // Set(3) {1, 2, 3}
     [...new Set(ary)] // Array(3) [1, 2, 3]

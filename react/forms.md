@@ -20,6 +20,16 @@ The so-called regular, or dumb, components receive data from their parent (conta
 
 ![](../images/react-form3.png)
 
+**Selected value on a select tag**
+
+Instead of defining `selected` on each option, you can (and should) simply write `value={optionsState}` on the select tag itself:
+
+    <select value={optionsState}>
+      <option value="A">Apple</option>
+      <option value="B">Banana</option>
+      <option value="C">Cranberry</option>
+    </select>
+
 **Multiple options in a `select` tag**
 
     <select multiple={true} value={['B', 'C']}>
