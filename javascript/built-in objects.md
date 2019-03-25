@@ -2,6 +2,41 @@
 
 Their names seem to imply they are directly related to their simple primitives counter-parts, but in fact, their relationship is more complicated
 
+String
+------
+
+    'foobar'.includes('foo')  \\ true
+    ' foo'.concat('bar').trim()  \\ "foobar"
+    ' foobar '.trimRight() \\ " foobar"
+
+Various string methods, similar to in Python. Regex methods include `match()` and `search()`:
+
+    var str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    var regexp = /[A-E]/gi;
+    console.log(str.match(regexp));
+    // ['A', 'B', 'C', 'D', 'E', 'a', 'b', 'c', 'd', 'e']
+
+If the regular expression includes the `g` flag, the method returns an `Array` containing all matched substrings rather than match objects.
+
+    var my_str2 = 'my string was 25chars now its 40chars'
+    my_str2.match(/[0-9]{2}[a-z]{4}/)
+    // ["25char", index: 14, input: "my string was 25chars now its 40chars", groups: undefined]
+
+    my_str2.match(/[0-9]{2}[a-z]{4}/g)
+    // (2) ["25char", "40char"]
+
+    my_str2.search(/[0-9]{2}[a-z]{4}/g)
+    // 14
+
+**String conversion**
+
+It's possible to use String as a more reliable toString() alternative, as it works when used on null, undefined, and on symbols. For example:
+
+    var outputStrings = [];
+    for (var i = 0, n = inputValues.length; i < n; ++i) {
+      outputStrings.push(String(inputValues[i]));
+    }
+
 Object
 ------
 
@@ -105,41 +140,6 @@ Any mathematic operation you perform without both operands being numbers (or val
 `NaN` is a very special value in that it's never equal to another `NaN` value (i.e., it's never equal to itself). It's the only value, in fact, that is not reflexive (without the Identity characteristic `x === x`). So, `NaN !== NaN`
 
 So to test for it, use `Number.isNaN(..)`
-
-String
-------
-
-    'foobar'.includes('foo')  \\ true
-    ' foo'.concat('bar').trim()  \\ "foobar"
-    ' foobar '.trimRight() \\ " foobar"
-
-Various string methods, similar to in Python. Regex methods include `match()` and `search()`:
-
-    var str = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    var regexp = /[A-E]/gi;
-    console.log(str.match(regexp));
-    // ['A', 'B', 'C', 'D', 'E', 'a', 'b', 'c', 'd', 'e']
-
-If the regular expression includes the `g` flag, the method returns an `Array` containing all matched substrings rather than match objects.
-
-    var my_str2 = 'my string was 25chars now its 40chars'
-    my_str2.match(/[0-9]{2}[a-z]{4}/)
-    // ["25char", index: 14, input: "my string was 25chars now its 40chars", groups: undefined]
-
-    my_str2.match(/[0-9]{2}[a-z]{4}/g)
-    // (2) ["25char", "40char"]
-
-    my_str2.search(/[0-9]{2}[a-z]{4}/g)
-    // 14
-
-**String conversion**
-
-It's possible to use String as a more reliable toString() alternative, as it works when used on null, undefined, and on symbols. For example:
-
-    var outputStrings = [];
-    for (var i = 0, n = inputValues.length; i < n; ++i) {
-      outputStrings.push(String(inputValues[i]));
-    }
 
 Array
 -----
@@ -246,13 +246,37 @@ The `map()` method creates a new array with the results of calling a provided fu
         });
     }
 
+**Arrays do not have negative indexes**
+
+You cannot have a negative index, in the following assignment, it assigns a key-value pair and the length remains three,:
+
+    cont ary = [1, 2, 3]
+    ary[-1] = 5
+    console.log(ary)  // [ 1, 2, 3 ]
+
+This is because they are still just a special type of object.
+
 **`findIndex()`**
 
     const myArray = ['abcd', '123', 'third', {name: 'foo', value: 'bar'}]
     myArray.findIndex(x => x.name === 'foo')  // 3
     myArray.findIndex(x => x.length === 3)  // 1
 
-**Array.from**
+**`Array.prototype.entries()`**
+
+The `entries()` method returns a new `Array Iterator` object that contains the key/value pairs for each
+index in the array.
+
+    var a = ['a', 'b', 'c'];
+    var iterator = a.entries();
+    for (let e of iterator) {
+      console.log(e);
+    }
+    // [0, 'a']
+    // [1, 'b']
+    // [2, 'c']
+
+**`Array.isArray`**
 
 The array constructor has a number of methods including `Array.isArray` and `Array.from`.
 
@@ -273,16 +297,6 @@ In the following snippet, `arguments` would not otherwise have all the useful ar
         console.log(Array.from(arguments).join(''))
     }
     func('h', 'e', 'y')  // hey
-
-**Arrays do not have negative indexes**
-
-You cannot have a negative index, in the following assignment, it assigns a key-value pair and the length remains three,:
-
-    cont ary = [1, 2, 3]
-    ary[-1] = 5
-    console.log(ary)  // [ 1, 2, 3 ]
-
-This is because they are still just a special type of object.
 
 Sets and Weaksets
 -----------------

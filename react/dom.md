@@ -9,6 +9,11 @@ otherwise have to use to build your app.
 
 **Cost of calling `render()`**
 
+There are two steps of what we may call "render":
+
+- Virtual DOM render: when render method is called it returns a new virtual dom structure of the component.
+- Native DOM render: React changes real DOM nodes in your browser only if they were changed in the Virtual DOM and as little as needed - this is that great React's feature which optimizes real DOM mutation and makes React fast.
+
 Calling `render()` doesn't mean that DOM Nodes are being manipulated in any way. The render method just
 serves the diff algorithm to decide which DOM Nodes need to really be attached / detached. Note that
 `render()` is not expensive, it's the DOM manipulations that are expensive. They are executed only if

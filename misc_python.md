@@ -1,4 +1,4 @@
-Regex
+﻿Regex
 -----
     Metacharacters:  . ^ $ * + ? { } [ ] \ | ( )
 
@@ -209,6 +209,7 @@ Put yet another way, if `MyDescriptor` did not define `__get__`, then `f.x` woul
 Context Managers
 -----------------
 See also [notes](https://github.com/paulosjd/snippets-exercises/blob/master/concepts_A-L.ipynb). "try..finally is good. with is better."
+Also Yield in context managers in generators.md
 
 A simple implementation of the `open()` context manager:
 

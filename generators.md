@@ -1,14 +1,10 @@
-Classic example:
-
     def fib():
         a, b = 0, 1
         while True:
            yield b
            a, b = b, a+b
-
 PEP255
 -------
-
 **Motivation**
 
 When a producer function has a hard enough job that it requires maintaining state between values produced,
@@ -38,6 +34,29 @@ If a yield statement is encountered, the state of the function is frozen, and th
 is returned to `__next__`'s caller. By "frozen" we mean that all local state is retained: enough information
 so that the next time `__next__` is invoked, the function can proceed exactly as if the yield statement
 were just another external call.
+
+**Yield in context managers**
+
+Consider the following context manager for creating temporary directories which contains the `yield` keyword:
+
+    @contextmanager
+    def tempdir():
+        outdir = tempfile.mkdtemp()
+        try:
+            yield outdir
+        finally:
+            shutil.rmtree(outdir)
+
+    >>> with tempdir() as dirname:
+            ...
+
+![](./images/context_man.png)
+
+In this case `yield` can be thought of as scissors which slices the function in half, where each half
+maps to a context manager method. Yield is what makes this possible.
+
+![](./images/context_man2.png)
+
 
 
 21:00 if Beazley gen

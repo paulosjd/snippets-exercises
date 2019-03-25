@@ -4,7 +4,6 @@
 
 ![](../images/setstate.png)
 
-
 **Access previous state in `setState()`**
 
 You cannot always trust `this.state` to hold the correct state immediately after calling `setState()`, as it is always equal

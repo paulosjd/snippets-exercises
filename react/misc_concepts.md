@@ -38,6 +38,11 @@ state. For example, you can quickly perform a deep comparison using lodash#isEqu
 Note that implementing your own `shouldComponentUpdate` or extending from `PureComponent` are optimizations,
 and as usual you should start looking into that only if you have performance issues (avoid premature optimizations)
 
+`shouldComponentUpdate(nextProps, nextState)`
+---------------------------------------------
+Returns a boolean. Used to determine if a component should be re-rendered when it receives new props or after `setState` is called.
+The default implementation always returns `true` - meaning that React re-renders all components and sub components every time `setState` is called.
+
 Default props
 -------------
 `defaultProps` can be defined as a property on the component class itself, to set the default props for the class.
