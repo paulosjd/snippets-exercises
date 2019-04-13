@@ -83,15 +83,19 @@ The `Provider` (returned by `createContext`) which establishes the “electrical
 
 The `Consumer `(also returned by `createContext`) which taps into the “electrical bus” to extract the data
 
-The `Provider` is very similar to React-Redux’s `Provider`. It accepts a `value` prop, most likely be an object containing your data and any actions you want to be able to perform on the data.
+The `Provider` is very similar to React-Redux’s `Provider`. It accepts a `value` prop, most likely be an object
+containing your data and any actions you want to be able to perform on the data.
 The `Consumer` works a little bit like React-Redux’s `connect` function.
 
-[Further info](https://daveceddia.com/context-api-vs-redux/#how-to-use-the-react-context-api). CodeSandbox [example 1](https://codesandbox.io/s/q9w2qrw6q4), [example 2](https://codesandbox.io/s/jpy76nm1v).
+[Further info](https://daveceddia.com/context-api-vs-redux/#how-to-use-the-react-context-api).
+CodeSandbox [example 1](https://codesandbox.io/s/q9w2qrw6q4), [example 2](https://codesandbox.io/s/jpy76nm1v).
 
-Context is primarily used when some data needs to be accessible by *many* components at different nesting levels. Apply it sparingly because it makes component reuse more difficult.
+Context is primarily used when some data needs to be accessible by *many* components at different nesting levels.
+Apply it sparingly because it makes component reuse more difficult.
 
 Often, component composition is often a simpler solution than context.
-E.g. consider a `Page` component that passes a `user` and `avatarSize` prop several levels down so that deeply nested `Link` and `Avatar` components can read it:
+E.g. consider a `Page` component that passes a `user` and `avatarSize` prop several levels down so that deeply
+nested `Link` and `Avatar` components can read it:
 
     <Page user={user} avatarSize={avatarSize} />
     // ... which renders ...
@@ -103,19 +107,23 @@ E.g. consider a `Page` component that passes a `user` and `avatarSize` prop seve
       <Avatar user={user} size={avatarSize} />
     </Link>
 
-It might feel redundant to pass down the user and `avatarSize` props through many levels if in the end only the `Avatar` component really needs it. It’s also annoying that whenever the `Avatar` component needs more props from the top, you have to add them at all the intermediate levels too.
+It might feel redundant to pass down the user and `avatarSize` props through many levels if in the end only
+the `Avatar` component really needs it. It’s also annoying that whenever the `Avatar` component needs more props
+from the top, you have to add them at all the intermediate levels too.
 One solution is to use containment, i.e. pass down the `Avatar` component itself:
 
 ![](../images/react29.png)
 
-This *inversion of control* can make your code cleaner in many cases by reducing the amount of props you need to pass through your application and giving more control to the root components.
+This *inversion of control* can make your code cleaner in many cases by reducing the amount of props you need to
+pass through your application and giving more control to the root components.
 However,  moving more complexity higher in the tree like this isn’t the right choice in every case.
 [Context API Docs](https://reactjs.org/docs/context.html)
 
 PropTypes
 ---------
 Now a separate package to React, it is for type checking for reducing bugs relating to types.
-It also serves as a handy documentation on how a component has to be used in terms of passing props. Many code editors support code completion for props.
+It also serves as a handy documentation on how a component has to be used in terms of passing props.
+Many code editors support code completion for props.
 
 Example for basic data types:
 
@@ -154,7 +162,8 @@ Validate a plain JS object against a certain shape:
 
 **Specifying a Range of Valid Prop Values**
 
-From time to time you might want to have a prop value passed, that is exactly one out of a given set of values. Doing so, could look like this:
+From time to time you might want to have a prop value passed, that is exactly one out of a given set of values.
+Doing so, could look like this:
 
     Person.propTypes = {
       gender: PropTypes.oneOf([
@@ -162,13 +171,15 @@ From time to time you might want to have a prop value passed, that is exactly on
       ])
     }
 
-In cases where a prop is optional (i.e. not using isRequired), you can set a default value to make sure something gets passed:
+In cases where a prop is optional (i.e. not using isRequired), you can set a default value to make sure something
+gets passed:
 
     Developer.defaultProps = {
       language: 'JavaScript'
     }
 
-The `propTypes` typechecking happens after `defaultProps` are resolved, so typechecking will also apply to the `defaultProps`.
+The `propTypes` typechecking happens after `defaultProps` are resolved, so typechecking will also apply to the
+`defaultProps`.
 
 Pure Components
 ---------------
@@ -194,12 +205,14 @@ This unnecessary re-rendering can avoided by using `shouldComponentUpdate` (whic
     }
 
 Here, `nextState` is whatever the next state used in `setState`. So this can be compared
-with the current state to find out if it has changed. If the method returns `false` then it will not re-render, if `true` then it will.
+with the current state to find out if it has changed. If the method returns `false` then it will not re-render,
+if `true` then it will.
 It works for both props and state.
 
 An alternative approach is to use pure components. This simply involves extending from `PureComponent` instead of `Component`
 Care should be taken when using them however, since they only do a shallow comparison, for performance reasons.
-Shallow comparison means that you compare the immediate contents of the objects instead of recursively comparing all the key/value pairs of the object. So only the object references are compared, and if the state/props are mutated, this might not work as intended.
+Shallow comparison means that you compare the immediate contents of the objects instead of recursively comparing all the key/value pairs of the object.
+So only the object references are compared, and if the state/props are mutated, this might not work as intended.
 
 `React.memo`
 ------------
@@ -232,7 +245,9 @@ Code-splitting
 ------------------
 **Bundling**
 
-Most React apps will have their files “bundled” using tools like Webpack. Bundling is the process of following imported files and merging them into a single file: a “bundle”. This bundle can then be included on a webpage to load an entire app at once. For example:
+Most React apps will have their files “bundled” using tools like Webpack. Bundling is the process of following
+imported files and merging them into a single file: a “bundle”. This bundle can then be included on a webpage to
+load an entire app at once. For example:
 
 App:
 
@@ -254,13 +269,17 @@ Bundle:
 
     console.log(add(16, 26)); // 42
 
-If you’re using Create React App, or a similar tool, you will have a Webpack setup out of the box to bundle your app. If you aren’t, you’ll need to setup bundling yourself.
+If you’re using Create React App, or a similar tool, you will have a Webpack setup out of the box to bundle your app. If you aren’t,
+you’ll need to setup bundling yourself.
 
 **Code Splitting**
 
-Bundling is great, but as your app grows, your bundle will grow too. Especially if you are including large third-party libraries. You need to keep an eye on the code you are including in your bundle so that you don’t accidentally make it so large that your app takes a long time to load.
+Bundling is great, but as your app grows, your bundle will grow too. Especially if you are including large third-party libraries. You need to keep an eye on
+the code you are including in your bundle so that you don’t accidentally make it so large that your app takes a
+long time to load.
 
-To avoid winding up with a large bundle, it’s good to get ahead of the problem and start “splitting” your bundle. Code-Splitting is a feature supported by bundlers like Webpack which can create multiple bundles that can be dynamically loaded at runtime.
+To avoid winding up with a large bundle, it’s good to get ahead of the problem and start “splitting” your bundle. Code-Splitting is a feature supported by bundlers like
+Webpack which can create multiple bundles that can be dynamically loaded at runtime.
 
 Code-splitting your app can help you “lazy-load” just the things that are currently needed by the user, which can dramatically improve the performance of your app.
 

@@ -1,7 +1,4 @@
-
-Difference between `==` and `===` is that `==` will perform a type convserion
-when comparing objects whereas `===` will not.
-
+﻿
 Standard built-in objects
 -------------------------
 Here, global objects refer to objects in the global scope. The global scope consists of the properties of the global object (accessed using the `this` operator in the global scope), including inherited properties, if any.

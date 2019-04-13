@@ -176,6 +176,74 @@ As a convenience, the `HttpRequest` object is passed to the lookups and queryset
             ('is_staff', admin.BooleanFieldListFilter),
         )
 
+**Custom columns**
+
+*Question*: I have a model Data, associated to a table like this (The model Data is made up of only IntegerField):
+
+    subject | year | quarter | sales |
+    ----------------------------------
+       1    | 2010 |   1     | 20    |
+       1    | 2011 |   4     | 40    |
+       2    | 2010 |   1     | 30    |
+       2    | 2010 |   2     | 20    |
+     [..etc..]
+
+I want to have a django-admin table, in read-only having columns (current year = 2011, quarter = 1)
+
+    subject | sales current year | sales current quarter | sales last year | sales current quarter last year |
+    ----------------------------------------------------------------------------------------------------------
+      1     |  110               |  30                   |  240            |  20
+    [..etc..]
+
+*Answer*
+
+You can use methods on your `Model` or your `ModelAdmin` as items for `list_display`. [Docs](https://docs.djangoproject.com/en/dev/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_display).
+Since these are methods that might be useful outside the admin, as well, I'd suggest adding them to your `Model`.
+
+    class Data(models.Model):
+        ...
+
+        # Method used by `get_current_year_sales` and `get_last_year_sales`
+        # to stay DRY. Not for use directly in admin.
+        def get_year_sales(self, year):
+            qs = self.model._default_manager.filter(year=year)
+            sales_agg = qs.aggregate(Sum('sales'))
+            return sales_agg['sales__sum']
+
+        # Method used by `get_current_quarter_sales` and `get_last_quarter_sales`
+        # to stay DRY. Not for use directly in admin.
+        def get_quarter_sales(self, year, quarter):
+            qs = self.model._default_manager.filter(year=year, quarter=quarter)
+            sales_agg = qs.aggregate(Sum('sales'))
+            return sales_agg['sales__sum']
+
+        def get_current_year_sales(self):
+            return self.get_year_sales(datetime.now().year)
+        get_current_year_sales.short_description = 'Sales (Current Year)'
+
+        def get_last_year_sales(self):
+            return self.get_year_sales(datetime.now().year-1)
+        get_last_year_sales.short_description = 'Sales (Last Year)'
+
+        def get_current_quarter_sales(self):
+            # Determine current quarter logic here as `current_quarter`
+            # `quarter_year` will likely be same as current year here,
+            # but will need to be calculated for previous quarter
+            return self.get_quarter_sales(quarter_year, current_quarter)
+        get_current_quarter_sales.short_description = 'Sales (Current Quarter)'
+
+        def get_current_quarter_sales(self):
+            # Logic here to determine last quarter as `last_quarter`
+            # Logic to determine what year last quarter was in as `quarter_year`
+            return self.get_quarter_sales(quarter_year, last_quarter)
+        get_last_quarter_sales.short_description = 'Sales (Last Quarter)'
+
+    The short_description attribute determines what the admin will show as the row header for these methods. So, once you have all this in place, you need only modify your ModelAdmin's list_display attribute like:
+
+    class DataAdmin(admin.ModelAdmin):
+        ...
+        list_display = ('subject', 'get_current_year_sales', 'get_last_year_sales', 'get_current_quarter_sales', 'get_last_quarter_sales')
+
 **InlineModelAdmin objects**
 
 The admin interface has the ability to edit models on the same page as a parent model. These are called inlines. Suppose you have these two models:

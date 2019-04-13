@@ -1,12 +1,8 @@
-In its broadest use, “data integrity” refers to the accuracy and consistency of data stored in a database
+﻿In its broadest use, “data integrity” refers to the accuracy and consistency of data stored in a database
 
 **Data integrity is enforced by database constraints**
 
 ![](../images/data_integrity.png)
-
-
-Integrity Constraints
----------------------
 
 **Row integrity**
 
@@ -75,4 +71,3 @@ This column allows you to store one of the values in the enum list, but no other
 In other databases besides MySQL, it's more typical to use a CHECK constraint to accomplish the same thing. A CHECK constraint is standard SQL.
 
     CREATE TABLE Foo ( color VARCHAR(6) CHECK (color IN ('red', 'green', 'blue', 'yellow')) );
-

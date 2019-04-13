@@ -202,3 +202,8 @@ Inline styles
     return <div style={style}></div>
 
     return <div style={{ margin: 0, padding: 0 }}></div>
+
+**CSS `display:none` with a conditional**
+
+    style={{display: this.state.showStore ? 'block' : 'none' }}
+

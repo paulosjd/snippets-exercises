@@ -17,7 +17,6 @@ Classic example is the click handler function in a counter component where an up
       })
     }
 
-
 **Updating state with values that depend on the current state**
 
 Pass a function instead of an object to `setState` to ensure the call always uses the most updated version of state

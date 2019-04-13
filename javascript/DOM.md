@@ -8,13 +8,19 @@ and each node contains objects. DOM methods allow programmatic access to the tre
 with them you can change the document's structure, style or content.
 Nodes can have event handlers attached to them. Once an event is triggered, the event handlers get executed.
 
-To view exactly what the DOM is, in your web browser, right click on the current web page select Inspect. This will open up Developer Tools. The HTML code you see here is the DOM.
+To view exactly what the DOM is, in your web browser, right click on the current web page select Inspect. This will open up Developer Tools.
+The HTML code you see here is the DOM.
 
-Each HTML element is considered a node in the DOM - an object that JavaScript can touch. These objects are arranged in a tree structure, with <html> being closer to the root, and each nested element being a branch further along the tree. JavaScript can add, remove, and change any of these elements.
+Each HTML element is considered a node in the DOM - an object that JavaScript can touch. These objects are arranged in a tree structure, with `<html>`
+being closer to the root, and each nested element being a branch further along the tree. JavaScript can add, remove, and change any of these elements.
 
-If you right click on the site again and click View Page Source, you will see the raw HTML output of the website. It's easy at first to confuse the DOM with the HTML source, but they're different - the page source is exactly what is written in the HTML file. It is static and will not change, and will not be affected by JavaScript. The DOM is dynamic, and can change.
+If you right click on the site again and click View Page Source, you will see the raw HTML output of the website.
+It's easy at first to confuse the DOM with the HTML source, but they're different - the page source is exactly what is written in the HTML file.
+It is static and will not change, and will not be affected by JavaScript. The DOM is dynamic, and can change.
 
-The outermost layer of the DOM, the layer that wraps the entire <html> node, is the document object. To begin manipulating the page with jQuery, we need to ensure the document is "ready" first, or JavaScript runs as page loaded.
+The outermost layer of the DOM, the layer that wraps the entire `<html>` node, is the document object. To begin
+manipulating the page with jQuery, we need to ensure the document is "ready"
+first, or JavaScript runs as page loaded.
 
 Let's demonstrate how the DOM can be modified by client-side JavaScript. Type the following into the console:
 
@@ -25,20 +31,23 @@ Let's demonstrate how the DOM can be modified by client-side JavaScript. Type th
     </body>
 
 document is an object, body is a property of that object that we have accessed with dot notation.
-In the console, we can change some of the live properties of the body object on this website. We'll edit the style attribute, changing the background color to fuchsia:
+In the console, we can change some of the live properties of the body object on this website. We'll edit the style attribute,
+changing the background color to fuchsia:
 
     > document.body.style.backgroundColor = 'fuchsia';
 
-Switching to the Elements tab, or typing document.body into the console again, you will see that the DOM has changed:
+Switching to the Elements tab, or typing `document.body` into the console again, you will see that the DOM has changed:
 
     <body style="background-color: fuchsia;">
       <h1>Document Object Model</h1>
     </body>
 
-Note: In order to change the background-color CSS property, we had to type backgroundColor in the JavaScript.
+Note: In order to change the `background-color` CSS property, we had to type `backgroundColor` in the JavaScript.
 Any hyphenated CSS property will be written in camelCase in JavaScript.
 
-However, right click on the page and select "View Page Source". You will notice that the source of the website does not contain the new style attribute we added via JavaScript. The source of a website will not change and will never be affected by client-side JavaScript.
+However, right click on the page and select "View Page Source". You will notice that the source of the website does
+not contain the new style attribute we added via JavaScript.
+The source of a website will not change and will never be affected by client-side JavaScript.
 If you refresh the page, the new code we added in the console will disappear.
 
 **Walking the DOM**
@@ -66,7 +75,7 @@ If an element has the `id` attribute, then there’s a global variable by that n
 Good for very simple scripts, but there may be name conflicts. Also, in the JS it’s not obvious where the variable comes from.
 The better alternative is to use a special method `document.getElementById(id)`.
 
-getElementsBy\*:
+`getElementsBy`
 
     // get all divs in the document
     let divs = document.getElementsByTagName('div');
@@ -75,7 +84,7 @@ This method is callable in the context of any DOM element. E.g. an element with 
 
     my_form.getElementsByTagName('input')[0].value = 5;
 
-querySelectorAll:
+`querySelectorAll`
 
 The call to `elem.querySelectorAll()` returns all elements inside `elem` matching the given CSS selector.
 
@@ -83,7 +92,8 @@ The call to `elem.querySelectorAll()` returns all elements inside `elem` matchin
 
 DOM Node Classes
 ----------------
-DOM nodes have different properties depending on their class. There are also common properties and methods between them, because all classes of DOM nodes form a single hierarchy.
+DOM nodes have different properties depending on their class. There are also common properties and methods between them,
+because all classes of DOM nodes form a single hierarchy.
 DOM nodes are regular JavaScript objects. They use prototype-based classes for inheritance.
 
 ![](../images/dom4.png)
@@ -97,12 +107,10 @@ For example, consider `<input>` element. It belongs to `HTMLInputElement` class.
 `EventTarget` gives the support for events,
 …and finally it inherits from `Object`, so “pure object” methods like `hasOwnProperty` are also available.
 
-
-
 Data Attributes
 ---------------
-
-HTML5 is designed with extensibility in mind for data that should be associated with a particular element but need not have any defined meaning. data-* attributes allow us to store extra information on standard, semantic HTML elements
+HTML5 is designed with extensibility in mind for data that should be associated with a particular element but need not
+have any defined meaning. data-* attributes allow us to store extra information on standard, semantic HTML elements
 
     <article
       id="electriccars"
@@ -114,7 +122,8 @@ HTML5 is designed with extensibility in mind for data that should be associated 
 
 **Access in JavaScript**
 
-To get a data attribute through the dataset object, get the property by the part of the attribute name after data- (note that dashes are converted to camelCase):
+To get a data attribute through the dataset object, get the property by the part of the attribute name after
+`data-` (note that dashes are converted to camelCase):
 
     var article = document.getElementById('electriccars');
 
@@ -151,7 +160,7 @@ To react on events we can assign a handler – a function that runs in case of a
 
 **Event objects**
 
-When an event happens, the browser creates an event object, puts details into it and passes it as an argument to the handl
+When an event happens, the browser creates an event object, puts details into it and passes it as an argument to the handler
 
 Properties of event object include `type` e.g. `"click"` and `currentTarget` which is usually accessed by `this`
 
@@ -169,7 +178,8 @@ E.g. for a single handler `form.onclick`, that “catches” all clicks inside t
 `this` (=`event.currentTarget`) is the `<form>` element, because the handler runs on it.
 `event.target` is the concrete element inside the form that actually was clicked.
 
-Stop bubbling (from target element towards `document` and `window`) with `event.stopPropagation` (generally not recommended to do):
+Stop bubbling (from target element towards `document` and `window`) with `event.stopPropagation` (generally not
+recommended to do):
 
     <body onclick="alert(`the bubbling doesn't reach here`)">
       <button onclick="event.stopPropagation()">Click me</button>
@@ -177,7 +187,8 @@ Stop bubbling (from target element towards `document` and `window`) with `event.
 
 **Event delegation**
 
-The idea is that if we have a lot of elements handled in a similar way, then instead of assigning a handler to each of them – we put a single handler on their common ancestor.
+The idea is that if we have a lot of elements handled in a similar way, then instead of assigning a handler to
+each of them – we put a single handler on their common ancestor.
 In the handler we get `event.target`, see where the event actually happened and handle it.
 
 Suppose we had a table of many cells and wanted to highlight a cell `<td>` on click
@@ -218,8 +229,8 @@ Often we use `<a>` in the markup but intend to handle clicks in JavaScript. So w
         };
     </script>
 
-Preventing further events, e.g. `mousedown` on an `<input>` field leads to focusing in it, an  `focus` event. If we prevent the `mousedown` event, there’s no focus. Below,
-the second `input` cannot be focused on by clicking with the mouse:
+Preventing further events, e.g. `mousedown` on an `<input>` field leads to focusing in it, an  `focus` event. If we prevent the `mousedown` event,
+there’s no focus. Below, the second `input` cannot be focused on by clicking with the mouse:
 
     <input value="Focus works" onfocus="this.value=''">
     <input onmousedown="return false" onfocus="this.value=''" value="Click me">
@@ -231,7 +242,8 @@ By default the browser `contextmenu` event (right mouse click) shows a context m
 Say we want to implement our own document-wide context menu. And inside the document we may have other elements with their own context menus.
 So event handlers on both levels may be triggered on a certain event.
 
-One solution , rather than stopping event bubbling using `event.stopPropagation()`, is to check in the `document` handler if the default action was prevented and if it was then don't take action:
+One solution , rather than stopping event bubbling using `event.stopPropagation()`, is to check in the `document` handler if the default action was
+prevented and if it was then don't take action:
 
     <p>Right-click for the document menu (fixed with event.defaultPrevented)</p>
     <button id="elem">Right-click for the button menu</button>
@@ -290,7 +302,8 @@ or `keydown` event for `pageUp` and `pageDown` keys.
 **Page lifecycle events**
 
 Scripts with `async` and `defer`: these work only for external script and are ignored if there’s no `src`.
-Both of them tell the browser that it may go on working with the page, and load the script “in background”, then run the script when it loads. So the script doesn’t block DOM building and page rendering.
+Both of them tell the browser that it may go on working with the page, and load the script “in background”, then run the script when it loads.
+So the script doesn’t block DOM building and page rendering.
 
 `async` is used for independent scripts, like counters or ads, that don’t need to access page content.
 `defer` is used for scripts that need DOM and/or their relative execution order is important.
@@ -399,12 +412,15 @@ From the other side it’s a window-in-window.
 The embedded window has a separate `document` and `window` objects.
 We can access them like using the properties `iframe.contentDocument` and `iframe.contentWindow`
 
-The `sandbox` attribute allows for the exclusion of certain actions inside an `<iframe>` in order to prevent it executing untrusted code. It “sandboxes” the iframe by treating it as coming from another origin and/or applying other limitations.
-`<iframe sandbox src="...">` has the “default set” of restrictions are applied. But we can provide a list of limitations to lift, like this: `<iframe sandbox="allow-forms allow-popups">`.
+The `sandbox` attribute allows for the exclusion of certain actions inside an `<iframe>` in order to prevent
+it executing untrusted code. It “sandboxes” the iframe by treating it as coming from another origin
+and/or applying other limitations.
+`<iframe sandbox src="...">` has the “default set” of restrictions are applied. But we can provide a list of
+limitations to lift, like this: `<iframe sandbox="allow-forms allow-popups">`.
 
 **X-Frame-Options**
 
-The server-side header X-Frame-Options can permit or forbid displaying the page inside a frame.
+The server-side header `X-Frame-Options` can permit or forbid displaying the page inside a frame.
 The header may have 3 values:
 
 ![](../images/iframe.png)

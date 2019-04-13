@@ -160,6 +160,139 @@ The function can also dispatch synchronous actions. Define these special thunk a
 
 [Link](https://redux.js.org/advanced/async-actions#actionsjs-with-fetch) to example of a more sophisticated async control flow:
 
+How to dispatch a Redux action with a timeout?
+----------------------------------------------
+[Stackoverflow link.](https://stackoverflow.com/questions/35411423/how-to-dispatch-a-redux-action-with-a-timeout/35415559#35415559)
+Unless you realize you are repeating too much code, use what the language offers and go for the simplest solution.
 
+**Writing Async Code Inline** (by far the simplest way)
 
+    store.dispatch({ type: 'SHOW_NOTIFICATION', text: 'You logged in.' })
+    setTimeout(() => {
+      store.dispatch({ type: 'HIDE_NOTIFICATION' })
+    }, 5000)
 
+Similarly, from inside a connected component (only difference is that in a connected component you usually don’t
+have access to the store itself, but get either `dispatch()` or specific action creators injected as props):
+
+    this.props.dispatch({ type: 'SHOW_NOTIFICATION', text: 'You logged in.' })
+    setTimeout(() => {
+      this.props.dispatch({ type: 'HIDE_NOTIFICATION' })
+    }, 5000)
+
+If you are worried about typos when dispatching the same actions from different components, you might want to
+extract action creators instead of dispatching action objects inline:
+
+    // actions.js
+    export function showNotification(text) {
+      return { type: 'SHOW_NOTIFICATION', text }
+    }
+    export function hideNotification() {
+      return { type: 'HIDE_NOTIFICATION' }
+    }
+
+    // component.js
+    import { showNotification, hideNotification } from '../actions'
+
+    this.props.dispatch(showNotification('You just logged in.'))
+    setTimeout(() => {
+      this.props.dispatch(hideNotification())
+    }, 5000)
+
+Or, if you have previously bound them with connect():
+
+    this.props.showNotification('You just logged in.')
+    setTimeout(() => {
+      this.props.hideNotification()
+    }, 5000)
+
+**Extracting Async Action Creator**
+
+The approach above works fine in simple cases but you might find that it has a few problems:
+- It forces you to duplicate this logic anywhere you want to show a notification.
+- The notifications have no IDs so you’ll have a race condition if you show two notifications fast enough.
+
+Solve this by extracting a function that centralizes the timeout logic and dispatches those two actions:
+
+    // actions.js
+    function showNotification(id, text) {
+      return { type: 'SHOW_NOTIFICATION', id, text }
+    }
+    function hideNotification(id) {
+      return { type: 'HIDE_NOTIFICATION', id }
+    }
+
+    let nextNotificationId = 0
+    export function showNotificationWithTimeout(dispatch, text) {
+      // Assigning IDs to notifications lets reducer ignore HIDE_NOTIFICATION
+      // for the notification that is not currently visible.
+      const id = nextNotificationId++
+      dispatch(showNotification(id, text))
+
+      setTimeout(() => {
+        dispatch(hideNotification(id))
+      }, 5000)
+    }
+
+    // component.js
+    showNotificationWithTimeout(this.props.dispatch, 'You just logged in.')
+
+    // otherComponent.js
+    showNotificationWithTimeout(this.props.dispatch, 'You just logged out.')
+
+**Thunk Middleware**
+
+Don’t worry about middleware if you can get by without it. In larger apps, however, you might find certain
+inconveniences around the above approach. E.g. it seems unfortunate that we have to pass dispatch around.
+You can’t just bind action creators with `connect()` anymore because `showNotificationWithTimeout()` is not
+really an action creator (doesn't return a Redux action).
+In addition, it can be awkward to remember which functions are synchronous action creators and which are
+asynchronous helpers. You have to use them differently and be careful not to mistake them with each other.
+
+This was the motivation for finding a way to “legitimize” this pattern of providing dispatch to a helper
+function, and help Redux “see” such asynchronous action creators as a special case of normal action creators.
+When Redux middleware is enabled,any time you attempt to dispatch a function instead of an action object,
+Redux Thunk middleware will call that function with dispatch method itself as the first argument.
+
+This function is almost identical to the one written previously except that it doesn’t accept `dispatch` as
+the first argument. Instead it returns a function that accepts `dispatch` as the first argument:
+
+    // actions.js
+    function showNotification(id, text) {
+      return { type: 'SHOW_NOTIFICATION', id, text }
+    }
+    function hideNotification(id) {
+      return { type: 'HIDE_NOTIFICATION', id }
+    }
+
+    let nextNotificationId = 0
+    export function showNotificationWithTimeout(text) {
+      return function (dispatch) {
+        const id = nextNotificationId++
+        dispatch(showNotification(id, text))
+
+        setTimeout(() => {
+          dispatch(hideNotification(id))
+        }, 5000)
+      }
+    }
+
+Since if we dispatch a function instead of an action object, the middleware will call that function with dispatch
+method itself as the first argument, we can do this:
+
+    // component.js
+    import { connect } from 'react-redux'
+
+    // ...
+    this.props.showNotificationWithTimeout('You just logged in.')
+    // ...
+
+    export default connect(
+      mapStateToProps,
+      { showNotificationWithTimeout }
+    )(MyComponent)
+
+Finally, we have abstracted away the difference between dispatching a synchonous and an asynchronous action.
+Also, notice that since we “taught” Redux to recognize such “special” action creators (we call them thunk
+action creators), we can now use them in any place where we would use regular action creators. E.g. we can
+use them with `connect()`.

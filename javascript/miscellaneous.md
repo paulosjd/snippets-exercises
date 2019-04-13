@@ -195,6 +195,73 @@ The above class is very generic, below is a more concrete class:
       }
     }
 
+ES6 Iterators and Generators
+----------------------------
+Say you had a Graph object, you can easily use a generator to walk through the nodes or edges. This makes for much cleaner code by
+putting the traversal logic within the Graph object where it belongs. Under the hood, `for...of` is actually using `Symbol.iterator`.
+You can use `Symbol.iterator` to retrieve a function that iterates over an array object, like so:
+
+    var nums = [6, 7];
+    var iterator = nums[Symbol.iterator]();
+    iterator.next();                // Returns { value: 6, done: false }
+    iterator.next();                // Returns { value: 7, done: false }
+    iterator.next();                // Returns { value: undefined, done: true }
+
+Rarely would you need to use `next()` manually like this, but the option is there in case you have a use case requiring more complex
+looping. You can use `Symbol.iterator` to define specialized iteration for an object like so:
+
+    function Sentence(str) {
+        this._str = str;
+    }
+
+    Sentence.prototype[Symbol.iterator] = function() {
+        var re = /\S+/g;
+        var str = this._str;
+
+        return {
+            next: function() {
+                var match = re.exec(str);
+                if (match) {
+                    return {value: match[0], done: false};
+                }
+                return {value: undefined, done: true};
+            }
+        }
+    };
+
+    var s = new Sentence('Good day, kind sir.');
+    for (var w of s) {
+        console.log(w);  // logs out each word on a new line
+    }
+
+Generators are defined using the `function*` keyword. Within a `function*`, you can repeatedly return values using `yield` which pauses
+execution, returns a value, then on the next iteration execution will resume there.
+
+    function* myGenerator() {
+        yield 'foo';
+        yield 'bar';
+    }
+
+    myGenerator.next();        // Returns {value: 'foo', done: false}
+    myGenerator.next();        // Returns {value: 'bar', done: false}
+    myGenerator.next();        // Returns {value: undefined, done: true}
+
+    // same as above
+    for (var n of myGenerator()) {
+        console.log(n);
+    }
+
+With the previous example, we can simplify the `Sentence` iterator to the following code:
+
+    Sentence.prototype[Symbol.iterator] = function*() {
+        var re = /\S+/g;
+        var str = this._str;
+        var match;
+        while (match = re.exec(str)) {
+            yield match[0];
+        }
+    };
+
 Modules
 -------
 

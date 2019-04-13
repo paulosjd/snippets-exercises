@@ -246,6 +246,12 @@ The `map()` method creates a new array with the results of calling a provided fu
         });
     }
 
+**`shift` and `unshift`**
+
+unshift/push - add an element to the beginning/end of an array
+
+shift/pop - remove and return the first/last element of an array
+
 **Arrays do not have negative indexes**
 
 You cannot have a negative index, in the following assignment, it assigns a key-value pair and the length remains three,:
@@ -276,7 +282,18 @@ index in the array.
     // [1, 'b']
     // [2, 'c']
 
-**`Array.isArray`**
+**`Array.flat`**
+
+    [1, 2, [3, 4]].flat()
+    // [1, 2, 3, 4]
+
+    [1, 2, [3, 4, [5, 6]]].flat();
+    // [1, 2, 3, 4, [5, 6]]
+
+    [1, 2, [3, 4, [5, 6]]].flat(2);
+    // [1, 2, 3, 4, 5, 6]
+
+**`Array.from`**
 
 The array constructor has a number of methods including `Array.isArray` and `Array.from`.
 

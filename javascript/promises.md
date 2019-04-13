@@ -63,6 +63,23 @@ The executor should call only one resolve or reject. The promise’s state chang
 All further calls of resolve and reject are ignored. The idea is that a job done by the executor may have only one result or an error.
 Further, resolve/reject expect only one argument and will ignore additional arguments.
 
+**`Promise.all(iterable)`**
+
+The `Promise.all()` method returns a single `Promise` that resolves when all of the promises passed as an
+iterable have resolved or when the iterable contains no promises. It rejects with the reason of the first
+promise that rejects.
+
+    var promise1 = Promise.resolve(3);
+    var promise2 = 42;
+    var promise3 = new Promise(function(resolve, reject) {
+      setTimeout(resolve, 100, 'foo');
+    });
+
+    Promise.all([promise1, promise2, promise3]).then(function(values) {
+      console.log(values);
+    });
+    // expected output: Array [3, 42, "foo"]
+
 Consumers: “then” and “catch”
 ---------------------------
 A `Promise` object serves as a link between the executor (the “producing code”) and the consuming functions, which will receive the result or error. Consuming functions can be registered (subscribed) using the methods `.then` and `.catch`.

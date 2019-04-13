@@ -153,8 +153,6 @@ Both iterables and array-likes are usually not arrays, they don’t have `push`,
     let arr = Array.from(arrayLike);
     alert(arr.pop()); // World
 
-
-
 Properties
 ------------
 
