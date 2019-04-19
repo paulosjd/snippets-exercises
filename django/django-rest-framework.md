@@ -1,7 +1,6 @@
 D-R-F 
 
-Good url routing essential to make API RESTful.
-DRF helps 
+Good url routing essential to make API RESTful. DRF helps 
 
 The validation to ensure data format so can have a good consistent representation of your resources (your models) in say your json. Validation defined in serializer class, which very similar to forms class.
 

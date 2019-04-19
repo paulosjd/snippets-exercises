@@ -30,7 +30,7 @@ If the regular expression includes the `g` flag, the method returns an `Array` c
 
 **String conversion**
 
-It's possible to use String as a more reliable toString() alternative, as it works when used on null, undefined, and on symbols. For example:
+It's possible to use `String` as a more reliable `toString()` alternative, as it works when used on `null`, `undefined`, and on symbols. For example:
 
     var outputStrings = [];
     for (var i = 0, n = inputValues.length; i < n; ++i) {

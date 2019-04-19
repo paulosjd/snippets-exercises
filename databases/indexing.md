@@ -1,4 +1,4 @@
-![](../images/b-tree.png)
+﻿![](../images/b-tree.png)
 
 In its most basic form, the B-Tree index is a hierarchy of data pages. The lowest level is called the leaf level, the highest level is the index root, and all levels in between are the intermediate levels. This structure is an improvement over the Binary Tree index because its balanced nature greatly improved the performance of maintenance operations such as, `INSERT`, `DELETE`, and `UPDATE`.
 All table data is stored in 8 KB data pages. The data pages are at the leaf level.
@@ -60,17 +60,3 @@ Each node in such a tree is a page in SQL Server terms and you will find two pag
 Summary
 
 SQL Server stores key-based persisted indexes in the form of a B+Tree. Each node in such a tree is represented by a single page. Data pages build the leaf level of the tree while all other nodes are made of single pages of type 2.
-
-
-Glossary
---------
-
-**Linked list**
-
-a linear data structure where each element is a separate object. Each element (we will call it a node) of a list is comprising of two items - the data and a reference to the next node. The last node has a reference to null. The entry point into a linked list is called the head of the list.
-
-**SQL injection**
-
-One of the most common web hacking techniques, it is used to attack data-driven applications, whereby nefarious SQL statements are inserted into an entry field for execution.
-
-

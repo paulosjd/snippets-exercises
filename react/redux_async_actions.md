@@ -296,3 +296,35 @@ Finally, we have abstracted away the difference between dispatching a synchonous
 Also, notice that since we “taught” Redux to recognize such “special” action creators (we call them thunk
 action creators), we can now use them in any place where we would use regular action creators. E.g. we can
 use them with `connect()`.
+
+**How to show a loading indicator in React Redux app while fetching the data?**
+
+Loading indicators are a great case of UI that is easily described as a function of state: in this case,
+of a boolean variable. The followingreducer updates a field called `isFetching`:
+
+    case REQUEST_POSTS:
+      return Object.assign({}, state, {
+        isFetching: true,
+        didInvalidate: false
+      })
+
+    case RECEIVE_POSTS:
+      return Object.assign({}, state, {
+        isFetching: false,
+        didInvalidate: false,
+        items: action.posts,
+        lastUpdated: action.receivedAt
+
+A component that uses `connect()` from React Redux to subscribe to the store’s state
+and returns isFetching as part of the `mapStateToProps()` return value so it is available
+in the connected component’s props.
+
+Finally, the component uses `isFetching` prop in the `render()` function to render a “Loading...” label (which could conceivably be a spinner instead):
+
+    {isEmpty
+      ? (isFetching ? <h2>Loading...</h2> : <h2>Empty.</h2>)
+      : <div style={{ opacity: isFetching ? 0.5 : 1 }}>
+          <Posts posts={posts} />
+        </div>
+    }
+

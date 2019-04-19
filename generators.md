@@ -5,6 +5,8 @@
            a, b = b, a+b
 PEP255
 -------
+Simple Generators -- [https://www.python.org/dev/peps/pep-0255/](https://www.python.org/dev/peps/pep-0255/)
+
 **Motivation**
 
 When a producer function has a hard enough job that it requires maintaining state between values produced,

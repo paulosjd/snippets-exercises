@@ -1,4 +1,4 @@
-**Simple regression**
+﻿**Simple regression**
 
 Simple linear regression uses traditional slope-intercept form, where m
 and b are the variables our algorithm will try to “learn” to produce the most accurate predictions. x represents our input data and y represents our prediction.
@@ -67,8 +67,8 @@ Training a model is the process of iteratively improving your prediction equatio
 
 By learning the best values for weight and bias, we now have an equation that predicts future sales based on radio advertising investment: Sales=.46Radio+.025
 
-**Multivariable regression**
-
+Multivariable regression
+------------------------
 As the number of features grows, the complexity of our model increases and it becomes increasingly difficult to visualize, or even comprehend, our data.
 One solution is to break the data apart and compare 1-2 features at a time. In this example we explore how Radio and TV investment impacts Sales.
 
