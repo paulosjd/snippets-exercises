@@ -1,4 +1,4 @@
-    def fib():
+﻿    def fib():
         a, b = 0, 1
         while True:
            yield b
@@ -175,4 +175,33 @@ This works the same:
 The `yield from` transparently handles sending the values or throwing values into the sub-generator.
 It also covers a great range of corner cases. `yield from` as a keyword does not really make the two-way nature apparent.
 Think of `yield from` as a transparent two way channel between the caller and the sub-generator.
+
+***
+
+**Actor model for concurrency**
+
+There is a similarity betweens coroutines and actors. Actor systems utilize message passing to perform units of work.  Queues store messages that the actor uses to perform certain tasks. 
+
+![](/images/actor.png)
+
+So above we have a sort of registry of named tasks which we can send things to. This sort of system allows us to do something like the following.
+
+![](/images/actor2.png)
+
+This doesn't work as you are trying to call something which is already executing. So it turns out generators do not allow concurrent execution and asynchronous message delivery, things you get in actor frameworks. 
+
+One solution is to write a message scheduler, which involves re-implementing the `send` function slightly. This then just sends things to the queue. Would something like this work with the ping pong example?
+
+![](/images/actor3.png)
+
+This works and the above code runs forever. Although it lacks true concurrency and is easily blocked, maybe it is good enough?
+ 
+
+
+
+
+
+
+
+
 

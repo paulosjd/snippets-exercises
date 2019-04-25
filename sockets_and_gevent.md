@@ -1,4 +1,4 @@
-`socket`
+﻿`socket`
 --------
 The Python standard library module provides a low-level networking interface. This interface is common across different programming languages since it uses OS-level system calls.
 A socket represents an endpoint of a network communication, and can be in one of several states:
@@ -59,7 +59,7 @@ Once you have a socket open, you can read from it like any IO object. When done,
 
 **Websockets**
 
-They are normal sockets with some framing and an HTTP-compatible handshake. The HTTP-compatible handshake is just to allow WebSocket connection on the same port that a webserver is running on.
+These are normal sockets with some framing and an HTTP-compatible handshake. The HTTP-compatible handshake is just to allow WebSocket connection on the same port that a webserver is running on.
 
 HTTP is a stateless protocol, which means that the connection between the browser and the server is lost once the transaction ends. The opening and closing creates overhead, and the other limitation with HTTP was that it was a “pull” paradigm. The browser would request or pull information from servers, but the server couldn’t push data to the browser when it wanted to. This means that browsers would have to poll the server for new information by repeating requests.
 For more real time interaction, or real time transfer or streaming of data, HTTP and REST aren’t the best suited protocol and abstraction combination. This is where Sockets and WebSockets shine.

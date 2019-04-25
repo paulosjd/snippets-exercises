@@ -1,3 +1,15 @@
+A context manager in Python is simply a protocol which:
+
+
+0) `__getattribute__` on class
+1) data descriptor on class
+2) __dict__
+3) non-data descriptor on class
+4) simple value from the class
+5) __getattr__ on class
+6) raise AttributeError
+
+
 
     1) Add full name property to each object in array
     2) Return array of full names
