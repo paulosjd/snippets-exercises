@@ -22,20 +22,42 @@ non-generator functions, acting more like a constructor than a function
 
 When a generator function is called, the actual arguments are bound to function-local formal argument
 names in the usual way, but no code in the body of the function is executed. Instead a generator-iterator
-object is returned; this conforms to the iterator protocol, so in particular can be used in for-loops in a
-natural way.
+object is returned; this conforms to the iterator protocol, so in particular can be used in for-loops in a natural way.
 
 Note that the unqualified name "generator" may be used to refer either to a generator-function or a
-generator-iterator. An iterator is an object with a `__next__` method.
+generator-iterator. An iterator is an object with a `__next__` method. **nb** was `next()' previously.
 
 Each time the `__next__` method of a generator-iterator is invoked, the code in the body of the
 generator-function is executed until a yield or return statement is encountered, or until the end of the
 body is reached.
 
-If a yield statement is encountered, the state of the function is frozen, and the value of *expression_list*
-is returned to `__next__`'s caller. By "frozen" we mean that all local state is retained: enough information
-so that the next time `__next__` is invoked, the function can proceed exactly as if the yield statement
-were just another external call.
+If a yield expression is encountered, the state of the function is frozen, and the value of *expression_list* is returned to `__next__`'s caller. By "frozen" we mean that all local state is retained: enough information so that the next time `__next__` is invoked, the function can proceed exactly as if the yield statement were just another external call. 
+
+**PEP342 and PEP380**
+
+Generators let the execution of code be paused. Having a function pause what it is doing whenever it hit a yield expression and then be able to resume later is very useful in terms of using less memory, allowing for the idea of infinite sequences, etc.
+
+Among other things, PEP 342 introduced the `send()` method on generators. Once the ability to send values back into the paused generators were introduced, the concept of coroutines in Python became possible. 
+
+With PEP380, the addition of `yield from` made it easier to refactor generators as well as chain them together.
+
+***
+
+**`itertools`**
+
+It isn't possible to subscript a generator because this requires all the elements of a sequence to be in memory at the same time. The itertools module allows you to do this with its `islice` function:
+
+    >>> nums = [1, 2, 3, 4, 5]
+    >>> my_gen1 = ( x*x for x in nums )  # Doesn't actually do the calculation
+    >>> itertools.islice(my_gen1, 1, 4)  # Selects the middle three items
+
+The `chain()` function can be called with any number of sequences as arguments. It yields all the elements of the first sequence, followed by those of the second, and so on, until the last sequence argument is exhausted:
+
+    >>> my_gen2 = ( x+2 for x in nums )
+    >>> list(itertools.chain(my_gen1, my_gen2))
+    [1, 4, 9, 16, 25, 3, 4, 5, 6, 7]
+
+***
 
 **Yield in context managers**
 
@@ -92,8 +114,6 @@ Instead of manually iterating over reader(), we can just yield from it.
         yield from g
 
 **Sending data to a generator (coroutine) using `yield from`**
-
-*side note* `yield` must be parenthesized if not a top-level expression on RHS of an assignment.
 
     def writer():
         """A coroutine that writes data *sent* to it to fd, socket, etc."""
@@ -175,6 +195,12 @@ This works the same:
 The `yield from` transparently handles sending the values or throwing values into the sub-generator.
 It also covers a great range of corner cases. `yield from` as a keyword does not really make the two-way nature apparent.
 Think of `yield from` as a transparent two way channel between the caller and the sub-generator.
+
+***
+
+enerators were first introduced by PEP 255 (they are also called generator iterators since generators implement the iterator protocol)
+(you could always create a class that implemented __iter__() and __next__() that didn't store every value of the iterator, but that's a lot more effort)
+
 
 ***
 
