@@ -332,5 +332,3 @@ E.g. usually bitwise operations are faster than doing multiply/divide.
 
 The short-circuiting boolean operators (`and`, `or`) can't be overriden. & and | (and `not`, by the way) can be fully overriden, as they don't short circuit.
 
-
-
