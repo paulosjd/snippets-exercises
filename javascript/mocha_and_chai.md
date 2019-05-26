@@ -132,4 +132,38 @@ Running the tests would give the following output:
 ![](../images/mocha.png)
 
 Often you will need other resources to perform tests, e.g. a database.
+This setup and teardown work can be done using [Mocha hooks](https://mochajs.org/#hooks).
+`before()` runs before *all tests* in the given block and
+`afterEach()` runs *after each* test in the given block:
 
+    var expect = require('chai').expect;
+    var Camo = require('camo');
+    var User = require('../models').User;
+
+    describe('Users', function() {
+
+        var database = null;
+
+        before(function(done) {
+            Camo.connect('mongodb://localhost/app_test').then(function(db) {
+                database = db;
+                return database.dropDatabase();
+            }).then(function() {}).then(done, done);
+        });
+
+        afterEach(function(done) {
+            database.dropDatabase().then(function() {}).then(done, done);
+        });
+
+        describe('#save()', function() {
+            it('should save User data to database', function(done) {
+                // Use your database here...
+            });
+        });
+
+        describe('#load()', function() {
+            it('should load User data from database', function(done) {
+                // Use your database here...
+            });
+        });
+    });

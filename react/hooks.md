@@ -36,8 +36,39 @@ Example of a handler function:
     <button onClick={setCount}>Click me</button>
 
 
-Examples
----------
+Snippets
+--------
+
+Q: To slowly migrate to hooks, can I add hooks into classes? A:
+Higher order components are how we have been doing this type of thing until hooks came along. You can write a simple high order component wrapper for your hook.
+
+    function withMyHook(Component) {
+      return function WrappedComponent(props) {
+        const myHookValue = useMyHook();
+        return <Component {...props} myHookValue={myHookValue} />;
+      }
+    }
+
+While this isn't truly using a hook directly from a class component, this will at least allow you to use the logic of your hook from a class component, without refactoring.
+
+    class MyDiv extends React.Component {
+      render(){
+        const myHookValue = this.props.myHookValue;
+        return <div>{myHookValue}</div>;
+      }
+    }
+
+    MyDiv = withMyHook(MyDiv);
+
+***
+
+
+
+
+
+
+Custom Hook Examples
+--------------------
 
 **`useKeyPress` from [usehooks.com](https://usehooks.com/)**
 
